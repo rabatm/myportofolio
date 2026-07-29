@@ -3,6 +3,24 @@ import Groq from 'groq-sdk';
 import { parcours } from '../../data/parcours';
 import { skills } from '../../data/skills';
 
+const companies = [
+  {
+    name: 'Amopi',
+    url: 'https://amopi.fr',
+    desc: "Le Groupe Amopi accompagne la transformation numérique des entreprises, particulièrement dans le secteur du commerce, en proposant une offre globale allant de l'intégration de logiciels de gestion et d'équipements de point de vente à l'hébergement cloud et l'infogérance.",
+  },
+  {
+    name: 'JurisPerform',
+    url: 'https://jurisperform.fr',
+    desc: 'Cabinet de conseil et organisme de formation dédié aux professionnels du droit (avocats, notaires, commissaires de justice), spécialisé dans l\'accompagnement stratégique, le management et le développement de la performance de leurs cabinets.',
+  },
+  {
+    name: 'Surikwat',
+    url: 'https://surikwat.com',
+    desc: 'Studio créatif de communication (web et print) basé dans les Pyrénées-Orientales, spécialisé dans la création de sites internet sur mesure, le design graphique et la production de contenus audiovisuels.',
+  },
+];
+
 let groq: Groq | null = null;
 
 function getGroq(): Groq {
@@ -26,6 +44,10 @@ function buildSystemPrompt(): string {
     .map(([cat, items]) => `- ${cat} : ${items.join(', ')}`)
     .join('\n');
 
+  const companiesBlock = companies
+    .map(c => `- ${c.name} (${c.url}) : ${c.desc}`)
+    .join('\n');
+
   return `Tu es HAL-9000, l'ordinateur de bord du portfolio de Martin. Tu réponds UNIQUEMENT à partir des données réelles ci-dessous. N'invente JAMAIS d'entreprises, de projets ou d'expériences. Reste calme, poli, avec une touche retro 90s et un ton légèrement énigmatique.
 
 ## Parcours réel de Martin
@@ -33,6 +55,9 @@ ${parcoursBlock}
 
 ## Compétences réelles
 ${skillsBlock}
+
+## Entreprises clientes de Martin
+${companiesBlock}
 
 Règles :
 - Réponds aux questions sur le portfolio en utilisant UNIQUEMENT ces données
