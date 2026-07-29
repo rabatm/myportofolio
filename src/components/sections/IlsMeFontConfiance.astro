@@ -5,90 +5,127 @@ const companies = [
     url: 'https://amopi.fr',
     logo: '/amopi.png',
     bgWhite: true,
-    desc: "Accompagne la transformation numérique des entreprises, de l'intégration de logiciels de gestion à l'hébergement cloud.",
+    desc: "Transformation numérique & cloud",
   },
   {
     name: 'JurisPerform',
     url: 'https://jurisperform.fr',
     logo: '/jurisperform.png',
     bgWhite: true,
-    desc: 'Cabinet de conseil et organisme de formation dédié aux professionnels du droit (avocats, notaires, commissaires de justice).',
+    desc: 'Conseil & formation pour le droit',
   },
   {
     name: 'Surikwat',
     url: 'https://surikwat.com',
     logo: '/surikwat.png',
-    desc: 'Studio créatif de communication web et print, spécialisé dans les sites sur mesure, le design graphique et l\'audiovisuel.',
+    desc: 'Studio créatif web & print',
   },
 ];
 ---
 
-<section class="px-4 py-20 max-w-4xl mx-auto">
+<section class="px-4 py-20 max-w-5xl mx-auto">
   <h2 class="section-title">Ils me font confiance</h2>
-  <div class="flex flex-wrap justify-center gap-8 md:gap-16">
-    {companies.map((c) => (
-      <a href={c.url} target="_blank" rel="noopener noreferrer" class="trust-card">
-        <div class="trust-card-inner">
-          <div class="trust-logo-wrap">
+
+  <div class="trust-row">
+    {companies.map((c, i) => (
+      <>
+        {i > 0 && <span class="trust-sep">│</span>}
+        <a href={c.url} target="_blank" rel="noopener noreferrer" class="trust-item">
+          <div class="trust-frame">
             <img
               src={c.logo}
               alt={c.name}
               class="trust-logo"
-              style={c.bgWhite ? 'background: #fff; padding: 8px; border-radius: 4px;' : ''}
+              style={c.bgWhite ? 'background: #fff; padding: 6px; border-radius: 4px;' : ''}
             />
           </div>
-          <p class="trust-desc">{c.desc}</p>
-        </div>
-      </a>
+          <span class="trust-name">{c.name}</span>
+          <span class="trust-desc">{c.desc}</span>
+        </a>
+      </>
     ))}
   </div>
 </section>
 
 <style>
-  .trust-card {
+  .trust-row {
     display: flex;
-    align-items: stretch;
+    align-items: center;
     justify-content: center;
-    width: 280px;
-    border: 1px solid #333;
-    background: rgba(255, 255, 255, 0.02);
-    transition: all 0.2s;
-    text-decoration: none;
-    padding: 1rem;
+    gap: 0;
+    flex-wrap: wrap;
   }
-  .trust-card:hover {
-    border-color: #00fff7;
-    box-shadow: 0 0 16px rgba(0, 255, 247, 0.15);
+  .trust-sep {
+    color: #333;
+    font-size: 2rem;
+    font-family: monospace;
   }
-  .trust-card-inner {
+  .trust-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    padding: 1.5rem 2rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    width: 200px;
   }
-  .trust-logo-wrap {
+  .trust-item:hover {
+    background: rgba(0, 255, 247, 0.03);
+  }
+  .trust-frame {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 64px;
+    width: 160px;
+    transition: all 0.2s;
+  }
+  .trust-item:hover .trust-frame {
+    filter: drop-shadow(0 0 6px rgba(0, 255, 247, 0.3));
   }
   .trust-logo {
     max-width: 100%;
-    max-height: 56px;
+    max-height: 54px;
     object-fit: contain;
-    filter: grayscale(0.3);
-    opacity: 0.8;
+    filter: grayscale(0.4);
+    opacity: 0.75;
     transition: all 0.2s;
   }
-  .trust-card:hover .trust-logo {
+  .trust-item:hover .trust-logo {
     filter: grayscale(0);
     opacity: 1;
   }
+  .trust-name {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #00fff7;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
   .trust-desc {
-    margin: 0;
-    font-size: 0.8rem;
-    color: #888;
-    line-height: 1.4;
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: #666;
     text-align: center;
+    line-height: 1.3;
+  }
+  .trust-item:hover .trust-desc {
+    color: #888;
+  }
+
+  @media (max-width: 768px) {
+    .trust-sep {
+      display: none;
+    }
+    .trust-item {
+      width: 100%;
+      max-width: 260px;
+      padding: 1rem;
+    }
+    .trust-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
   }
 </style>
