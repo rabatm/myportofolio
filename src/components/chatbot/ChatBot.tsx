@@ -29,7 +29,7 @@ function TypewriterText({ text, onDone }: { text: string; onDone?: () => void })
 
 export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: '> Allô, Dave. Je suis HAL-9000, prêt à causer. Pose-moi des questions sur le portfolio.' },
+    { role: 'assistant', content: '> HAL-9000 — Assistant portfolio. Pose-moi des questions sur le parcours, les compétences ou les projets.' },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
