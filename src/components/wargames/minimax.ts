@@ -67,12 +67,21 @@ function getOptimalMove(board: string[], ai: string, human: string): number {
   return bestMove;
 }
 
-function getUnderMove(board: string[], ai: string, human: string): number {
-  const empty = board.reduce<number[]>((acc, c, i) => (c === '' ? [...acc, i] : acc), []);
-  const optimal = getOptimalMove(board, ai, human);
-  const nonOptimal = empty.filter(i => i !== optimal);
-  if (nonOptimal.length === 0) return optimal;
-  return nonOptimal[Math.floor(Math.random() * nonOptimal.length)];
+function getWorstMove(board: string[], ai: string, human: string): number {
+  let worstScore = Infinity;
+  let worstMove = -1;
+  for (let i = 0; i < 9; i++) {
+    if (!board[i]) {
+      board[i] = ai;
+      const score = minimax(board, 0, false, ai, human);
+      board[i] = '';
+      if (score < worstScore) {
+        worstScore = score;
+        worstMove = i;
+      }
+    }
+  }
+  return worstMove;
 }
 
 export function getBestMove(
@@ -81,6 +90,6 @@ export function getBestMove(
 ): number {
   const ai = 'O';
   const human = 'X';
-  if (forceUnder) return getUnderMove(board, ai, human);
+  if (forceUnder) return getWorstMove(board, ai, human);
   return getOptimalMove(board, ai, human);
 }

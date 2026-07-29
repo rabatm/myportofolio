@@ -37,7 +37,6 @@ export default function WargamesGame() {
   const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X');
   const [scores, setScores] = useState({ hal: 0, visitor: 0 });
   const [winner, setWinner] = useState<string | null>(null);
-  const [halMoved, setHalMoved] = useState(false);
   const [underRound] = useState(() => Math.floor(Math.random() * 3));
 
   const [contact, setContact] = useState<ContactForm>({ name: '', email: '', message: '' });
@@ -48,6 +47,7 @@ export default function WargamesGame() {
 
   const boardRef = useRef(board);
   boardRef.current = board;
+  const aiThinkingRef = useRef(false);
 
   const handleIntroDone = useCallback(() => setIntroDone(true), []);
 
@@ -55,11 +55,10 @@ export default function WargamesGame() {
     setBoard(Array(9).fill(''));
     setCurrentPlayer('X');
     setWinner(null);
-    setHalMoved(false);
   }
 
   function handleCellClick(index: number) {
-    if (currentPlayer !== 'X' || board[index] || winner || halMoved) return;
+    if (currentPlayer !== 'X' || board[index] || winner || aiThinkingRef.current) return;
 
     const newBoard = [...board];
     newBoard[index] = 'X';
@@ -75,12 +74,11 @@ export default function WargamesGame() {
       return;
     }
     setCurrentPlayer('O');
-    setHalMoved(false);
   }
 
   useEffect(() => {
-    if (currentPlayer !== 'O' || winner || halMoved) return;
-    setHalMoved(true);
+    if (currentPlayer !== 'O' || winner) return;
+    aiThinkingRef.current = true;
     const timer = setTimeout(() => {
       const aiMove = getBestMove(boardRef.current, round - 1 === underRound);
       const newBoard = [...boardRef.current];
@@ -97,10 +95,13 @@ export default function WargamesGame() {
         return;
       }
       setCurrentPlayer('X');
-      setHalMoved(false);
+      aiThinkingRef.current = false;
     }, 600);
-    return () => clearTimeout(timer);
-  }, [currentPlayer, winner, halMoved]);
+    return () => {
+      clearTimeout(timer);
+      aiThinkingRef.current = false;
+    };
+  }, [currentPlayer, winner]);
 
   useEffect(() => {
     if (!winner) return;
