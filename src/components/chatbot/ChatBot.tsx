@@ -7,7 +7,7 @@ interface Message {
 
 export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: '> Allô ? Je suis ORDI-9000, prêt à causer ! Pose-moi des questions sur le portfolio.' },
+    { role: 'assistant', content: '> Allô, Dave. Je suis HAL-9000, prêt à causer. Pose-moi des questions sur le portfolio.' },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +61,7 @@ export default function ChatBot() {
         style={{ background: '#111', borderBottom: '1px solid #333' }}
       >
         <span style={{ color: '#00fff7' }}>╔══</span>
-        <span style={{ color: '#888' }}>RETRO-CHAT v1.0</span>
+        <span style={{ color: '#888' }}>HAL-9000</span>
         <span style={{ color: '#00fff7' }}>══╗</span>
       </div>
 
