@@ -366,6 +366,12 @@ QUE LE MEILLEUR GAGNE.`}
             box-shadow: 0 0 8px #00fff7;
           }
         `}</style>
+        <a
+          href="/"
+          style={{ color: '#555', marginTop: '2rem', textDecoration: 'none', fontFamily: 'monospace', fontSize: '0.85rem' }}
+        >
+          &gt; Retour au portfolio
+        </a>
       </div>
     </div>
   );

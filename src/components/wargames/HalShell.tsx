@@ -32,6 +32,12 @@ export default function HalShell({ messages }: { messages: string[] }) {
         </div>
       ))}
       <div ref={endRef} />
+      <a
+        href="/"
+        style={{ color: '#555', textDecoration: 'none', display: 'block', marginTop: '1rem', fontSize: '0.85rem' }}
+      >
+        &gt; Retour au portfolio
+      </a>
     </div>
   );
 }
