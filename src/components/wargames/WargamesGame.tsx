@@ -181,6 +181,7 @@ QUE LE MEILLEUR GAGNE.`}
           />
         </div>
         {introDone && (
+          <>
           <button
             onClick={() => {
               setPhase('playing');
@@ -200,6 +201,13 @@ QUE LE MEILLEUR GAGNE.`}
           >
 {'>'} COMMENCER
           </button>
+          <a
+            href="/"
+            style={{ color: '#555', marginTop: '1.5rem', textDecoration: 'none', fontFamily: 'monospace', fontSize: '0.85rem' }}
+          >
+            &gt; Retour au portfolio
+          </a>
+          </>
         )}
       </div>
     );
