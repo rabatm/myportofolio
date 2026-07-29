@@ -3,9 +3,14 @@ import { temoignages } from '../../data/temoignages';
 ---
 
 <section class="px-4 py-20 max-w-3xl mx-auto">
-  <h2 class="section-title">Témoignages</h2>
-
   <div class="carousel" data-current="0">
+    <div class="carousel-header">
+      <h2 class="section-title">Témoignages</h2>
+      <div class="carousel-nav">
+        <button class="carousel-btn prev" aria-label="Précédent">◀</button>
+        <button class="carousel-btn next" aria-label="Suivant">▶</button>
+      </div>
+    </div>
     <div class="carousel-track">
       {temoignages.map((t, i) => (
         <div class="carousel-slide" data-index={i}>
@@ -22,9 +27,6 @@ import { temoignages } from '../../data/temoignages';
         </div>
       ))}
     </div>
-
-    <button class="carousel-btn prev" aria-label="Précédent">◀</button>
-    <button class="carousel-btn next" aria-label="Suivant">▶</button>
 
     <div class="carousel-dots">
       {temoignages.map((_, i) => (
@@ -60,24 +62,26 @@ import { temoignages } from '../../data/temoignages';
     dots.forEach(d => d.addEventListener('click', () => { goTo(Number((d as HTMLElement).dataset.index)); resetAuto(); }));
 
     carousel.addEventListener('mouseenter', () => clearInterval(interval));
-    carousel.addEventListener('mouseleave', () => { interval = setInterval(nextSlide, 5000); });
+    carousel.addEventListener('mouseleave', () => { interval = setInterval(nextSlide, 8000); });
 
     function resetAuto() {
       clearInterval(interval);
-      interval = setInterval(nextSlide, 5000);
+      interval = setInterval(nextSlide, 8000);
     }
 
     goTo(0);
-    interval = setInterval(nextSlide, 5000);
+    interval = setInterval(nextSlide, 8000);
   }
 
-  // Quote collapse toggle
+  // Quote collapse toggle — pause auto-rotation
   document.querySelectorAll('.quote-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
       const collapse = btn.previousElementSibling as HTMLElement;
       const expanded = collapse.dataset.expanded === 'true';
       collapse.dataset.expanded = expanded ? 'false' : 'true';
       btn.textContent = expanded ? 'Lire la suite' : 'Voir moins';
+      // pause auto-rotation when expanded
+      if (!expanded) clearInterval(interval);
     });
   });
 </script>
@@ -86,7 +90,19 @@ import { temoignages } from '../../data/temoignages';
   .carousel {
     position: relative;
     overflow: hidden;
-    padding: 0 2.5rem;
+  }
+  .carousel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .carousel-header .section-title {
+    margin: 0;
+  }
+  .carousel-nav {
+    display: flex;
+    gap: 0.5rem;
   }
   .carousel-track {
     display: flex;
@@ -188,14 +204,11 @@ import { temoignages } from '../../data/temoignages';
     margin: 0;
   }
   .carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
     background: transparent;
     border: 1px solid #333;
     color: #00fff7;
-    font-size: 1.2rem;
-    padding: 0.3rem 0.6rem;
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
     cursor: pointer;
     transition: all 0.2s;
     line-height: 1;
@@ -204,8 +217,6 @@ import { temoignages } from '../../data/temoignages';
     border-color: #00fff7;
     box-shadow: 0 0 8px rgba(0, 255, 247, 0.3);
   }
-  .prev { left: 0; }
-  .next { right: 0; }
   .carousel-dots {
     display: flex;
     justify-content: center;
