@@ -35,6 +35,7 @@ export default function WargamesGame() {
   const [round, setRound] = useState(1);
   const [board, setBoard] = useState<string[]>(Array(9).fill(''));
   const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X');
+  const [starter, setStarter] = useState<'X' | 'O'>('X');
   const [scores, setScores] = useState({ hal: 0, visitor: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [underRound] = useState(() => Math.floor(Math.random() * 3));
@@ -51,9 +52,10 @@ export default function WargamesGame() {
 
   const handleIntroDone = useCallback(() => setIntroDone(true), []);
 
-  function resetBoard() {
+  function resetBoard(nextStarter: 'X' | 'O') {
     setBoard(Array(9).fill(''));
-    setCurrentPlayer('X');
+    setCurrentPlayer(nextStarter);
+    setStarter(nextStarter);
     setWinner(null);
   }
 
@@ -112,8 +114,9 @@ export default function WargamesGame() {
       if (round >= 3) {
         setPhase('score');
       } else {
+        const nextStarter = winner === 'draw' ? starter : winner as 'X' | 'O';
         setRound(r => r + 1);
-        resetBoard();
+        resetBoard(nextStarter);
       }
     }, 1500);
     return () => clearTimeout(timer);
