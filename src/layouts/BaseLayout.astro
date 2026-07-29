@@ -1,5 +1,6 @@
 ---
 import '../styles/retro.css';
+import ChatBot from '../components/chatbot/ChatBot.tsx';
 
 export interface Props {
   title: string;
@@ -37,6 +38,8 @@ const { title, description = "Portfolio rétro années 90" } = Astro.props;
     <main>
       <slot />
     </main>
+
+    <ChatBot client:only="react" />
 
     <footer class="text-center py-8" style="color: #555; border-top: 1px solid #222;">
       <p class="text-sm">© 2026 — Portfolio rétro 90s</p>
