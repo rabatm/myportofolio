@@ -33,20 +33,30 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(JSON.stringify({ error: 'messages array required' }), { status: 400 });
     }
 
-    const completion = await getGroq().chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages,
-      ],
-      max_tokens: 300,
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
 
-    const content = completion.choices[0]?.message?.content || '';
+    try {
+      const completion = await getGroq().chat.completions.create(
+        {
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...messages,
+          ],
+          max_tokens: 300,
+        },
+        { signal: controller.signal }
+      );
 
-    return new Response(JSON.stringify({ content }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+      const content = completion.choices[0]?.message?.content || '';
+
+      return new Response(JSON.stringify({ content }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
   } catch (err: any) {
     if (err?.status === 429) {
       return new Response(JSON.stringify({ content: RATE_LIMIT_MESSAGE }), {
