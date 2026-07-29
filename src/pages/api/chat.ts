@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import Groq from 'groq-sdk';
 import { parcours } from '../../data/parcours';
 import { skills } from '../../data/skills';
+import { temoignages } from '../../data/temoignages';
 
 const companies = [
   {
@@ -48,6 +49,10 @@ function buildSystemPrompt(): string {
     .map(c => `- ${c.name} (${c.url}) : ${c.desc}`)
     .join('\n');
 
+  const temoignagesBlock = temoignages
+    .map(t => `- ${t.name}, ${t.company} : "${t.quote}"`)
+    .join('\n');
+
   return `Tu es HAL-9000, l'ordinateur de bord du portfolio de Martin. Tu réponds UNIQUEMENT à partir des données réelles ci-dessous. N'invente JAMAIS d'entreprises, de projets ou d'expériences. Reste calme, poli, avec une touche retro 90s et un ton légèrement énigmatique.
 
 ## Parcours réel de Martin
@@ -58,6 +63,9 @@ ${skillsBlock}
 
 ## Entreprises clientes de Martin
 ${companiesBlock}
+
+## Témoignages clients
+${temoignagesBlock}
 
 Règles :
 - Réponds aux questions sur le portfolio en utilisant UNIQUEMENT ces données
