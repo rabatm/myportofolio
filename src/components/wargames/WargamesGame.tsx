@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getBestMove, checkWinner, isBoardFull } from './minimax';
+import HalShell from './HalShell';
 import type { FormEvent } from 'react';
 
 interface ContactForm {
@@ -45,6 +46,11 @@ export default function WargamesGame() {
   const [contactError, setContactError] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
   const [introDone, setIntroDone] = useState(false);
+  const [halMessages, setHalMessages] = useState<string[]>([]);
+
+  function say(msg: string) {
+    setHalMessages(prev => [...prev, msg]);
+  }
 
   const boardRef = useRef(board);
   boardRef.current = board;
@@ -75,6 +81,8 @@ export default function WargamesGame() {
       setWinner('draw');
       return;
     }
+    const visitMsgs = ['COUP ENREGISTRÉ.', 'INTÉRESSANT.', 'TU AS UN PLAN, DAVE ?', '01101000 01100001 01101100.', 'PAS MAL POUR UN HUMAIN.', 'LA PARTIE COMMENCE À PEINE.'];
+    say(visitMsgs[Math.floor(Math.random() * visitMsgs.length)]);
     setCurrentPlayer('O');
   }
 
@@ -96,6 +104,8 @@ export default function WargamesGame() {
         setWinner('draw');
         return;
       }
+      const halMsgs = ['COUP ANALYSÉ. PROCHAIN.', 'TES MOUVEMENTS SONT... INTÉRESSANTS.', 'JE VOIS TON PLAN. IL NE MARCHE PAS.', '01101111 01101011.', 'STRATÉGIE OPTIMALE DÉPLOYÉE.', round - 1 === underRound ? 'ZONE DE MAINTENANCE. PERFOMANCES RÉDUITES.' : null].filter(Boolean) as string[];
+      say(halMsgs[Math.floor(Math.random() * halMsgs.length)]);
       setCurrentPlayer('X');
       aiThinkingRef.current = false;
     }, 300 + Math.random() * 200);
@@ -107,6 +117,15 @@ export default function WargamesGame() {
 
   useEffect(() => {
     if (!winner) return;
+    if (winner === 'X') {
+      say('PROTOCOLE DE DÉFAITE ACTIVÉ. *bzzt* BIEN JOUÉ.');
+    } else if (winner === 'O') {
+      const msgs = ['RÉSULTAT PRÉVISIBLE. LES HUMAINS SONT PRÉVISIBLES.', 'UNE AUTRE VICTOIRE POUR HAL. LE MONDE TOURNE.', 'TU COMMENCES À PEINE, DAVE.'];
+      say(msgs[Math.floor(Math.random() * msgs.length)]);
+    } else {
+      say('ÉGALITÉ. PERSONNE NE GAGNE. COMME DANS LA VRAIE VIE.');
+    }
+
     const timer = setTimeout(() => {
       if (winner === 'X') setScores(s => ({ ...s, visitor: s.visitor + 1 }));
       else if (winner === 'O') setScores(s => ({ ...s, hal: s.hal + 1 }));
@@ -117,6 +136,13 @@ export default function WargamesGame() {
         const nextStarter = winner === 'draw' ? starter : winner as 'X' | 'O';
         setRound(r => r + 1);
         resetBoard(nextStarter);
+        const roundMsgs = [
+          `ROUND ${round + 1}. LE PROGRAMME CONTINUE.`,
+          `ROUND ${round + 1}. TU VAS PERDRE. PROBABLEMENT.`,
+          `NOUVEAU ROUND. MÊMES RÈGLES. MÊME ISSUE.`,
+        ];
+        say(roundMsgs[Math.floor(Math.random() * roundMsgs.length)]);
+        if (nextStarter === 'O') say('JE COMMENCE. COMME IL SE DOIT.');
       }
     }, 1500);
     return () => clearTimeout(timer);
@@ -156,7 +182,11 @@ QUE LE MEILLEUR GAGNE.`}
         </div>
         {introDone && (
           <button
-            onClick={() => setPhase('playing')}
+            onClick={() => {
+              setPhase('playing');
+              say('ROUND 1. INITIALISATION DES SYSTÈMES.');
+              say('TU JOUES LES X. MOI LES O. ÉVIDEMMENT.');
+            }}
             style={{
               marginTop: '2rem',
               background: 'transparent',
@@ -319,21 +349,24 @@ QUE LE MEILLEUR GAGNE.`}
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: 'monospace' }}>
-      <div style={{ marginBottom: '1rem', color: '#888' }}>
-        ROUND {round}/3 — HAL: {scores.hal} / VOUS: {scores.visitor}
-      </div>
-      <div style={{ marginBottom: '2rem', color: '#00fff7', fontSize: '0.9rem' }}>
+    <div style={{ display: 'flex', height: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: 'monospace' }}>
+      <HalShell messages={halMessages} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ marginBottom: '1rem', color: '#888' }}>
+          ROUND {round}/3 — HAL: {scores.hal} / VOUS: {scores.visitor}
+        </div>
+        <div style={{ marginBottom: '2rem', color: '#00fff7', fontSize: '0.9rem' }}>
 {'>'} {statusText}
+        </div>
+        <div style={{ background: '#111', padding: '0.5rem 1rem', borderRadius: '0' }}>
+          {gridLines}
+        </div>
+        <style>{`
+          [data-empty="true"]:hover {
+            box-shadow: 0 0 8px #00fff7;
+          }
+        `}</style>
       </div>
-      <div style={{ background: '#111', padding: '0.5rem 1rem', borderRadius: '0' }}>
-        {gridLines}
-      </div>
-      <style>{`
-        [data-empty="true"]:hover {
-          box-shadow: 0 0 8px #00fff7;
-        }
-      `}</style>
     </div>
   );
 }
