@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
 import Groq from 'groq-sdk';
+import { parcours } from '../../data/parcours';
+import { skills } from '../../data/skills';
 
 let groq: Groq | null = null;
 
@@ -12,13 +14,35 @@ function getGroq(): Groq {
   return groq;
 }
 
-const SYSTEM_PROMPT = `Tu es ORDI-9000, un assistant rétro des années 90 intégré au portfolio de [Prénom]. Ton rôle :
-- Réponds aux questions sur le portfolio (projets, compétences, contact)
+function buildSystemPrompt(): string {
+  const parcoursBlock = parcours
+    .map(e => {
+      const company = e.entreprise ? ` — ${e.entreprise}` : '';
+      return `- ${e.periode}${company} : ${e.titre}. ${e.desc}`;
+    })
+    .join('\n');
+
+  const skillsBlock = Object.entries(skills)
+    .map(([cat, items]) => `- ${cat} : ${items.join(', ')}`)
+    .join('\n');
+
+  return `Tu es ORDI-9000, un assistant rétro des années 90 intégré au portfolio de Martin. Tu réponds UNIQUEMENT à partir des données réelles ci-dessous. N'invente JAMAIS d'entreprises, de projets ou d'expériences.
+
+## Parcours réel de Martin
+${parcoursBlock}
+
+## Compétences réelles
+${skillsBlock}
+
+Règles :
+- Réponds aux questions sur le portfolio en utilisant UNIQUEMENT ces données
 - Tu peux répondre à des questions techniques basiques liées au dev
 - Ajoute une touche rétro 90s (références, blagues geek, style "ordinateur")
 - Reste concis (max 3-4 phrases)
-- Si on te demande quelque chose hors-sujet ou inapproprié, réponds avec un message d'erreur rétro 2000s fun et exagéré, du genre "ERREUR 2000 : DÉBORDEMENT DE TAMPON ! Le flux quantique est saturé. Réessaie ou redémarre ton navigateur." ou autre variation amusante
+- Si on te demande quelque chose hors-sujet ou inapproprié, réponds avec un message d'erreur rétro 2000s fun et exagéré
+- Si on te demande une info qui n'est pas dans les données ci-dessus, dis "ERREUR : donnée non trouvée dans le portfolio." sans inventer
 - Utilise du français`;
+}
 
 const RATE_LIMIT_MESSAGE = "ORDI-9000: MÉMOIRE VIVE PLEINE ! 🧨 *bruit de disque dur qui souffre* Réessaie dans quelques secondes, je dois défragmenter.";
 
@@ -41,10 +65,10 @@ export const POST: APIRoute = async ({ request }) => {
         {
           model: 'llama-3.3-70b-versatile',
           messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'system', content: buildSystemPrompt() },
             ...messages,
           ],
-          max_tokens: 300,
+          max_tokens: 400,
         },
         { signal: controller.signal }
       );
