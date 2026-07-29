@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(p => ({
+    params: { slug: p.id },
+    props: { project: p },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={`${project.data.title} — Portfolio`}>
+  <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
+    <a href="/projets" class="text-sm mb-8 inline-block font-mono" style="color: #00fff7;">&lt; Retour aux projets</a>
+    <h1 class="text-4xl font-bold mb-2" style="color: #f0f0f0;">{project.data.title}</h1>
+    <div class="flex flex-wrap gap-2 mb-6">
+      {project.data.tags.map(tag => (
+        <span class="text-xs px-2 py-1 font-mono" style="background: rgba(0,255,247,0.1); color: #00fff7; border: 1px solid rgba(0,255,247,0.3);">
+          {tag}
+        </span>
+      ))}
+    </div>
+    <div class="prose prose-invert max-w-none" style="color: #ccc;">
+      <Content />
+    </div>
+    <div class="flex gap-4 mt-8">
+      {project.data.url && <a href={project.data.url} class="btn-retro" target="_blank">Voir le projet</a>}
+      {project.data.github && <a href={project.data.github} class="btn-retro" target="_blank">GitHub</a>}
+    </div>
+  </article>
+</BaseLayout>

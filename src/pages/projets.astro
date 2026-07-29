@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+---
+
+<BaseLayout title="Projets — Portfolio rétro 90s">
+  <section class="px-4 pt-24 pb-20 max-w-5xl mx-auto">
+    <h2 class="section-title">Projets</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {projects.map(p => (
+        <a href={`/projets/${p.id}`} class="card block no-underline">
+          <div class="aspect-video mb-4 flex items-center justify-center" style="background: #111; border: 1px solid #333;">
+            <span class="text-4xl" style="color: #555;">🖥</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2" style="color: #f0f0f0;">{p.data.title}</h3>
+          <p class="text-sm mb-3" style="color: #888;">{p.data.description}</p>
+          <div class="flex flex-wrap gap-2">
+            {p.data.tags.map(tag => (
+              <span class="text-xs px-2 py-1 font-mono" style="background: rgba(0,255,247,0.1); color: #00fff7; border: 1px solid rgba(0,255,247,0.3);">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
