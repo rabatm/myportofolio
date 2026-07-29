@@ -1,46 +1,83 @@
-# Astro Starter Kit: Basics
+# Portfolio Rétro 90s — Martin
 
-```sh
-bun create astro@latest -- --template basics
+Portfolio développé avec [Astro](https://astro.build) 7, Tailwind CSS 4, React 19 et Bun.
+
+## Ajouter du contenu
+
+### Parcours (timeline carrière)
+
+Fichier : `src/data/parcours.ts`
+
+```ts
+{
+  periode: "2024—2025",
+  titre: "Ton poste",
+  entreprise: "Nom de l'entreprise",
+  desc: "Description de ce que tu as fait.",
+}
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Les entrées s'affichent dans l'ordre du tableau (de la plus récente à la plus ancienne).
 
-## 🚀 Project Structure
+### Compétences
 
-Inside of your Astro project, you'll see the following folders and files:
+Fichier : `src/data/skills.ts`
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```ts
+export const skills: Record<string, string[]> = {
+  Frontend: ["HTML", "CSS", "JavaScript"],
+  Backend: ["Node.js", "Python"],
+  Design: ["Figma"],
+  Outils: ["Git", "VS Code"],
+};
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Ajoute/modifie des catégories et des listes de compétences librement.
 
-## 🧞 Commands
+### Projets
 
-All commands are run from the root of the project, from a terminal:
+Crée un fichier `.md` dans `src/content/projects/` :
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+```md
+---
+title: "Nom du projet"
+date: 2026-07-20
+tags: ["React", "Node.js"]
+description: "Courte description du projet."
+image: "/projects/photo.jpg"   # optionnel, met l'image dans public/projects/
+url: "https://exemple.com"      # optionnel
+github: "https://github.com/..." # optionnel
+---
 
-## 👀 Want to learn more?
+Description détaillée en Markdown…
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Les projets s'affichent du plus récent au plus ancien.
+
+### Articles de blog
+
+Crée un fichier `.md` dans `src/content/blog/` :
+
+```md
+---
+title: "Titre de l'article"
+date: 2026-07-29
+tags: ["dev", "rétro"]
+description: "Accroche de l'article."
+---
+
+## Contenu
+
+Ton article en Markdown…
+```
+
+## Développement
+
+```bash
+bun install
+bun run dev        # serveur local sur localhost:4321
+bun run build      # build de production dans dist/
+bun run preview    # prévisualisation du build
+```
+
+Le mode dev se lance en arrière-plan avec `astro dev --background`.
