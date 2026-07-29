@@ -13,7 +13,7 @@ const displayed = projects.slice(0, 4);
   <h2 class="section-title">Projets récents</h2>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     {displayed.map(p => (
-      <a href={`/projets/${p.slug}`} class="card block no-underline">
+      <a href={`/projets/${p.id}`} class="card block no-underline">
         <div class="aspect-video mb-4 flex items-center justify-center" style="background: #111; border: 1px solid #333;">
           <span class="text-4xl" style="color: #555;">🖥</span>
         </div>
