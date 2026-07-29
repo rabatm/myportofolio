@@ -4,11 +4,12 @@ const companies = [
     name: 'Amopi',
     url: 'https://amopi.fr',
     logo: '/amopi.png',
+    bgWhite: true,
   },
   {
     name: 'JurisPerform',
     url: 'https://jurisperform.fr',
-    initials: 'JP',
+    logo: '/jurisperform.png',
   },
   {
     name: 'Surikwat',
@@ -24,7 +25,12 @@ const companies = [
     {companies.map((c) => (
       <a href={c.url} target="_blank" rel="noopener noreferrer" class="trust-card">
         {c.logo ? (
-          <img src={c.logo} alt={c.name} class="trust-logo" />
+          <img
+            src={c.logo}
+            alt={c.name}
+            class="trust-logo"
+            style={c.bgWhite ? 'background: #fff; padding: 8px; border-radius: 4px;' : ''}
+          />
         ) : (
           <span class="trust-initials">{c.initials}</span>
         )}
