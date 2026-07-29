@@ -1,0 +1,26 @@
+---
+const stars = Array.from({ length: 50 }, (_, i) => ({
+  id: `star-${i}`,
+  left: `${Math.random() * 100}%`,
+  top: `${Math.random() * 100}%`,
+  size: Math.random() * 2 + 1,
+  duration: `${2 + Math.random() * 4}s`,
+  delay: `${Math.random() * 4}s`,
+}));
+---
+
+<div class="fixed inset-0 overflow-hidden pointer-events-none" style="z-index: 0;">
+  {stars.map(s => (
+    <div
+      class="star"
+      style={{
+        left: s.left,
+        top: s.top,
+        width: `${s.size}px`,
+        height: `${s.size}px`,
+        '--duration': s.duration,
+        animationDelay: s.delay,
+      }}
+    ></div>
+  ))}
+</div>

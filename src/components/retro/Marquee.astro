@@ -1,0 +1,13 @@
+---
+export interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="marquee">
+  <span class="marquee-inner inline-block">
+    {items.map(item => `${item}  •  `).join('')}
+  </span>
+</div>
