@@ -154,7 +154,7 @@ export default function WargamesGame() {
               cursor: 'pointer',
             }}
           >
-            > COMMENCER
+{'>'} COMMENCER
           </button>
         )}
       </div>
@@ -172,7 +172,7 @@ export default function WargamesGame() {
         </p>
 
         <div style={{ marginTop: '2rem', width: '100%', maxWidth: '400px' }}>
-          <p style={{ color: '#888', marginBottom: '1rem' }}>> UN PROJET PASSIONNANT ? ÉCRIS-MOI.</p>
+          <p style={{ color: '#888', marginBottom: '1rem' }}>{'>'} UN PROJET PASSIONNANT ? ÉCRIS-MOI.</p>
           {contactSent ? (
             <p style={{ color: '#39ff14' }}>MESSAGE TRANSMIS.</p>
           ) : (
@@ -270,7 +270,7 @@ export default function WargamesGame() {
         ROUND {round}/3 — HAL: {scores.hal} / VOUS: {scores.visitor}
       </div>
       <div style={{ marginBottom: '2rem', color: '#00fff7', fontSize: '0.9rem' }}>
-        > {statusText}
+{'>'} {statusText}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 80px)', background: '#111', padding: '0', border: '1px solid #333' }}>
         {board.map((cell, i) => (
