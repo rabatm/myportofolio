@@ -1,0 +1,168 @@
+---
+import { temoignages } from '../../data/temoignages';
+---
+
+<section class="px-4 py-20 max-w-3xl mx-auto">
+  <h2 class="section-title">Témoignages</h2>
+
+  <div class="carousel" data-current="0">
+    <div class="carousel-track">
+      {temoignages.map((t, i) => (
+        <div class="carousel-slide" data-index={i}>
+          <div class="quote-box">
+            <p class="quote-text">"{t.quote}"</p>
+          </div>
+          <p class="quote-author">— {t.name}</p>
+          <p class="quote-company">{t.company}</p>
+        </div>
+      ))}
+    </div>
+
+    <button class="carousel-btn prev" aria-label="Précédent">◀</button>
+    <button class="carousel-btn next" aria-label="Suivant">▶</button>
+
+    <div class="carousel-dots">
+      {temoignages.map((_, i) => (
+        <span class="carousel-dot" data-index={i}></span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const carousel = document.querySelector('.carousel') as HTMLElement | null;
+  if (carousel) {
+    const track = carousel.querySelector('.carousel-track') as HTMLElement;
+    const slides = track.querySelectorAll('.carousel-slide');
+    const dots = carousel.querySelectorAll('.carousel-dot');
+    const prev = carousel.querySelector('.prev') as HTMLElement;
+    const next = carousel.querySelector('.next') as HTMLElement;
+    let current = 0;
+    let interval: ReturnType<typeof setInterval>;
+
+    function goTo(index: number) {
+      current = index;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      carousel.setAttribute('data-current', String(current));
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function nextSlide() { goTo((current + 1) % slides.length); }
+    function prevSlide() { goTo((current - 1 + slides.length) % slides.length); }
+
+    prev.addEventListener('click', () => { prevSlide(); resetAuto(); });
+    next.addEventListener('click', () => { nextSlide(); resetAuto(); });
+    dots.forEach(d => d.addEventListener('click', () => { goTo(Number((d as HTMLElement).dataset.index)); resetAuto(); }));
+
+    carousel.addEventListener('mouseenter', () => clearInterval(interval));
+    carousel.addEventListener('mouseleave', () => { interval = setInterval(nextSlide, 5000); });
+
+    function resetAuto() {
+      clearInterval(interval);
+      interval = setInterval(nextSlide, 5000);
+    }
+
+    goTo(0);
+    interval = setInterval(nextSlide, 5000);
+  }
+</script>
+
+<style>
+  .carousel {
+    position: relative;
+    overflow: hidden;
+    padding: 0 2.5rem;
+  }
+  .carousel-track {
+    display: flex;
+    transition: transform 0.4s ease;
+  }
+  .carousel-slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 1rem 0;
+  }
+  .quote-box {
+    border: 1px solid #333;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    position: relative;
+  }
+  .quote-box::before {
+    content: '╔══ ';
+    color: #00fff7;
+    position: absolute;
+    top: 0.3rem;
+    left: 0.5rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+  }
+  .quote-box::after {
+    content: ' ══╗';
+    color: #00fff7;
+    position: absolute;
+    bottom: 0.3rem;
+    right: 0.5rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+  }
+  .quote-text {
+    font-style: italic;
+    color: #ccc;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 1rem;
+  }
+  .quote-author {
+    color: #00fff7;
+    font-family: monospace;
+    font-size: 0.9rem;
+    margin: 0 0 0.2rem;
+  }
+  .quote-company {
+    color: #666;
+    font-family: monospace;
+    font-size: 0.8rem;
+    margin: 0;
+  }
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 1px solid #333;
+    color: #00fff7;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+  }
+  .carousel-btn:hover {
+    border-color: #00fff7;
+    box-shadow: 0 0 8px rgba(0, 255, 247, 0.3);
+  }
+  .prev { left: 0; }
+  .next { right: 0; }
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border: 1px solid #333;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .carousel-dot.active {
+    background: #00fff7;
+    border-color: #00fff7;
+    box-shadow: 0 0 6px rgba(0, 255, 247, 0.5);
+  }
+</style>

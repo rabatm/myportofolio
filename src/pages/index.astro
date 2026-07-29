@@ -6,6 +6,7 @@ import Parcours from '../components/sections/Parcours.astro';
 import Skills from '../components/sections/Skills.astro';
 import ApercuProjets from '../components/sections/ApercuProjets.astro';
 import IlsMeFontConfiance from '../components/sections/IlsMeFontConfiance.astro';
+import Temoignages from '../components/sections/Temoignages.astro';
 import { getCollection } from 'astro:content';
 
 const projects = await getCollection('projects');
@@ -16,6 +17,7 @@ const projects = await getCollection('projects');
   <APropos />
   <Skills />
   <IlsMeFontConfiance />
+  <Temoignages />
   <Parcours />
   <ApercuProjets projects={projects} />
 </BaseLayout>
