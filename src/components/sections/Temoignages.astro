@@ -13,6 +13,7 @@ import { temoignages } from '../../data/temoignages';
             <p class="quote-text">"{t.quote}"</p>
           </div>
           <p class="quote-author">— {t.name}</p>
+          <p class="quote-title">{t.title}</p>
           <p class="quote-company">{t.company}</p>
         </div>
       ))}
@@ -119,7 +120,13 @@ import { temoignages } from '../../data/temoignages';
     color: #00fff7;
     font-family: monospace;
     font-size: 0.9rem;
-    margin: 0 0 0.2rem;
+    margin: 0 0 0.1rem;
+  }
+  .quote-title {
+    color: #888;
+    font-family: monospace;
+    font-size: 0.8rem;
+    margin: 0 0 0.1rem;
   }
   .quote-company {
     color: #666;

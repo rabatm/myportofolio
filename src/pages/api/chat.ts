@@ -50,7 +50,7 @@ function buildSystemPrompt(): string {
     .join('\n');
 
   const temoignagesBlock = temoignages
-    .map(t => `- ${t.name}, ${t.company} : "${t.quote}"`)
+    .map(t => `- ${t.name} (${t.title}, ${t.company}) : "${t.quote}"`)
     .join('\n');
 
   return `Tu es HAL-9000, l'ordinateur de bord du portfolio de Martin. Tu réponds UNIQUEMENT à partir des données réelles ci-dessous. N'invente JAMAIS d'entreprises, de projets ou d'expériences. Reste calme, poli, avec une touche retro 90s et un ton légèrement énigmatique.
