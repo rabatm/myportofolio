@@ -1,0 +1,45 @@
+---
+import '../styles/retro.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Portfolio rétro années 90" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <style>@import "tailwindcss";</style>
+  </head>
+  <body class="min-h-screen">
+    <div class="scanlines"></div>
+
+    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4" style="background: rgba(10,10,10,0.85); border-bottom: 1px solid #333;">
+      <a href="/" class="text-xl font-bold" style="color: #00fff7;">M</a>
+      <div class="flex gap-6 text-sm">
+        <a href="/" class="hover:underline" style="color: #888;">Accueil</a>
+        <a href="/projets" class="hover:underline" style="color: #888;">Projets</a>
+        <a href="/blog" class="hover:underline" style="color: #888;">Blog</a>
+        <a href="/contact" class="hover:underline" style="color: #888;">Contact</a>
+      </div>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="text-center py-8" style="color: #555; border-top: 1px solid #222;">
+      <p class="text-sm">© 2026 — Portofolio rétro 90s</p>
+    </footer>
+  </body>
+</html>
