@@ -27,7 +27,7 @@ function TypewriterText({ text, onDone }: { text: string; onDone?: () => void })
     return () => clearInterval(t);
   }, [text]);
 
-  return <>{displayed}</>;
+  return <span style={{ whiteSpace: 'pre-wrap' }}>{displayed}</span>;
 }
 
 export default function WargamesGame() {
@@ -140,9 +140,13 @@ export default function WargamesGame() {
   if (phase === 'intro') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#00fff7', fontFamily: 'monospace', padding: '2rem' }}>
-        <div style={{ fontSize: '1.5rem', whiteSpace: 'pre-wrap', textAlign: 'center' }}>
+        <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>
           <TypewriterText
-            text="BIENVENUE AU JEU.\n\nTROIS ROUNDS.\n\nQUE LE MEILLEUR GAGNE."
+            text={`BIENVENUE AU JEU.
+
+TROIS ROUNDS.
+
+QUE LE MEILLEUR GAGNE.`}
             onDone={handleIntroDone}
           />
         </div>
