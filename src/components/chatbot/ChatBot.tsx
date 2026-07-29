@@ -1,8 +1,30 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+}
+
+const CHAR_INTERVAL = 15;
+
+function TypewriterText({ text, onDone }: { text: string; onDone?: () => void }) {
+  const [displayed, setDisplayed] = useState('');
+
+  useEffect(() => {
+    let i = 0;
+    setDisplayed('');
+    const t = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(t);
+        onDone?.();
+      }
+    }, CHAR_INTERVAL);
+    return () => clearInterval(t);
+  }, [text]);
+
+  return <>{displayed}</>;
 }
 
 export default function ChatBot() {
@@ -11,16 +33,25 @@ export default function ChatBot() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [userCount, setUserCount] = useState(0);
+  const [typingIndex, setTypingIndex] = useState<number | null>(0);
   const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, typingIndex]);
+
+  const handleTypeDone = useCallback(() => {
+    setTypingIndex(null);
+    inputRef.current?.focus();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    setTypingIndex(null);
     const userMsg: Message = { role: 'user', content: `$ ${input}` };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
@@ -39,7 +70,22 @@ export default function ChatBot() {
         }),
       });
       const data = await res.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: `> ${data.content}` }]);
+      const nextCount = userCount + 1;
+      setUserCount(nextCount);
+
+      if (nextCount >= 3) {
+        const newMsgs: Message[] = [
+          { role: 'assistant', content: `> ${data.content}` },
+          { role: 'assistant', content: '> REBOOT SYSTÈME. Session terminée. Tape un message pour une nouvelle session.' },
+        ];
+        setMessages(newMsgs);
+        setTypingIndex(0);
+        setUserCount(0);
+      } else {
+        const idx = messages.length + 1;
+        setMessages(prev => [...prev, { role: 'assistant', content: `> ${data.content}` }]);
+        setTypingIndex(idx);
+      }
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: '> ERREUR: connexion au serveur perdue.' }]);
     } finally {
@@ -65,14 +111,18 @@ export default function ChatBot() {
         <span style={{ color: '#00fff7' }}>══╗</span>
       </div>
 
-      <div className="px-4 py-2" style={{ maxHeight: '160px', overflowY: 'auto' }}>
+      <div className="px-4 py-2" style={{ maxHeight: '40vh', overflowY: 'auto' }}>
         {messages.map((msg, i) => (
           <p
             key={i}
             className="text-sm font-mono leading-relaxed"
             style={{ color: msg.role === 'user' ? '#00fff7' : '#39ff14' }}
           >
-            {msg.content}
+            {msg.role === 'assistant' && typingIndex === i ? (
+              <TypewriterText text={msg.content} onDone={handleTypeDone} />
+            ) : (
+              msg.content
+            )}
           </p>
         ))}
         {isLoading && (
@@ -86,6 +136,7 @@ export default function ChatBot() {
       <form onSubmit={handleSubmit} className="flex items-center gap-2 px-4 pb-2">
         <span className="text-sm font-mono" style={{ color: '#39ff14' }}>$</span>
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={e => setInput(e.target.value)}
@@ -93,7 +144,6 @@ export default function ChatBot() {
           disabled={isLoading}
           className="flex-1 bg-transparent border-none text-sm font-mono outline-none"
           style={{ color: '#f0f0f0' }}
-          autoFocus
         />
       </form>
     </div>
