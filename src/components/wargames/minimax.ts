@@ -50,9 +50,11 @@ function minimax(
   }
 }
 
+const PRIORITY = [4, 0, 2, 6, 8, 1, 3, 5, 7];
+
 function getOptimalMove(board: string[], ai: string, human: string): number {
   let bestScore = -Infinity;
-  let bestMove = -1;
+  const candidates: number[] = [];
   for (let i = 0; i < 9; i++) {
     if (!board[i]) {
       board[i] = ai;
@@ -60,16 +62,21 @@ function getOptimalMove(board: string[], ai: string, human: string): number {
       board[i] = '';
       if (score > bestScore) {
         bestScore = score;
-        bestMove = i;
+        candidates.length = 0;
+        candidates.push(i);
+      } else if (score === bestScore) {
+        candidates.push(i);
       }
     }
   }
-  return bestMove;
+  if (candidates.length === 1) return candidates[0];
+  candidates.sort((a, b) => PRIORITY.indexOf(a) - PRIORITY.indexOf(b));
+  return candidates[0];
 }
 
 function getWorstMove(board: string[], ai: string, human: string): number {
   let worstScore = Infinity;
-  let worstMove = -1;
+  const candidates: number[] = [];
   for (let i = 0; i < 9; i++) {
     if (!board[i]) {
       board[i] = ai;
@@ -77,11 +84,14 @@ function getWorstMove(board: string[], ai: string, human: string): number {
       board[i] = '';
       if (score < worstScore) {
         worstScore = score;
-        worstMove = i;
+        candidates.length = 0;
+        candidates.push(i);
+      } else if (score === worstScore) {
+        candidates.push(i);
       }
     }
   }
-  return worstMove;
+  return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
 export function getBestMove(

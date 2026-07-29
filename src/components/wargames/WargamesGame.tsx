@@ -96,7 +96,7 @@ export default function WargamesGame() {
       }
       setCurrentPlayer('X');
       aiThinkingRef.current = false;
-    }, 600);
+    }, 300 + Math.random() * 200);
     return () => {
       clearTimeout(timer);
       aiThinkingRef.current = false;
