@@ -6,7 +6,8 @@ export interface Props {
 }
 
 const { projects } = Astro.props;
-const displayed = projects.slice(0, 4);
+const sorted = [...projects].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const displayed = sorted.slice(0, 4);
 ---
 
 <section class="px-4 py-20 max-w-5xl mx-auto">
