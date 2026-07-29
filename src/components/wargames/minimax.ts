@@ -77,7 +77,6 @@ function getUnderMove(board: string[], ai: string, human: string): number {
 
 export function getBestMove(
   board: string[],
-  player: string,
   forceUnder = false,
 ): number {
   const ai = 'O';

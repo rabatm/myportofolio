@@ -54,6 +54,7 @@ export default function ChatBot() {
       }]);
       setGameProposed(true);
     }, 10000);
+    // stable — refs + setState only
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getBestMove, checkWinner, isBoardFull } from './minimax';
 import type { FormEvent } from 'react';
 
@@ -42,8 +42,12 @@ export default function WargamesGame() {
 
   const [contact, setContact] = useState<ContactForm>({ name: '', email: '', message: '' });
   const [contactSent, setContactSent] = useState(false);
+  const [contactError, setContactError] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
   const [introDone, setIntroDone] = useState(false);
+
+  const boardRef = useRef(board);
+  boardRef.current = board;
 
   const handleIntroDone = useCallback(() => setIntroDone(true), []);
 
@@ -78,8 +82,8 @@ export default function WargamesGame() {
     if (currentPlayer !== 'O' || winner || halMoved) return;
     setHalMoved(true);
     const timer = setTimeout(() => {
-      const aiMove = getBestMove(board, 'O', round - 1 === underRound);
-      const newBoard = [...board];
+      const aiMove = getBestMove(boardRef.current, round - 1 === underRound);
+      const newBoard = [...boardRef.current];
       newBoard[aiMove] = 'O';
       setBoard(newBoard);
 
@@ -117,15 +121,17 @@ export default function WargamesGame() {
   async function handleContactSubmit(e: FormEvent) {
     e.preventDefault();
     setContactLoading(true);
+    setContactError(false);
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contact),
       });
-      setContactSent(true);
+      if (res.ok) setContactSent(true);
+      else setContactError(true);
     } catch {
-      // silent
+      setContactError(true);
     } finally {
       setContactLoading(false);
     }
@@ -176,6 +182,9 @@ export default function WargamesGame() {
           {contactSent ? (
             <p style={{ color: '#39ff14' }}>MESSAGE TRANSMIS.</p>
           ) : (
+            <>
+            {contactError && <p style={{ color: '#ff4444' }}>{'>'} ERREUR: message non envoyé.</p>}
+            
             <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ color: '#39ff14' }}>$</span>
@@ -226,6 +235,7 @@ export default function WargamesGame() {
                 {contactLoading ? 'ENVOI...' : '> ENVOYER'}
               </button>
             </form>
+            </>
           )}
         </div>
 
@@ -249,20 +259,56 @@ export default function WargamesGame() {
       ? 'À TOI DE JOUER.'
       : 'HAL-9000 RÉFLÉCHIT...';
 
-  const cellStyle = (i: number): React.CSSProperties => ({
-    width: '80px',
-    height: '80px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '2rem',
-    fontFamily: 'monospace',
-    borderRight: i % 3 < 2 ? '1px solid #333' : 'none',
-    borderBottom: i < 6 ? '1px solid #333' : 'none',
-    color: board[i] === 'X' ? '#00fff7' : '#39ff14',
-    cursor: board[i] === '' && currentPlayer === 'X' && !winner ? 'pointer' : 'default',
-    transition: 'all 0.15s',
-  });
+  const borderColor = '#00fff7';
+
+  const gridLines = [];
+  gridLines.push(
+    <div key="top" style={{ fontFamily: 'monospace', color: borderColor, lineHeight: '2', fontSize: '1.2rem', textAlign: 'center' }}>
+      ╔═══╦═══╦═══╗
+    </div>
+  );
+  for (let r = 0; r < 3; r++) {
+    const cells = [];
+    for (let c = 0; c < 3; c++) {
+      const idx = r * 3 + c;
+      const val = board[idx];
+      const empty = val === '';
+      cells.push(
+        <span
+          key={c}
+          data-empty={empty ? 'true' : undefined}
+          onClick={() => handleCellClick(idx)}
+          style={{
+            display: 'inline-block',
+            width: '3ch',
+            textAlign: 'center',
+            cursor: empty && currentPlayer === 'X' && !winner ? 'pointer' : 'default',
+            color: val === 'X' ? '#00fff7' : '#39ff14',
+            transition: 'all 0.15s',
+          }}
+        >
+          {val || '\u00A0'}
+        </span>
+      );
+    }
+    gridLines.push(
+      <div key={`row-${r}`} style={{ fontFamily: 'monospace', color: borderColor, lineHeight: '2', fontSize: '1.2rem', textAlign: 'center' }}>
+        ║{cells[0]}║{cells[1]}║{cells[2]}║
+      </div>
+    );
+    if (r < 2) {
+      gridLines.push(
+        <div key={`sep-${r}`} style={{ fontFamily: 'monospace', color: borderColor, lineHeight: '2', fontSize: '1.2rem', textAlign: 'center' }}>
+          ╠═══╬═══╬═══╣
+        </div>
+      );
+    }
+  }
+  gridLines.push(
+    <div key="bot" style={{ fontFamily: 'monospace', color: borderColor, lineHeight: '2', fontSize: '1.2rem', textAlign: 'center' }}>
+      ╚═══╩═══╩═══╝
+    </div>
+  );
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: 'monospace' }}>
@@ -272,13 +318,14 @@ export default function WargamesGame() {
       <div style={{ marginBottom: '2rem', color: '#00fff7', fontSize: '0.9rem' }}>
 {'>'} {statusText}
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 80px)', background: '#111', padding: '0', border: '1px solid #333' }}>
-        {board.map((cell, i) => (
-          <div key={i} style={cellStyle(i)} onClick={() => handleCellClick(i)}>
-            {cell || ''}
-          </div>
-        ))}
+      <div style={{ background: '#111', padding: '0.5rem 1rem', borderRadius: '0' }}>
+        {gridLines}
       </div>
+      <style>{`
+        [data-empty="true"]:hover {
+          box-shadow: 0 0 8px #00fff7;
+        }
+      `}</style>
     </div>
   );
 }
