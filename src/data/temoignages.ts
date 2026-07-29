@@ -20,8 +20,8 @@ export const temoignages: Temoignage[] = [
   },
   {
     name: "Nicolas Cudel",
-    title: "Gérant",
-    company: "Freelance Malt",
+    title: "CIO",
+    company: "Surikwat",
     quote: "Martin a su à plusieurs reprises répondre à mes attentes, avec des projets fidèles aux exigences imposées. De plus, les délais ont toujours été respectés, ce qui n'est pas forcément habituel dans ce domaine.",
   },
 ];
