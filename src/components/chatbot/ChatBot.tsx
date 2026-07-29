@@ -37,6 +37,8 @@ export default function ChatBot() {
   const [typingIndex, setTypingIndex] = useState<number | null>(0);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [gameProposed, setGameProposed] = useState(false);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -45,6 +47,13 @@ export default function ChatBot() {
   const handleTypeDone = useCallback(() => {
     setTypingIndex(null);
     inputRef.current?.focus();
+    idleRef.current = setTimeout(() => {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: '> Veux-tu jouer à un jeu, Dave ? tape OUI ou NON.',
+      }]);
+      setGameProposed(true);
+    }, 10000);
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -52,6 +61,16 @@ export default function ChatBot() {
     if (!input.trim() || isLoading) return;
 
     setTypingIndex(null);
+
+    if (idleRef.current) clearTimeout(idleRef.current);
+    if (gameProposed) {
+      if (input.trim().toLowerCase().startsWith('oui')) {
+        window.location.href = '/wargames';
+        return;
+      }
+      setGameProposed(false);
+    }
+
     const userMsg: Message = { role: 'user', content: `$ ${input}` };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
