@@ -1,8 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import APropos from '../components/sections/APropos.astro';
+import Skills from '../components/sections/Skills.astro';
+import ApercuProjets from '../components/sections/ApercuProjets.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
 ---
+
 <BaseLayout title="Portfolio rétro 90s">
-  <div class="relative">
-    <!-- Task 3 will fill sections here -->
-  </div>
+  <Hero />
+  <APropos />
+  <Skills />
+  <ApercuProjets projects={projects} />
 </BaseLayout>

@@ -1,0 +1,26 @@
+---
+import Marquee from '../retro/Marquee.astro';
+
+const skills = {
+  Frontend: ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Astro", "Tailwind"],
+  Backend: ["Node.js", "Python", "API REST"],
+  Design: ["Figma", "UI/UX", "Design rétro"],
+  Outils: ["Git", "VS Code", "Bun"],
+};
+---
+
+<section class="px-4 py-20 max-w-3xl mx-auto">
+  <h2 class="section-title">Compétences</h2>
+  <div class="space-y-6">
+    {Object.entries(skills).map(([category, items]) => (
+      <div>
+        <h3 class="text-sm font-bold mb-2 font-mono" style="color: #00fff7;">
+          &gt; {category}
+        </h3>
+        <div class="card">
+          <Marquee items={items} />
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
