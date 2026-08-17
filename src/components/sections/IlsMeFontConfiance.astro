@@ -18,6 +18,7 @@ const companies = [
     name: 'Surikwat',
     url: 'https://surikwat.com',
     logo: '/surikwat.png',
+    bgDark: true,
     desc: 'Studio créatif web & print',
   },
 ];
@@ -25,6 +26,9 @@ const companies = [
 
 <section id="confiance" class="px-4 py-20 max-w-3xl mx-auto">
   <h2 class="section-title">Ils me font confiance</h2>
+  <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
+    Des entreprises qui m'ont confié leurs systèmes en production.
+  </p>
 
   <div class="trust-row">
     {companies.map((c, i) => (
@@ -36,7 +40,7 @@ const companies = [
               src={c.logo}
               alt={c.name}
               class="trust-logo"
-              style={c.bgWhite ? 'background: #fff; padding: 6px; border-radius: 4px;' : ''}
+              style={c.bgWhite ? 'background: #fff; padding: 6px; border-radius: 4px;' : c.bgDark ? 'background: #1a1a1a; padding: 6px; border-radius: 4px;' : ''}
             />
           </div>
           <span class="trust-name">{c.name}</span>
@@ -56,7 +60,7 @@ const companies = [
     flex-wrap: wrap;
   }
   .trust-sep {
-    color: #333;
+    color: var(--border);
     font-size: 2rem;
     font-family: monospace;
   }
@@ -71,7 +75,8 @@ const companies = [
     width: 180px;
   }
   .trust-item:hover {
-    background: rgba(0, 255, 247, 0.03);
+    background: var(--accent-soft);
+    border-radius: 16px;
   }
   .trust-frame {
     display: flex;
@@ -82,7 +87,7 @@ const companies = [
     transition: all 0.2s;
   }
   .trust-item:hover .trust-frame {
-    filter: drop-shadow(0 0 6px rgba(0, 255, 247, 0.3));
+    filter: drop-shadow(0 2px 6px oklch(62% 0.19 150 / 0.3));
   }
   .trust-logo {
     max-width: 100%;
@@ -99,19 +104,19 @@ const companies = [
   .trust-name {
     font-family: monospace;
     font-size: 0.9rem;
-    color: #00fff7;
+    color: var(--accent-hover);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
   .trust-desc {
     font-family: monospace;
     font-size: 0.75rem;
-    color: #666;
+    color: var(--ink-faint);
     text-align: center;
     line-height: 1.3;
   }
   .trust-item:hover .trust-desc {
-    color: #888;
+    color: var(--ink-soft);
   }
 
   @media (max-width: 768px) {

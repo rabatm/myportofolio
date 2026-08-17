@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default function HalShell({ messages }: { messages: string[] }) {
+export default function MarvinShell({ messages }: { messages: string[] }) {
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function HalShell({ messages }: { messages: string[] }) {
       }}
     >
       <div style={{ color: '#888', marginBottom: '0.75rem', borderBottom: '1px solid #333', paddingBottom: '0.5rem' }}>
-        HAL-9000 TERMINAL v2.0
+        MARVIN-42 TERMINAL v2.0
       </div>
       {messages.map((msg, i) => (
         <div key={i} style={{ lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>

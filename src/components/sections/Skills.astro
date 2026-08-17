@@ -1,4 +1,29 @@
 ---
-import Marquee from '../retro/Marquee.astro';
 import { skills } from '../../data/skills';
 ---
+
+<section id="competences" class="px-4 py-20 max-w-3xl mx-auto">
+  <h2 class="section-title">Compétences</h2>
+  <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
+    « Qu'importe la stack, pourvu qu'on ait les tests. »
+  </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {Object.entries(skills).map(([categorie, items]) => (
+      <div class="card">
+        <h3 class="font-mono text-sm mb-3" style="color: var(--accent-hover);">
+          ── {categorie} ──
+        </h3>
+        <div class="flex flex-wrap gap-2">
+          {items.map(item => (
+            <span
+              class="text-xs px-2 py-1 font-mono rounded-full"
+              style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

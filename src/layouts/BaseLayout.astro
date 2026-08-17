@@ -5,9 +5,22 @@ import ChatBot from '../components/chatbot/ChatBot.tsx';
 export interface Props {
   title: string;
   description?: string;
+  /** Réplique de Marvin à l'arrivée sur la page. */
+  pageLine?: string;
+  /** Répliques par section observable, indexées sur l'id du <section>. */
+  sectionLines?: Record<string, string>;
 }
 
-const { title, description = "Portfolio rétro années 90" } = Astro.props;
+const {
+  title,
+  description = "Développeur concepteur d'applications web, mobile et DevOps. Architecture hexagonale, TDD, Django, React, Flutter. Basé à Perpignan, disponible en full remote.",
+  pageLine,
+  sectionLines,
+} = Astro.props;
+
+// URLs absolues requises par Open Graph. Astro.site vient de `site` dans astro.config.mjs.
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL('/og-image.jpg', Astro.site);
 ---
 
 <!doctype html>
@@ -18,22 +31,41 @@ const { title, description = "Portfolio rétro années 90" } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content="Martin Rabat" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Martin Rabat — Martin Info" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="fr_FR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <style>@import "tailwindcss";</style>
   </head>
   <body class="min-h-screen">
-    <div class="scanlines"></div>
-
-    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4" style="background: rgba(10,10,10,0.85); border-bottom: 1px solid #333;">
-      <a href="/" class="text-xl font-bold" style="color: #00fff7;">M</a>
-      <div class="flex gap-6 text-sm">
-        <a href="/" class="hover:underline" style="color: #888;">Accueil</a>
-        <a href="/projets" class="hover:underline" style="color: #888;">Projets</a>
-        <a href="/#parcours" class="hover:underline" style="color: #888;">Parcours</a>
-        <a href="/#confiance" class="hover:underline" style="color: #888;">Partenaires</a>
-        <a href="/blog" class="hover:underline" style="color: #888;">Blog</a>
-        <a href="/contact" class="hover:underline" style="color: #888;">Contact</a>
+    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);">
+      <a href="/" class="flex items-center">
+        <img src="/martininfologo.jpeg" alt="Martin Info" style="height: 52px; width: auto;" />
+      </a>
+      <div class="flex items-center gap-6 text-sm">
+        <a href="/" class="nav-link" style="color: var(--ink-soft);">Accueil</a>
+        <a href="/projets" class="nav-link" style="color: var(--ink-soft);">Projets</a>
+        <a href="/#parcours" class="nav-link" style="color: var(--ink-soft);">Parcours</a>
+        <a href="/#confiance" class="nav-link" style="color: var(--ink-soft);">Partenaires</a>
+        <a href="/blog" class="nav-link" style="color: var(--ink-soft);">Blog</a>
+        <span style="color: var(--border);">│</span>
+        <a href="/contact" class="btn-retro" style="padding: 8px 20px; font-size: 0.875rem;">Contact</a>
       </div>
     </nav>
 
@@ -41,10 +73,10 @@ const { title, description = "Portfolio rétro années 90" } = Astro.props;
       <slot />
     </main>
 
-    <ChatBot client:only="react" />
+    <ChatBot client:only="react" pageLine={pageLine} sectionLines={sectionLines} />
 
-    <footer class="text-center py-8" style="color: #555; border-top: 1px solid #222;">
-      <p class="text-sm">© 2026 — Portfolio rétro 90s</p>
+    <footer class="text-center py-8" style="color: var(--ink-faint); border-top: 1px solid var(--border);">
+      <p class="text-sm">© 2026 Martin Info — Portfolio rétro 90s</p>
     </footer>
   </body>
 </html>

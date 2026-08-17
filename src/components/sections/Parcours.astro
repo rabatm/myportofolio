@@ -4,21 +4,24 @@ import { parcours } from '../../data/parcours';
 
 <section id="parcours" class="px-4 py-20 max-w-3xl mx-auto">
   <h2 class="section-title">Parcours</h2>
+  <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
+    20 ans d'infrastructure, puis le code.
+  </p>
   <div class="space-y-6">
     {parcours.map(entry => (
       <div class="card">
-        <p class="text-sm font-mono mb-3" style="color: #00fff7;">
+        <p class="text-sm font-mono mb-3" style="color: var(--accent-hover);">
           ── {entry.periode} ──
         </p>
-        <h3 class="font-bold text-lg" style="color: #f0f0f0;">
+        <h3 class="font-bold text-lg" style="color: var(--ink);">
           ▌ {entry.titre}
         </h3>
         {entry.entreprise && (
-          <p class="text-sm font-mono mb-2" style="color: #888;">
+          <p class="text-sm font-mono mb-2" style="color: var(--ink-soft);">
             {entry.entreprise}
           </p>
         )}
-        <p class="text-sm leading-relaxed" style="color: #aaa;">
+        <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
           {entry.desc}
         </p>
       </div>

@@ -2,7 +2,7 @@
 import { temoignages } from '../../data/temoignages';
 ---
 
-<section class="px-4 py-20 max-w-3xl mx-auto">
+<section id="temoignages" class="px-4 py-20 max-w-3xl mx-auto">
   <div class="carousel" data-current="0">
     <div class="carousel-header">
       <h2 class="section-title">Témoignages</h2>
@@ -115,10 +115,11 @@ import { temoignages } from '../../data/temoignages';
     padding: 1rem 0;
   }
   .quote-box {
-    border: 1px solid #333;
+    border: 2px solid var(--border);
+    border-radius: 20px;
     padding: 1.5rem 1.5rem 0.75rem;
     margin-bottom: 1rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--card-bg);
     position: relative;
   }
   .quote-collapse {
@@ -133,7 +134,7 @@ import { temoignages } from '../../data/temoignages';
   .quote-toggle {
     background: none;
     border: none;
-    color: #00fff7;
+    color: var(--accent-hover);
     font-family: monospace;
     font-size: 0.8rem;
     cursor: pointer;
@@ -154,7 +155,7 @@ import { temoignages } from '../../data/temoignages';
     left: 0;
     right: 0;
     height: 2.5em;
-    background: linear-gradient(transparent, #0a0a0a);
+    background: linear-gradient(transparent, var(--card-bg));
     pointer-events: none;
   }
   .quote-collapse[data-expanded="true"] .quote-fade {
@@ -162,7 +163,7 @@ import { temoignages } from '../../data/temoignages';
   }
   .quote-box::before {
     content: '╔══ ';
-    color: #00fff7;
+    color: var(--accent);
     position: absolute;
     top: 0.3rem;
     left: 0.5rem;
@@ -171,7 +172,7 @@ import { temoignages } from '../../data/temoignages';
   }
   .quote-box::after {
     content: ' ══╗';
-    color: #00fff7;
+    color: var(--accent);
     position: absolute;
     bottom: 0.3rem;
     right: 0.5rem;
@@ -180,33 +181,33 @@ import { temoignages } from '../../data/temoignages';
   }
   .quote-text {
     font-style: italic;
-    color: #ccc;
+    color: var(--ink-soft);
     line-height: 1.6;
     margin: 0;
     font-size: 1rem;
   }
   .quote-author {
-    color: #00fff7;
+    color: var(--accent-hover);
     font-family: monospace;
     font-size: 0.9rem;
     margin: 0 0 0.1rem;
   }
   .quote-title {
-    color: #888;
+    color: var(--ink-soft);
     font-family: monospace;
     font-size: 0.8rem;
     margin: 0 0 0.1rem;
   }
   .quote-company {
-    color: #666;
+    color: var(--ink-faint);
     font-family: monospace;
     font-size: 0.8rem;
     margin: 0;
   }
   .carousel-btn {
     background: transparent;
-    border: 1px solid #333;
-    color: #00fff7;
+    border: 1px solid var(--border);
+    color: var(--accent-hover);
     font-size: 1rem;
     padding: 0.25rem 0.5rem;
     cursor: pointer;
@@ -214,8 +215,8 @@ import { temoignages } from '../../data/temoignages';
     line-height: 1;
   }
   .carousel-btn:hover {
-    border-color: #00fff7;
-    box-shadow: 0 0 8px rgba(0, 255, 247, 0.3);
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px oklch(62% 0.19 150 / 0.3);
   }
   .carousel-dots {
     display: flex;
@@ -226,14 +227,14 @@ import { temoignages } from '../../data/temoignages';
   .carousel-dot {
     width: 8px;
     height: 8px;
-    border: 1px solid #333;
+    border: 1px solid var(--border);
     background: transparent;
     cursor: pointer;
     transition: all 0.2s;
   }
   .carousel-dot.active {
-    background: #00fff7;
-    border-color: #00fff7;
-    box-shadow: 0 0 6px rgba(0, 255, 247, 0.5);
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 6px oklch(62% 0.19 150 / 0.5);
   }
 </style>

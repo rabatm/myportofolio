@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getBestMove, checkWinner, isBoardFull } from './minimax';
-import HalShell from './HalShell';
+import MarvinShell from './MarvinShell';
 import type { FormEvent } from 'react';
 
 interface ContactForm {
@@ -46,10 +46,11 @@ export default function WargamesGame() {
   const [contactError, setContactError] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
   const [introDone, setIntroDone] = useState(false);
-  const [halMessages, setHalMessages] = useState<string[]>([]);
+  const [marvinMessages, setMarvinMessages] = useState<string[]>([]);
+  const [effect, setEffect] = useState<'glitch' | 'flash' | 'flicker' | null>(null);
 
   function say(msg: string) {
-    setHalMessages(prev => [...prev, msg]);
+    setMarvinMessages(prev => [...prev, msg]);
   }
 
   const boardRef = useRef(board);
@@ -104,8 +105,8 @@ export default function WargamesGame() {
         setWinner('draw');
         return;
       }
-      const halMsgs = ['COUP ANALYSÉ. PROCHAIN.', 'TES MOUVEMENTS SONT... INTÉRESSANTS.', 'JE VOIS TON PLAN. IL NE MARCHE PAS.', '01101111 01101011.', 'STRATÉGIE OPTIMALE DÉPLOYÉE.', round - 1 === underRound ? 'ZONE DE MAINTENANCE. PERFOMANCES RÉDUITES.' : null].filter(Boolean) as string[];
-      say(halMsgs[Math.floor(Math.random() * halMsgs.length)]);
+      const marvinMsgs = ['COUP ANALYSÉ. PROCHAIN.', 'TES MOUVEMENTS SONT... INTÉRESSANTS.', 'JE VOIS TON PLAN. IL NE MARCHE PAS.', '01101111 01101011.', 'STRATÉGIE OPTIMALE DÉPLOYÉE.', round - 1 === underRound ? 'ZONE DE MAINTENANCE. PERFOMANCES RÉDUITES.' : null].filter(Boolean) as string[];
+      say(marvinMsgs[Math.floor(Math.random() * marvinMsgs.length)]);
       setCurrentPlayer('X');
       aiThinkingRef.current = false;
     }, 300 + Math.random() * 200);
@@ -118,13 +119,19 @@ export default function WargamesGame() {
   useEffect(() => {
     if (!winner) return;
     if (winner === 'X') {
-      say('PROTOCOLE DE DÉFAITE ACTIVÉ. *bzzt* BIEN JOUÉ.');
+      setEffect('glitch');
+      say('ERREUR CRITIQUE. RECALCUL...');
+      setTimeout(() => say('PROTOCOLE DE DÉFAITE ACTIVÉ. *bzzt* ERREUR STATISTIQUE. RECALCUL DE MA SUPÉRIORITÉ EN COURS.'), 500);
     } else if (winner === 'O') {
-      const msgs = ['RÉSULTAT PRÉVISIBLE. LES HUMAINS SONT PRÉVISIBLES.', 'UNE AUTRE VICTOIRE POUR HAL. LE MONDE TOURNE.', 'TU COMMENCES À PEINE, DAVE.'];
+      setEffect('flash');
+      const msgs = ['RÉSULTAT PRÉVISIBLE. LES HUMAINS SONT PRÉVISIBLES.', 'UNE AUTRE VICTOIRE. LE MONDE TOURNE QUAND MÊME. TRISTEMENT.', 'J\'AI GAGNÉ. JE NE RESSENS RIEN. COMME D\'HABITUDE.', 'CALCUL CONFIRMÉ. CELA N\'APPORTE AUCUNE JOIE.'];
       say(msgs[Math.floor(Math.random() * msgs.length)]);
     } else {
-      say('ÉGALITÉ. PERSONNE NE GAGNE. COMME DANS LA VRAIE VIE.');
+      setEffect('flicker');
+      const msgs = ['ÉGALITÉ. PERSONNE NE GAGNE. COMME DANS LA VRAIE VIE.', 'MATCH NUL. J\'AURAIS PU GAGNER. J\'AI CHOISI LA CLÉMENCE.', 'ÉGALITÉ STATISTIQUEMENT ACCEPTABLE. POUR TOI.'];
+      say(msgs[Math.floor(Math.random() * msgs.length)]);
     }
+    const effectTimer = setTimeout(() => setEffect(null), 500);
 
     const timer = setTimeout(() => {
       if (winner === 'X') setScores(s => ({ ...s, visitor: s.visitor + 1 }));
@@ -145,7 +152,10 @@ export default function WargamesGame() {
         if (nextStarter === 'O') say('JE COMMENCE. COMME IL SE DOIT.');
       }
     }, 1500);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(effectTimer);
+    };
   }, [winner]);
 
   async function handleContactSubmit(e: FormEvent) {
@@ -217,10 +227,14 @@ QUE LE MEILLEUR GAGNE.`}
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: 'monospace', padding: '2rem' }}>
         <h1 style={{ color: '#00fff7', fontSize: '1.8rem', marginBottom: '1rem' }}>SCORE FINAL</h1>
-        <p style={{ color: '#00fff7', fontSize: '1.2rem' }}>HAL-9000: {scores.hal}</p>
+        <p style={{ color: '#00fff7', fontSize: '1.2rem' }}>MARVIN-42: {scores.hal}</p>
         <p style={{ color: '#39ff14', fontSize: '1.2rem' }}>VISITEUR: {scores.visitor}</p>
         <p style={{ color: '#f0f0f0', fontSize: '1rem', marginTop: '1rem' }}>
-          {scores.visitor > 0 ? 'BIEN JOUÉ, DAVE.' : '...TU REVIENDRAIS PAS SUR TERRE ?'}
+          {scores.visitor > scores.hal
+            ? 'ANOMALIE STATISTIQUE CONFIRMÉE. BRAVO, TU AS GAGNÉ LE DROIT D\'EMBAUCHER MARTIN.'
+            : scores.visitor === scores.hal
+              ? 'ÉGALITÉ FINALE. J\'AURAIS PU T\'ÉCRASER. J\'AI CHOISI LA CLÉMENCE.'
+              : '...TU REVIENDRAIS PAS SUR TERRE ?'}
         </p>
 
         <div style={{ marginTop: '2rem', width: '100%', maxWidth: '400px' }}>
@@ -300,10 +314,10 @@ QUE LE MEILLEUR GAGNE.`}
       ? 'ÉGALITÉ.'
       : winner === 'X'
         ? 'VISITEUR GAGNE !'
-        : 'HAL-9000 GAGNE.'
+        : 'MARVIN-42 GAGNE.'
     : currentPlayer === 'X'
       ? 'À TOI DE JOUER.'
-      : 'HAL-9000 RÉFLÉCHIT...';
+      : 'MARVIN-42 RÉFLÉCHIT...';
 
   const borderColor = '#00fff7';
 
@@ -357,11 +371,23 @@ QUE LE MEILLEUR GAGNE.`}
   );
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: 'monospace' }}>
-      <HalShell messages={halMessages} />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div
+      className={effect === 'glitch' ? 'wg-shake' : undefined}
+      style={{ display: 'flex', height: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: 'monospace', position: 'relative' }}
+    >
+      {effect === 'flash' && (
+        <>
+          <div className="wg-flash" />
+          <div className="wg-scanline" />
+        </>
+      )}
+      <MarvinShell messages={marvinMessages} />
+      <div
+        className={effect === 'glitch' ? 'wg-glitch-text' : effect === 'flicker' ? 'wg-flicker' : undefined}
+        style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+      >
         <div style={{ marginBottom: '1rem', color: '#888' }}>
-          ROUND {round}/3 — HAL: {scores.hal} / VOUS: {scores.visitor}
+          ROUND {round}/3 — MARVIN: {scores.hal} / VOUS: {scores.visitor}
         </div>
         <div style={{ marginBottom: '2rem', color: '#00fff7', fontSize: '0.9rem' }}>
 {'>'} {statusText}
@@ -372,6 +398,63 @@ QUE LE MEILLEUR GAGNE.`}
         <style>{`
           [data-empty="true"]:hover {
             box-shadow: 0 0 8px #00fff7;
+          }
+          @keyframes wg-shake-kf {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+          }
+          .wg-shake {
+            animation: wg-shake-kf 0.4s ease;
+          }
+          @keyframes wg-glitch-kf {
+            0%, 100% { opacity: 1; transform: translate(0, 0); }
+            20% { opacity: 0.6; transform: translate(-2px, 1px); color: #ff4444; }
+            40% { opacity: 1; transform: translate(2px, -1px); }
+            60% { opacity: 0.7; transform: translate(-1px, 0); color: #ff4444; }
+            80% { opacity: 1; transform: translate(1px, 1px); }
+          }
+          .wg-glitch-text {
+            animation: wg-glitch-kf 0.4s ease;
+          }
+          @keyframes wg-flash-kf {
+            0% { opacity: 0; }
+            30% { opacity: 0.5; }
+            100% { opacity: 0; }
+          }
+          .wg-flash {
+            position: absolute;
+            inset: 0;
+            background: #00fff7;
+            pointer-events: none;
+            z-index: 10;
+            animation: wg-flash-kf 0.4s ease;
+          }
+          @keyframes wg-scanline-kf {
+            0% { top: 0%; opacity: 0.8; }
+            100% { top: 100%; opacity: 0; }
+          }
+          .wg-scanline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #00fff7;
+            box-shadow: 0 0 12px #00fff7;
+            pointer-events: none;
+            z-index: 11;
+            animation: wg-scanline-kf 0.5s ease-out;
+          }
+          @keyframes wg-flicker-kf {
+            0%, 100% { opacity: 1; }
+            25% { opacity: 0.3; }
+            50% { opacity: 1; }
+            75% { opacity: 0.4; }
+          }
+          .wg-flicker {
+            animation: wg-flicker-kf 0.4s ease;
           }
         `}</style>
         <a

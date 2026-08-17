@@ -6,32 +6,53 @@ export interface Props {
 }
 
 const { projects } = Astro.props;
-const sorted = [...projects].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const sorted = [...projects].sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
 const displayed = sorted.slice(0, 4);
 ---
 
-<section class="px-4 py-20 max-w-5xl mx-auto">
+<section id="projets" class="px-4 py-20 max-w-5xl mx-auto">
   <h2 class="section-title">Projets récents</h2>
+  <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
+    Applications métier, intégrations et reprises de legacy.
+  </p>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {displayed.map(p => (
-      <a href={`/projets/${p.id}`} class="card block no-underline">
-        <div class="aspect-video mb-4 flex items-center justify-center" style="background: #111; border: 1px solid #333;">
-          <span class="text-4xl" style="color: #555;">🖥</span>
-        </div>
-        <h3 class="font-bold text-lg mb-2" style="color: #f0f0f0;">{p.data.title}</h3>
-        <div class="flex flex-wrap gap-2">
-          {p.data.tags.map(tag => (
-            <span class="text-xs px-2 py-1 font-mono" style="background: rgba(0,255,247,0.1); color: #00fff7; border: 1px solid rgba(0,255,247,0.3);">
-              {tag}
+    {
+      displayed.map((p) => (
+        <a href={`/projets/${p.id}`} class="card block no-underline">
+          <div
+            class="aspect-video mb-4 flex items-center justify-center"
+            style="background: var(--accent-soft); border: 1px solid var(--border);"
+          >
+            <span class="text-4xl" style="color: var(--ink-faint);">
+              <img src={p.data.image} />
             </span>
-          ))}
-        </div>
-      </a>
-    ))}
+          </div>
+          <h3 class="font-bold text-lg mb-2" style="color: var(--ink);">
+            {p.data.title}
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            {p.data.tags.map((tag) => (
+              <span
+                class="text-xs px-2 py-1 font-mono rounded-full"
+                style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </a>
+      ))
+    }
   </div>
-  {projects.length > 4 && (
-    <div class="text-center mt-8">
-      <a href="/projets" class="btn-retro">Voir tous les projets</a>
-    </div>
-  )}
+  {
+    projects.length > 4 && (
+      <div class="text-center mt-8">
+        <a href="/projets" class="btn-retro">
+          Voir tous les projets
+        </a>
+      </div>
+    )
+  }
 </section>

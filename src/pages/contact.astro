@@ -1,37 +1,93 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { pageLines, pickLine } from '../data/marvinLines';
+
+const marvinLine = pickLine(pageLines['/contact']);
 ---
 
-<BaseLayout title="Contact — Portfolio rétro 90s">
+<BaseLayout
+  title="Contact — Martin Rabat, développeur fullstack"
+  description="Un projet, un poste à pourvoir, une question ? Martin Rabat, développeur fullstack & DevOps à Perpignan, disponible en full remote. Réponse sous 24h."
+  pageLine={marvinLine}
+>
   <section class="px-4 pt-24 pb-20 max-w-xl mx-auto">
     <h2 class="section-title">Contact</h2>
 
+    <p class="text-center text-sm mb-8 -mt-6" style="color: var(--ink-soft);">
+      Un projet, un poste à pourvoir, une question ? Je réponds sous 24h.
+    </p>
+
     <div class="flex gap-4 mb-8 justify-center">
-      <a href="https://github.com/" target="_blank" class="btn-retro" style="padding: 8px 16px;">GitHub</a>
-      <a href="https://linkedin.com/" target="_blank" class="btn-retro" style="padding: 8px 16px;">LinkedIn</a>
-      <a href="mailto:prenom@exemple.com" class="btn-retro" style="padding: 8px 16px;">Email</a>
+      <a href="https://github.com/rabatm" target="_blank" rel="noopener noreferrer" class="btn-retro" style="padding: 8px 16px;">GitHub</a>
+      <a href="mailto:martin.rabat@gmail.com" class="btn-retro" style="padding: 8px 16px;">Email</a>
     </div>
 
     <div class="card">
-      <p class="font-mono text-sm mb-6" style="color: #00fff7;">$ ./envoyer-message</p>
-      <!-- TODO: Replace with your Formspree (or other) form endpoint -->
-      <form action="https://formspree.io/f/your-form-id" method="POST" class="space-y-6">
+      <p class="font-mono text-sm mb-6" style="color: var(--accent-hover);">$ ./envoyer-message</p>
+      <form id="contact-form" class="space-y-6">
         <div>
-          <label class="font-mono text-sm" style="color: #888;">$ nom:</label>
+          <label class="font-mono text-sm" style="color: var(--ink-soft);">$ nom:</label>
           <input type="text" name="name" required class="terminal-input" />
         </div>
         <div>
-          <label class="font-mono text-sm" style="color: #888;">$ email:</label>
+          <label class="font-mono text-sm" style="color: var(--ink-soft);">$ email:</label>
           <input type="email" name="email" required class="terminal-input" />
         </div>
         <div>
-          <label class="font-mono text-sm" style="color: #888;">$ message:</label>
+          <label class="font-mono text-sm" style="color: var(--ink-soft);">$ message:</label>
           <textarea name="message" required rows="4" class="terminal-input" style="resize: vertical;"></textarea>
         </div>
         <button type="submit" class="btn-retro w-full text-center font-mono">
           [ ENVOYER &gt; ]
         </button>
+        <p id="contact-status" class="font-mono text-sm text-center" style="display: none;"></p>
       </form>
     </div>
+
+    <p class="text-center text-xs font-mono mt-6" style="color: var(--ink-faint);">Martin Info</p>
   </section>
 </BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const status = document.getElementById('contact-status') as HTMLParagraphElement | null;
+
+  if (form && status) {
+    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const initialLabel = button.textContent;
+
+    function setStatus(message: string, color: string) {
+      status!.textContent = message;
+      status!.style.color = color;
+      status!.style.display = 'block';
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      button.disabled = true;
+      button.textContent = '[ ENVOI... ]';
+      status.style.display = 'none';
+
+      const data = Object.fromEntries(new FormData(form));
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('request failed');
+        form.reset();
+        setStatus('> Message transmis. Réponse sous 24h.', 'var(--accent-hover)');
+      } catch {
+        setStatus(
+          '> ERREUR : envoi impossible. Écris-moi directement à martin.rabat@gmail.com',
+          '#c0392b'
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = initialLabel;
+      }
+    });
+  }
+</script>
