@@ -1235,21 +1235,32 @@ async fn main() -> anyhow::Result<()> {
 
     let pool = myfolio::db::init_pool(&db_url).await?;
 
+    // TOUT le seed tient dans une transaction : sans elle, un .md malformé
+    // rencontré après les DELETE laisserait la base VIDE. Vérifié : un seul
+    // fichier sans frontmatter suffit à effacer 13 projets, 8 parcours,
+    // 37 compétences et 26 répliques, alors que le message d'erreur, lui,
+    // paraît anodin.
+    let mut tx = pool.begin().await?;
+
     // Le seed est rejouable : on vide d'abord les tables de contenu.
     // contact_messages et admin_users sont épargnées — elles ne viennent pas des fichiers.
     for t in ["project_tags", "post_tags", "tags", "projects", "posts",
               "career", "skills", "testimonials", "companies", "marvin_lines"] {
-        sqlx::query(&format!("DELETE FROM {t}")).execute(&pool).await?;
+        sqlx::query(&format!("DELETE FROM {t}")).execute(&mut *tx).await?;
     }
 
     let n_projets = seed_markdown(&pool, &format!("{src}/content/projects"), true).await?;
     let n_articles = seed_markdown(&pool, &format!("{src}/content/blog"), false).await?;
     let n_perso = seed_personal(&pool, "seed-data/personal.toml").await?;
 
+    tx.commit().await?; // rien n'est visible avant ce point
     println!("{n_projets} projets, {n_articles} articles, {n_perso} entrées personnelles");
     Ok(())
 }
 ```
+
+`seed_markdown` et `seed_personal` reçoivent la transaction (`&mut *tx`), pas
+le pool — sinon leurs écritures échapperaient au rollback.
 
 `seed_markdown` parcourt les `.md` avec `walkdir`, dérive le slug du nom de
 fichier, parse le frontmatter avec `serde_yaml`, insère le projet ou l'article,
