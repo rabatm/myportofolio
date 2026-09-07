@@ -107,10 +107,17 @@ vérifiable.
 
 ### Structure du dépôt
 
-Le projet Astro est remplacé en place, dans `superior-star/`.
+La nouvelle stack est construite dans un **dépôt distinct**, `myFolioRS/`,
+frère de `myFolio/`. Le projet Astro existant n'est pas touché : il reste
+fonctionnel et déployable jusqu'à la bascule (phase 5).
+
+**Justification** : le site actuel est en production et sert à décrocher des
+missions. Construire à côté garantit qu'aucune étape intermédiaire ne peut le
+casser ; la bascule devient une décision explicite plutôt qu'une conséquence
+progressive. Chaque phase est purement additive.
 
 ```
-superior-star/
+myFolioRS/                    # dépôt Git autonome
 ├── backend/
 │   ├── src/
 │   │   ├── main.rs           # bootstrap Actix, état applicatif
@@ -123,11 +130,15 @@ superior-star/
 │   ├── templates/*.html      # templates Askama
 │   ├── migrations/           # migrations SQLx versionnées
 │   └── Cargo.toml
-├── frontend/
-│   ├── src/islands/{chatbot,wargames}/
-│   └── vite.config.ts        # build multi-entrées → backend/static/
-└── content-archive/          # .md et .ts d'origine, versionnés (filet de secours)
+└── frontend/
+    ├── src/islands/{chatbot,wargames}/
+    └── vite.config.ts        # build multi-entrées → backend/static/
 ```
+
+Le contenu d'origine est lu par le seed depuis
+`../myFolio/superior-star/src/` (fichiers `.md` et `.ts`). Il n'est pas
+dupliqué : le dépôt Astro d'origine sert lui-même de filet de secours tant
+qu'il existe.
 
 ### Versions
 
@@ -281,6 +292,11 @@ remplit une struct Askama, renvoie le HTML complet.
 Askama compile les templates **à la compilation** : une variable erronée
 casse le build, pas la page en production. C'est un avantage direct sur les
 moteurs interprétés.
+
+Note d'intégration : le crate `askama_actix` est déprécié (dernière version
+`0.15.0+deprecated`). Les templates sont donc rendus explicitement via
+`.render()?` puis renvoyés dans un `HttpResponse`, sans crate d'intégration
+intermédiaire.
 
 La découpe actuelle est reprise à l'identique : `base.html` remplace
 `BaseLayout.astro` (métadonnées OG, canonical, styles), et les sections de la
@@ -484,9 +500,10 @@ eux, le risque est comparable à celui d'un dépôt Git.
 
 ### Filet de secours
 
-Les `.md` et `.ts` d'origine sont conservés et versionnés dans
-`content-archive/`. Coût nul, et le seed reste rejouable si la base est perdue
-avant que les sauvegardes ne soient en place.
+Le dépôt Astro d'origine (`myFolio/superior-star/`) est conservé intact : il
+contient les `.md` et `.ts` sources, et le seed reste rejouable depuis lui si
+la base est perdue avant que les sauvegardes ne soient en place. À ne pas
+supprimer avant que les sauvegardes automatiques ne tournent.
 
 ## 10. Phases
 
@@ -506,7 +523,7 @@ Chaque phase se termine sur un état fonctionnel.
 4. **Admin** — auth, CRUD, upload, invalidation du cache.
    *Fin de phase : contenu éditable sans SQL.*
 
-5. **Déploiement** — Docker, sauvegardes, bascule.
+5. **Déploiement** — Docker, sauvegardes, bascule DNS depuis l'ancien site.
 
 La phase 3 est le jalon de parité : le nouveau site fait alors tout ce que
 fait l'ancien, et l'admin s'ajoute ensuite sans blocage.
