@@ -1530,13 +1530,40 @@ Référence de traduction : `myFolio/superior-star/src/layouts/BaseLayout.astro`
 fichiers de `src/components/sections/`. Le balisage et les classes Tailwind
 sont repris tels quels.
 
-- [ ] **Step 1: Copier le CSS et les images**
+- [ ] **Step 1: Copier le CSS, les images, et construire le CSS Tailwind**
 
 ```bash
 mkdir -p myFolioRS/backend/static
 OLD=/Users/martincelavie/DEV/martininfo/myFolio/superior-star
 cp $OLD/src/styles/retro.css myFolioRS/backend/static/
 cp -r $OLD/public/* myFolioRS/backend/static/
+```
+
+**Le CSS Tailwind doit être construit dès maintenant.** `retro.css` ne contient
+que des variables et des styles personnalisés — aucune classe utilitaire. Dans
+Astro, `<style>@import "tailwindcss";</style>` les générait à la compilation.
+Sans build, les templates de cette tâche s'afficheraient sans aucune mise en
+page, et la vérification visuelle de l'étape 8 (comparaison avec l'ancien site)
+n'aurait plus de sens.
+
+Créer `myFolioRS/frontend/` avec le minimum nécessaire — `package.json`
+(dépendances `tailwindcss` et `@tailwindcss/cli` en 4.x), et `src/app.css`
+contenant `@import "tailwindcss";` suivi du contenu de `retro.css` — puis :
+
+```bash
+cd myFolioRS/frontend && bun install
+bun x @tailwindcss/cli -i src/app.css -o ../backend/static/app.css   --content '../backend/templates/**/*.html'
+```
+
+Le template charge `/static/app.css` (et non plus `retro.css` séparément).
+La Task 9 reprendra ce dossier `frontend/` pour y ajouter Vite et les îlots ;
+`emptyOutDir: false` y est déjà prévu pour ne pas effacer ce CSS.
+
+Vérifier que le CSS produit contient bien les utilitaires employés par les
+templates :
+
+```bash
+grep -c "min-h-screen\|flex\|px-4" myFolioRS/backend/static/app.css
 ```
 
 - [ ] **Step 2: Écrire base.html**
@@ -1566,7 +1593,7 @@ Traduire le `<head>` de `BaseLayout.astro` en Askama. Les variables Astro
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="fr_FR" />
 
-    <link rel="stylesheet" href="/static/retro.css" />
+    <link rel="stylesheet" href="/static/app.css" />
   </head>
   <body>
     {% block content %}{% endblock %}
