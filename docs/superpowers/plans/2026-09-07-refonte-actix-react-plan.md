@@ -1132,8 +1132,8 @@ for f, champ in [('$OLD/data/temoignages.ts','quote'), ('$OLD/data/parcours.ts',
     print(f, len(re.findall(rf'^\s{4}{champ}:', s, re.M)))"
 ```
 
-Comptes réels : **8** entrées de parcours, **3** témoignages, 30 compétences
-en 4 catégories, 29 répliques Marvin (10 `page` + 16 `section` + 3 `project`), 3 entreprises,
+Comptes réels : **8** entrées de parcours, **3** témoignages, 37 compétences
+en 6 catégories, 29 répliques Marvin (10 `page` + 16 `section` + 3 `project`), 3 entreprises,
 13 projets, 1 article.
 
 - [ ] **Step 3: Écrire le test du parseur de frontmatter**
