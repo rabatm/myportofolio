@@ -144,8 +144,8 @@ qu'il existe.
 
 Vérifiées sur crates.io au 2026-09-07 : Actix Web 4.15, SQLx 0.9, Askama
 0.16, argon2 0.6, actix-session 0.11, pulldown-cmark 0.13, Tokio 1.53,
-reqwest. Front : React 19.2, Vite, Tailwind 4. Toolchain locale disponible :
-rustc 1.89.0, Bun 1.3.5.
+reqwest. Front : React 19.2, Vite, Tailwind 4. Toolchain locale :
+rustc 1.98.1, Bun 1.3.5.
 
 ### Limite assumée
 
@@ -476,7 +476,7 @@ méthode annoncée sur le site.
 `Dockerfile` multi-stage :
 
 ```
-stage 1 (rust:1.89)   → cargo build --release
+stage 1 (rust:1.98)   → cargo build --release
 stage 2 (oven/bun)    → vite build + tailwind → assets statiques
 stage 3 (debian-slim) → binaire + assets + migrations
 ```

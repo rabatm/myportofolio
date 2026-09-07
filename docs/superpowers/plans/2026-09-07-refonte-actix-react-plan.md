@@ -6,7 +6,7 @@
 
 **Architecture:** Un binaire Actix sert le HTML rendu côté serveur par Askama depuis SQLite, plus les assets statiques et deux endpoints JSON (`/api/chat`, `/api/contact`). React 19.2 n'est monté que sur les îlots `ChatBot` et `WargamesGame`, bundlés séparément par Vite. Le contenu éditorial (14 `.md` + 4 fichiers `.ts`) est importé en base par un binaire `seed` qui lit l'ancien dépôt.
 
-**Tech Stack:** Rust 1.89, Actix Web 4.15, SQLx 0.9 (SQLite), Askama 0.16, pulldown-cmark 0.13, reqwest, Tokio 1.53 · React 19.2, Vite, Tailwind 4, Bun 1.3.5 · Vitest + Testing Library
+**Tech Stack:** Rust 1.98, Actix Web 4.15, SQLx 0.9 (SQLite), Askama 0.16, pulldown-cmark 0.13, reqwest, Tokio 1.53 · React 19.2, Vite, Tailwind 4, Bun 1.3.5 · Vitest + Testing Library
 
 **Spec:** `myFolio/superior-star/docs/superpowers/specs/2026-09-07-refonte-actix-react-design.md`
 
@@ -132,7 +132,7 @@ git init
 name = "myfolio"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.89"
+rust-version = "1.98"
 
 [dependencies]
 actix-web = "4.15"
@@ -2860,7 +2860,7 @@ une base non validée.
 ## Phase 5 — Déploiement (à détailler après la phase 4)
 
 ### Task 18: Dockerfile multi-stage
-- Stage 1 `rust:1.89` → `cargo build --release` ; stage 2 `oven/bun` → `vite build` ; stage 3 `debian:bookworm-slim`
+- Stage 1 `rust:1.98` → `cargo build --release` ; stage 2 `oven/bun` → `vite build` ; stage 3 `debian:bookworm-slim`
 - Vérification : l'image finale ne contient ni `cargo` ni `node` ; `docker run` sert le site
 
 ### Task 19: Persistance et sauvegardes
