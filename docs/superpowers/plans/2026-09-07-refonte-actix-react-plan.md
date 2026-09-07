@@ -409,10 +409,12 @@ CREATE TABLE companies (
 );
 
 -- Répliques pré-écrites de Marvin (hors LLM). scope='page' → key = chemin URL
--- ('/projets'), scope='section' → key = id du <section> ('apropos').
+-- ('/projets'), scope='section' → key = id du <section> ('apropos'),
+-- scope='project' → répliques des pages de détail projet, avec un
+-- placeholder {titre} substitué au rendu (key = 'detail').
 CREATE TABLE marvin_lines (
   id    INTEGER PRIMARY KEY,
-  scope TEXT NOT NULL CHECK (scope IN ('page', 'section')),
+  scope TEXT NOT NULL CHECK (scope IN ('page', 'section', 'project')),
   key   TEXT NOT NULL,
   line  TEXT NOT NULL
 );
@@ -1131,7 +1133,7 @@ for f, champ in [('$OLD/data/temoignages.ts','quote'), ('$OLD/data/parcours.ts',
 ```
 
 Comptes réels : **8** entrées de parcours, **3** témoignages, 30 compétences
-en 4 catégories, 26 répliques Marvin (10 `page` + 16 `section`), 3 entreprises,
+en 4 catégories, 29 répliques Marvin (10 `page` + 16 `section` + 3 `project`), 3 entreprises,
 13 projets, 1 article.
 
 - [ ] **Step 3: Écrire le test du parseur de frontmatter**
@@ -1288,7 +1290,7 @@ sqlite3 myfolio.db "SELECT
   (SELECT count(*) FROM marvin_lines) AS repliques;"
 ```
 Expected: 13 projets, 1 article, 8 career, 30 skills, 3 testimonials,
-3 companies, 26 marvin_lines. Comparer avec :
+3 companies, 29 marvin_lines. Comparer avec :
 ```bash
 ls /Users/martincelavie/DEV/martininfo/myFolio/superior-star/src/content/projects/*.md | wc -l
 ```
