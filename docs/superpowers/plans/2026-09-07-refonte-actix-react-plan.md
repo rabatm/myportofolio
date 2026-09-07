@@ -21,6 +21,14 @@
 - **`askama_actix` est déprécié** — ne pas l'utiliser. Rendre via `template.render()?` puis `HttpResponse::Ok().content_type("text/html; charset=utf-8").body(html)`.
 - **Modèle Groq** : `llama-3.3-70b-versatile`, `max_tokens: 250`, timeout 5 s
 - **Marqueur de jeu** : la chaîne exacte `[LANCER_JEU]` est un contrat entre le prompt système et `ChatBot.tsx`. Ne jamais la modifier.
+- **Ids de section — contrat avec le chatbot.** `ChatBot.tsx` observe les
+  sections via `document.getElementById(id)` sur les clés de `sectionLines`.
+  Les `<section>` de la page d'accueil doivent donc porter **exactement** ces
+  six ids, à l'identique de l'ancien site : `apropos`, `competences`,
+  `confiance`, `parcours`, `projets`, `temoignages`. Un id renommé ne produit
+  aucune erreur : les répliques de Marvin cessent simplement de se déclencher,
+  en silence. La clé `key` des lignes `scope='section'` en base doit utiliser
+  ces mêmes valeurs.
 - **Aucun secret en dur** : `GROQ_API_KEY` et `SESSION_KEY` viennent de l'environnement.
 - **Port de vérification : 8090.** Le port 8080 est occupé par un tunnel SSH sur
   cette machine — un `curl` vers 8080 interrogerait le tunnel, pas le serveur,
@@ -2783,8 +2791,15 @@ if (el) {
 }
 ```
 
-Adapter les props de `ChatBot.tsx` si sa signature diffère — vérifier comment
-`BaseLayout.astro` les lui passait.
+Signature vérifiée dans l'ancien dépôt, aucune adaptation nécessaire :
+`export default function ChatBot({ pageLine, sectionLines }: ChatBotProps)`
+avec `pageLine?: string` et `sectionLines?: Record<string, string>`. Le
+montage ci-dessus correspond déjà au contrat.
+
+Note : dans Astro le composant était monté en `client:only="react"`, donc
+jamais rendu côté serveur. L'îlot reproduit ce comportement — le `<div>` est
+vide dans le HTML et React le remplit au chargement. Ne pas chercher à le
+pré-rendre.
 
 - [ ] **Step 11: Lancer toute la suite, des deux côtés**
 
