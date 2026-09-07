@@ -821,6 +821,12 @@ pub async fn get_project(pool: &SqlitePool, slug: &str) -> Result<Option<Project
 Écrire `PostRow`, `POST_SELECT`, `list_posts` et `get_post` sur le même modèle,
 sans les colonnes `image`, `url`, `github`, avec les tables `posts` et `post_tags`.
 
+**Et écrire leurs tests en miroir des cinq tests projets ci-dessus** : tri
+décroissant, exclusion des non publiés, remontée des tags, `None` sur slug
+inconnu, corps Markdown renvoyé. Avec un helper `insere_article(...)` calqué
+sur `insere_projet(...)`. Sans ces tests, `get_post` peut renvoyer `None` en
+permanence — toutes les pages d'articles en 404 — sans qu'aucun test n'échoue.
+
 Note : le séparateur est `char(31)` (unité ASCII), pas une virgule — un tag
 peut contenir une virgule, pas un caractère de contrôle.
 
