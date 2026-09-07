@@ -1116,12 +1116,23 @@ apropos = ["« Qu'importe la stack, pourvu qu'on ait les tests. » …"]
 competences = ["…"]
 ```
 
-Vérifier l'exhaustivité :
+Vérifier l'exhaustivité — **attention, `grep -c` compte aussi les
+déclarations d'interface TypeScript** (`quote: string;` en tête de fichier),
+qui ne sont pas des données. Ne retenir que les lignes indentées de 4 espaces,
+celles du tableau :
+
 ```bash
 OLD=/Users/martincelavie/DEV/martininfo/myFolio/superior-star/src
-grep -c "periode:" $OLD/data/parcours.ts          # → nombre de [[career]]
-grep -c "quote:"  $OLD/data/temoignages.ts        # → nombre de [[testimonials]]
+python3 -c "
+import re
+for f, champ in [('$OLD/data/temoignages.ts','quote'), ('$OLD/data/parcours.ts','periode')]:
+    s = open(f).read()
+    print(f, len(re.findall(rf'^\s{4}{champ}:', s, re.M)))"
 ```
+
+Comptes réels : **8** entrées de parcours, **3** témoignages, 30 compétences
+en 4 catégories, 26 répliques Marvin (10 `page` + 16 `section`), 3 entreprises,
+13 projets, 1 article.
 
 - [ ] **Step 3: Écrire le test du parseur de frontmatter**
 
@@ -1265,8 +1276,8 @@ sqlite3 myfolio.db "SELECT
   (SELECT count(*) FROM companies) AS entreprises,
   (SELECT count(*) FROM marvin_lines) AS repliques;"
 ```
-Expected: 13 projets, 1 article, 3 entreprises, 3 témoignages, et des comptes
-non nuls partout. Comparer avec :
+Expected: 13 projets, 1 article, 8 career, 30 skills, 3 testimonials,
+3 companies, 26 marvin_lines. Comparer avec :
 ```bash
 ls /Users/martincelavie/DEV/martininfo/myFolio/superior-star/src/content/projects/*.md | wc -l
 ```
