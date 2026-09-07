@@ -15,6 +15,11 @@
 - **Dépôt neuf** : tout est créé dans `/Users/martincelavie/DEV/martininfo/myFolioRS/`. Le dépôt Astro `myFolio/superior-star/` est en **lecture seule** — aucune tâche de ce plan ne le modifie.
 - **Chemin source du contenu** : `/Users/martincelavie/DEV/martininfo/myFolio/superior-star/src/`
 - **TDD strict** : test rouge → implémentation minimale → test vert → commit. Chaque tâche suit ce cycle.
+- **`cargo fmt` avant chaque commit.** Les extraits de code de ce plan sont
+  écrits à la main et ne respectent pas toujours la mise en page de rustfmt.
+  Lancer `cargo fmt` avant de commiter, et vérifier que `cargo fmt --check` et
+  `cargo clippy --all-targets` sont silencieux. Le projet est une vitrine
+  technique : du code non formaté est ce qu'un lecteur remarque en premier.
 - **Langue** : tout le contenu affiché est en français. Les identifiants de code sont en anglais.
 - **Couleurs** (reprises de `retro.css`) : fond `#0a0a0a`, texte `#f0f0f0`, accent `#00fff7`, vert `#39ff14`
 - **Police** : monospace partout
