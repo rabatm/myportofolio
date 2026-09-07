@@ -1364,6 +1364,37 @@ mod tests {
         let h = to_html("Texte <script>alert(1)</script>");
         assert!(!h.contains("<script>"), "le HTML brut ne doit pas être émis");
     }
+
+    #[test]
+    fn neutralise_les_schemas_d_url_dangereux() {
+        for dangereux in [
+            "[x](javascript:alert(1))",
+            "[x](JaVaScRiPt:alert(1))",
+            "[x](data:text/html,<script>alert(1)</script>)",
+            "![x](javascript:alert(1))",
+        ] {
+            let h = to_html(dangereux);
+            assert!(
+                !h.contains("javascript:") && !h.to_lowercase().contains("data:"),
+                "schéma dangereux non neutralisé dans {dangereux} → {h}"
+            );
+        }
+    }
+
+    #[test]
+    fn preserve_les_urls_legitimes() {
+        // Un filtre trop agressif serait une régression : ces liens doivent passer.
+        for (md, attendu) in [
+            ("[x](https://example.com)", "https://example.com"),
+            ("[x](mailto:a@b.fr)", "mailto:a@b.fr"),
+            ("[x](/projets/amiqo)", "/projets/amiqo"),
+            ("[x](#section)", "#section"),
+            ("[x](/page?q=a:b)", "/page?q=a:b"),
+        ] {
+            let h = to_html(md);
+            assert!(h.contains(attendu), "URL légitime altérée : {md} → {h}");
+        }
+    }
 }
 ```
 
@@ -1382,8 +1413,15 @@ pub fn to_html(md: &str) -> String {
     opts.insert(Options::ENABLE_FOOTNOTES);
     opts.insert(Options::ENABLE_SMART_PUNCTUATION);
 
-    // ENABLE_HTML volontairement absent : sans lui, pulldown-cmark échappe
-    // le HTML brut au lieu de le laisser passer.
+    // ATTENTION : il n'existe PAS d'option `ENABLE_HTML` dans pulldown-cmark
+    // 0.13 — le HTML brut est TOUJOURS émis verbatim par `push_html`, quelles
+    // que soient les options. Pour l'échapper, il faut filtrer les événements
+    // `Event::Html` et `Event::InlineHtml` du flux avant le rendu.
+    // De même, les liens Markdown passent par `Tag::Link` / `Tag::Image` et
+    // échappent à ce filtre : `escape_href` échappe les caractères spéciaux
+    // mais ne valide aucun schéma, donc `[x](javascript:alert(1))` est émis
+    // tel quel. Filtrer les schémas par liste blanche (http, https, mailto,
+    // URLs relatives) — voir les tests de cette tâche.
     let parser = Parser::new_ext(md, opts);
     let mut out = String::with_capacity(md.len() * 3 / 2);
     html::push_html(&mut out, parser);
