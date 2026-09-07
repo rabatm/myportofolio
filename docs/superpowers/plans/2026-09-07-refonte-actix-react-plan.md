@@ -22,6 +22,11 @@
 - **Modèle Groq** : `llama-3.3-70b-versatile`, `max_tokens: 250`, timeout 5 s
 - **Marqueur de jeu** : la chaîne exacte `[LANCER_JEU]` est un contrat entre le prompt système et `ChatBot.tsx`. Ne jamais la modifier.
 - **Aucun secret en dur** : `GROQ_API_KEY` et `SESSION_KEY` viennent de l'environnement.
+- **Port de vérification : 8090.** Le port 8080 est occupé par un tunnel SSH sur
+  cette machine — un `curl` vers 8080 interrogerait le tunnel, pas le serveur,
+  et renverrait un résultat trompeur au lieu d'une erreur. Toute vérification
+  manuelle lance donc `BIND_ADDR=127.0.0.1:8090 cargo run` et interroge
+  `http://127.0.0.1:8090`. La valeur par défaut dans le code reste `127.0.0.1:8080`.
 
 ## Écart par rapport à la spec
 
@@ -280,9 +285,9 @@ mod tests {
 
 - [ ] **Step 8: Vérifier que le serveur compile, tourne et répond**
 
-Run: `cargo test` puis `cargo run` dans un terminal, et dans un autre :
+Run: `cargo test` puis `BIND_ADDR=127.0.0.1:8090 cargo run` dans un terminal, et dans un autre :
 ```bash
-curl -s http://127.0.0.1:8080/health
+curl -s http://127.0.0.1:8090/health
 ```
 Expected: `cargo test` PASS (3 tests) ; `curl` affiche `ok`
 
@@ -523,7 +528,7 @@ HttpServer::new(move || {
 
 - [ ] **Step 7: Vérifier que la base réelle se crée**
 
-Run: `cargo run` puis, dans un autre terminal :
+Run: `BIND_ADDR=127.0.0.1:8090 cargo run` puis, dans un autre terminal :
 ```bash
 sqlite3 myFolioRS/backend/myfolio.db ".tables"
 ```
@@ -1638,7 +1643,7 @@ Expected: PASS (2 tests)
 
 - [ ] **Step 8: Vérifier visuellement**
 
-Run: `cargo run` puis ouvrir `http://127.0.0.1:8080/`
+Run: `BIND_ADDR=127.0.0.1:8090 cargo run` puis ouvrir `http://127.0.0.1:8090/`
 Expected: la page d'accueil s'affiche avec le thème rétro, toutes les sections
 peuplées depuis la base. Comparer côte à côte avec l'ancien site
 (`cd myFolio/superior-star && bun run dev`, port 4321).
@@ -1961,9 +1966,9 @@ c'est un easter egg.
 
 Run: `cargo test routes::feeds` puis
 ```bash
-cargo run &
-curl -s http://127.0.0.1:8080/sitemap.xml | xmllint --noout - && echo "sitemap valide"
-curl -s http://127.0.0.1:8080/rss.xml | xmllint --noout - && echo "rss valide"
+BIND_ADDR=127.0.0.1:8090 cargo run &
+curl -s http://127.0.0.1:8090/sitemap.xml | xmllint --noout - && echo "sitemap valide"
+curl -s http://127.0.0.1:8090/rss.xml | xmllint --noout - && echo "rss valide"
 ```
 Expected: PASS (3 tests), et les deux flux validés par `xmllint`
 
@@ -2149,7 +2154,7 @@ Expected: `wargames.js` et `chatbot.js` présents (chatbot vide pour l'instant),
 
 - [ ] **Step 7: Vérifier le jeu dans le navigateur**
 
-Run: `cd ../backend && cargo run`, ouvrir `http://127.0.0.1:8080/wargames`
+Run: `cd ../backend && BIND_ADDR=127.0.0.1:8090 cargo run`, ouvrir `http://127.0.0.1:8090/wargames`
 Expected: le terminal WOPR s'affiche, une partie se joue, l'IA ne perd pas.
 Vérifier dans l'onglet Réseau que `chatbot.js` n'est pas chargé par cette page.
 
@@ -2385,7 +2390,7 @@ affiche le retour. Reprendre le balisage et les classes de l'original.
 
 - [ ] **Step 9: Vérifier de bout en bout**
 
-Run: `cargo run`, ouvrir `/contact`, envoyer un message, puis :
+Run: `BIND_ADDR=127.0.0.1:8090 cargo run`, ouvrir `/contact`, envoyer un message, puis :
 ```bash
 sqlite3 myfolio.db "SELECT name, email, created_at FROM contact_messages ORDER BY id DESC LIMIT 1;"
 ```
@@ -2792,7 +2797,7 @@ Expected: PASS partout
 
 - [ ] **Step 12: Vérifier la parité de bout en bout**
 
-Run: `cargo run`, puis, avec `GROQ_API_KEY` renseignée :
+Run: `BIND_ADDR=127.0.0.1:8090 cargo run`, puis, avec `GROQ_API_KEY` renseignée :
 
 1. Ouvrir `/` → le chatbot répond
 2. Demander « je veux jouer » → redirection vers le jeu (marqueur fonctionnel)
