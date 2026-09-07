@@ -1709,6 +1709,9 @@ git commit -m "feat: layout de base et page d'accueil en SSR"
 
 **Interfaces:**
 - Consumes: `content::*`, `marvin::pick_page_line`, `markdown::to_html`
+- Produces: `marvin::pick_project_line(&SqlitePool) -> Result<Option<String>, sqlx::Error>`
+  — tire une réplique `scope='project'` au hasard. À écrire dans `db/marvin.rs`
+  sur le modèle de `pick_page_line`, avec son test.
 - Produces: `GET /projets`, `/projets/{slug}`, `/blog`, `/blog/{slug}`, `/contact`, `/wargames`
 - Produces: 404 via `AppError::NotFound` sur slug inconnu
 
@@ -1816,7 +1819,15 @@ pub async fn projet_detail(
         .ok_or(AppError::NotFound)?;
 
     let body_html = crate::markdown::to_html(&projet.body_md);
-    let page_line = db::marvin::pick_page_line(&pool, "/projets").await?.unwrap_or_default();
+
+    // Réplique de page projet : `scope='project'`, avec `{titre}` substitué —
+    // c'est ce que faisait `projets/[slug].astro:17` dans l'ancien site.
+    // Ne pas utiliser pick_page_line("/projets") ici : ce sont les répliques
+    // de la LISTE des projets, pas celles d'une fiche.
+    let page_line = db::marvin::pick_project_line(&pool)
+        .await?
+        .map(|l| l.replace("{titre}", &projet.title))
+        .unwrap_or_default();
 
     let tpl = ProjetDetailTemplate {
         title: format!("{} — Martin Rabat", projet.title),
