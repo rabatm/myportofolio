@@ -21,6 +21,10 @@
   `cargo clippy --all-targets` sont silencieux. Le projet est une vitrine
   technique : du code non formaté est ce qu'un lecteur remarque en premier.
 - **Langue** : tout le contenu affiché est en français. Les identifiants de code sont en anglais.
+- **Dates affichées au format `JJ/MM/AAAA`.** Elles sont stockées en TEXT
+  ISO-8601 (`2026-07-29`) mais l'original les rend via
+  `toLocaleDateString('fr-FR')` → `29/07/2026`. Une date ISO affichée telle
+  quelle est un écart visible pour un visiteur.
 - **Couleurs** (reprises de `retro.css`) : fond `#0a0a0a`, texte `#f0f0f0`, accent `#00fff7`, vert `#39ff14`
 - **Police** : monospace partout
 - **`askama_actix` est déprécié** — ne pas l'utiliser. Rendre via `template.render()?` puis `HttpResponse::Ok().content_type("text/html; charset=utf-8").body(html)`.
@@ -1955,12 +1959,23 @@ Dans `projet_detail.html`, le corps rendu est inséré avec `{{ body_html|safe }
 — c'est le seul endroit où `|safe` est légitime, puisque `to_html` échappe
 déjà le HTML brut (Task 5).
 
-`wargames.html` monte l'îlot de jeu :
+`wargames.html` **n'étend PAS `base.html`** : l'original est une page
+délibérément nue — fond noir, ni nav, ni footer, ni chatbot. C'est
+l'esthétique du terminal WOPR, l'easter egg rompt avec le reste du site.
 
 ```html
-<div id="wargames-root"></div>
-<script type="module" src="/static/wargames.js"></script>
+<html lang="fr">
+  <head><meta charset="utf-8" /><title>Wargames — Marvin-42</title></head>
+  <body style="background: #0a0a0a; margin: 0;">
+    <div id="wargames-root"></div>
+    <script type="module" src="/static/wargames.js"></script>
+  </body>
+</html>
 ```
+
+Un test doit verrouiller l'absence de `<nav`, `<footer` et `chatbot-root` sur
+cette page — sans quoi elle sera « uniformisée » un jour sans qu'on s'en
+aperçoive.
 
 - [ ] **Step 4: Enregistrer les routes**
 
