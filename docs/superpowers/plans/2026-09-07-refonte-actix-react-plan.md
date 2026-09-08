@@ -2355,9 +2355,23 @@ git commit -m "feat: chaîne de build Vite et îlot WarGames"
 - Produces: `POST /api/contact` acceptant `{ name, email, message }` → `200 {"ok":true}` ou `400 {"error":"…"}`
 - Produces: `contact::insert_message(&SqlitePool, name, email, message, ip_hash) -> Result<i64>`
 - Produces: `validate(name, email, message) -> Result<(), &'static str>`
+- Produces: un limiteur en mémoire dans l'état applicatif, renvoyant `429` avec
+  `{"error": "…"}` au-delà de 5 messages par IP hachée par 15 minutes
 
 Corrige le défaut de concurrence de l'ancien `api/contact.ts` (lecture-modification-écriture
 d'un fichier JSON). Ajoute la validation serveur et le rate-limit, absents aujourd'hui.
+
+**Le rate-limit est une exigence de la spec (§6), pas une option.** Le
+formulaire est public et sans authentification : sans limite, un robot peut y
+déverser des milliers de messages dans une base qui contient tout le contenu du
+site. Concrètement : **5 messages par IP hachée par tranche de 15 minutes**, en
+mémoire, avec purge des entrées expirées (sans quoi la structure grossit
+indéfiniment). Réponse `429` suivant le même contrat JSON `{"error": "…"}`, avec
+un message lisible par un visiteur. Ne jamais stocker d'IP en clair, même en
+mémoire — réutiliser la fonction de hachage d'`ip_hash`.
+
+Pour tester l'expiration sans attendre un quart d'heure, rendre la fenêtre
+injectable plutôt que d'ajouter un `sleep` à la suite.
 
 - [ ] **Step 1: Écrire les tests de validation**
 
