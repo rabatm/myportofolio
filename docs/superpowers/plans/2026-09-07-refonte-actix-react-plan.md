@@ -33,7 +33,9 @@
   `confiance`, `parcours`, `projets`, `temoignages`. Un id renommé ne produit
   aucune erreur : les répliques de Marvin cessent simplement de se déclencher,
   en silence. La clé `key` des lignes `scope='section'` en base doit utiliser
-  ces mêmes valeurs.
+  ces mêmes valeurs. **Un test doit verrouiller ce contrat** en confrontant les
+  ids du HTML aux clés `scope='section'` de la base : c'est leur désaccord qui
+  casse le chatbot, et rien ne le signale à l'exécution.
 - **Aucun secret en dur** : `GROQ_API_KEY` et `SESSION_KEY` viennent de l'environnement.
 - **Port de vérification : 8090.** Le port 8080 est occupé par un tunnel SSH sur
   cette machine — un `curl` vers 8080 interrogerait le tunnel, pas le serveur,
@@ -362,15 +364,20 @@ CREATE TABLE tags (
   name TEXT NOT NULL UNIQUE
 );
 
+-- `sort_order` préserve l'ordre des tags tel qu'écrit dans le frontmatter :
+-- il reflète l'importance relative des technologies, ce n'est pas un détail.
+-- Sans lui, `group_concat` renvoie l'ordre que le moteur décide.
 CREATE TABLE project_tags (
   project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
   tag_id     INTEGER NOT NULL REFERENCES tags(id)     ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (project_id, tag_id)
 );
 
 CREATE TABLE post_tags (
-  post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-  tag_id  INTEGER NOT NULL REFERENCES tags(id)  ON DELETE CASCADE,
+  post_id    INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  tag_id     INTEGER NOT NULL REFERENCES tags(id)  ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (post_id, tag_id)
 );
 
