@@ -3017,46 +3017,422 @@ l'ancien. Les phases suivantes ajoutent, elles ne rattrapent plus.
 
 ---
 
-## Phase 4 — Admin (à détailler après la parité)
+## Phase 4 — Admin
 
-Les tâches ci-dessous sont volontairement décrites au niveau de leurs
-interfaces et de leurs tests, pas au niveau du code. Elles seront développées
-en étapes bite-sized une fois la phase 3 terminée : le schéma et les
-conventions auront alors été éprouvés par trois phases d'usage réel, et
-détailler maintenant 800 lignes de CRUD reviendrait à figer des choix contre
-une base non validée.
+Détaillée après la parité, comme prévu. Le schéma et les conventions ont été
+éprouvés par trois phases d'usage réel ; ce qui suit s'appuie sur ce qui existe
+plutôt que sur ce qui était supposé.
 
-**Ne pas commencer la phase 4 avant que la phase 3 ne soit vérifiée.**
+**Acquis des phases 1-3 à réutiliser, pas à réécrire :**
+
+- `RateLimiter` (`routes/api_contact.rs`) est déjà générique : `new(max, window)`,
+  `check(key)`, plafond FIFO 4000 clés, purge amortie, verrou récupérable.
+  Le login s'en sert avec d'autres paramètres — ne pas en écrire un second.
+- `hash_ip` y est aussi, et sert de clé au limiteur.
+- `client_ip()` gère déjà `TRUST_PROXY_HEADERS`.
+- La table `admin_users` existe depuis la migration `0001` (colonnes `id`,
+  `username`, `password_hash`, `created_at`).
+- `AppError` couvre `NotFound`, `Database`, `Template`, `Internal` — ajouter les
+  variantes d'authentification plutôt que créer un type d'erreur parallèle.
+- `PromptCache::invalidate()` existe et n'est **appelé nulle part** : la Task 15
+  est le premier consommateur.
+- Les migrations vont jusqu'à `0005`. Les nouvelles commencent à `0006`.
+
+**Versions vérifiées au 2026-09-08** : argon2 0.6, actix-session 0.11,
+actix-multipart 0.8, rpassword 7.5, rand 0.10.
+
+**Décision utilisateur** : mot de passe seul, pas de restriction par IP.
+L'admin est joignable depuis n'importe où, protégée par Argon2id, un rate-limit
+et un jeton CSRF.
+
+---
 
 ### Task 12: Authentification
-- `create_admin.rs` : lecture interactive du mot de passe (`rpassword`), hash Argon2id, insertion
-- `POST /admin/login`, `POST /admin/logout`, middleware de session
-- `actix-session` 0.11 + `CookieSessionStore`, clé 64 octets depuis `SESSION_KEY`
-- Cookie : `HttpOnly`, `Secure`, `SameSite=Lax`, 7 jours
-- Tests : bon mot de passe → 302 + cookie ; mauvais → 401 sans cookie ; `/admin` sans session → 302 vers login ; le message d'erreur ne distingue pas utilisateur inconnu et mot de passe faux
+
+**Files:**
+- Create: `backend/src/bin/create_admin.rs`
+- Create: `backend/src/admin/mod.rs`, `backend/src/admin/auth.rs`
+- Create: `backend/templates/admin/login.html`, `backend/templates/admin/base.html`
+- Modify: `backend/src/lib.rs`, `backend/src/main.rs`, `backend/src/config.rs`, `backend/Cargo.toml`
+
+**Interfaces:**
+- Consumes: `db::init_pool`, `AppError`, `Config`
+- Produces: `admin::auth::hash_password(&str) -> Result<String, argon2::password_hash::Error>`
+- Produces: `admin::auth::verify_password(hash: &str, candidate: &str) -> bool`
+- Produces: `admin::auth::require_session` — extracteur ou middleware refusant l'accès sans session valide
+- Produces: `POST /admin/login`, `POST /admin/logout`, `GET /admin/login`
+- Produces: binaire `create-admin`
+
+**Le compte n'existe pas encore.** Aucune ligne dans `admin_users` : le binaire
+`create-admin` est le seul moyen d'en créer un. Il lit le mot de passe en
+interactif (`rpassword`, jamais en argument — un argument reste dans
+l'historique du shell), le hache en Argon2id, et l'insère.
+
+S'il existe déjà un compte, refuser plutôt qu'écraser silencieusement, en
+indiquant comment le remplacer.
+
+**`SESSION_KEY`.** 64 octets, lue depuis l'environnement. C'est la première
+variable **obligatoire** du projet : sans elle, les cookies ne peuvent pas être
+signés. `ConfigError::Missing` existe depuis la Task 1 et n'a jamais servi —
+c'est ici qu'elle sert.
+
+Documenter dans `.env.example` comment en générer une (`openssl rand -base64 64`).
+
+- [ ] **Step 1: Écrire les tests de hachage**
+
+```rust
+#[test]
+fn un_mot_de_passe_correct_est_verifie() {
+    let h = hash_password("motdepasse-correct").unwrap();
+    assert!(verify_password(&h, "motdepasse-correct"));
+}
+
+#[test]
+fn un_mot_de_passe_faux_est_rejete() {
+    let h = hash_password("motdepasse-correct").unwrap();
+    assert!(!verify_password(&h, "motdepasse-faux"));
+}
+
+#[test]
+fn deux_hachages_du_meme_mot_de_passe_different() {
+    // Argon2id sale chaque hachage : deux hachages identiques trahiraient
+    // un sel absent ou constant, ce qui rendrait une table arc-en-ciel utile.
+    let a = hash_password("identique").unwrap();
+    let b = hash_password("identique").unwrap();
+    assert_ne!(a, b);
+    assert!(verify_password(&a, "identique") && verify_password(&b, "identique"));
+}
+
+#[test]
+fn un_hash_malforme_ne_panique_pas() {
+    // Une ligne corrompue en base ne doit pas faire tomber le serveur.
+    assert!(!verify_password("pas-un-hash-argon2", "quoi que ce soit"));
+}
+```
+
+- [ ] **Step 2: Lancer les tests — ils doivent échouer**
+
+Run: `cargo test admin::auth`
+Expected: FAIL — les fonctions n'existent pas
+
+- [ ] **Step 3: Implémenter le hachage**
+
+Utiliser `argon2::Argon2::default()` avec un sel aléatoire par mot de passe
+(`SaltString::generate`). `verify_password` retourne `false` sur un hash
+illisible plutôt que de propager une erreur — le point 4 le teste.
+
+- [ ] **Step 4: Écrire les tests de session**
+
+```rust
+#[actix_web::test]
+async fn le_bon_mot_de_passe_ouvre_une_session() {
+    let (pool, app) = app_admin_avec_compte("martin", "bon-mot-de-passe").await;
+    let req = test::TestRequest::post().uri("/admin/login")
+        .set_form(&[("username", "martin"), ("password", "bon-mot-de-passe")])
+        .to_request();
+    let resp = test::call_service(&app, req).await;
+    assert_eq!(resp.status(), 302);
+    assert!(resp.headers().contains_key("set-cookie"));
+}
+
+#[actix_web::test]
+async fn un_mauvais_mot_de_passe_n_ouvre_pas_de_session() {
+    let (_pool, app) = app_admin_avec_compte("martin", "bon-mot-de-passe").await;
+    let req = test::TestRequest::post().uri("/admin/login")
+        .set_form(&[("username", "martin"), ("password", "faux")])
+        .to_request();
+    let resp = test::call_service(&app, req).await;
+    assert_eq!(resp.status(), 401);
+    assert!(!resp.headers().contains_key("set-cookie"));
+}
+
+#[actix_web::test]
+async fn le_message_ne_distingue_pas_utilisateur_inconnu_et_mot_de_passe_faux() {
+    // Sinon un attaquant énumère les comptes existants.
+    let (_pool, app) = app_admin_avec_compte("martin", "bon").await;
+    let corps = |u, p| async move { /* poster et lire le corps */ };
+    assert_eq!(corps("martin", "faux").await, corps("inconnu", "faux").await);
+}
+
+#[actix_web::test]
+async fn admin_sans_session_redirige_vers_login() {
+    let (_pool, app) = app_admin_avec_compte("martin", "bon").await;
+    let req = test::TestRequest::get().uri("/admin").to_request();
+    let resp = test::call_service(&app, req).await;
+    assert_eq!(resp.status(), 302);
+    assert_eq!(resp.headers().get("location").unwrap(), "/admin/login");
+}
+```
+
+- [ ] **Step 5: Implémenter la session**
+
+`actix-session` 0.11 avec `CookieSessionStore`, clé depuis `SESSION_KEY`.
+Cookie : `HttpOnly`, `Secure`, `SameSite=Lax`, 7 jours.
+
+Note sur `Secure` : le cookie ne sera pas transmis en HTTP simple. En
+développement local sur `http://127.0.0.1`, prévoir un moyen de le désactiver
+(variable d'environnement) — sinon la connexion est impossible hors HTTPS.
+Documenter ce point, il fera perdre du temps sinon.
+
+**Comparaison à temps constant** : `verify_password` d'argon2 la fait déjà. Ne
+pas comparer les hashs à la main avec `==`.
+
+- [ ] **Step 6: Vérifier de bout en bout**
+
+```bash
+cargo run --bin create-admin   # crée le compte en interactif
+cargo run
+curl -i -X POST -d "username=martin&password=..." http://127.0.0.1:8090/admin/login
+```
+
+Expected: 302, cookie `Set-Cookie` présent. Puis `/admin` avec ce cookie → 200.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add -A && git commit -m "feat: authentification de l'admin"
+```
+
+---
 
 ### Task 13: Protections du login
-- Rate-limit : 5 tentatives par IP par 15 minutes, en mémoire
-- Jeton CSRF sur tous les POST
-- Tests : 6ᵉ tentative → 429 ; POST sans jeton CSRF → 403
+
+**Files:**
+- Create: `backend/src/admin/csrf.rs`
+- Modify: `backend/src/admin/auth.rs`, `backend/src/main.rs`, `templates/admin/*.html`
+
+**Interfaces:**
+- Consumes: `RateLimiter` (déjà en place, `routes/api_contact.rs`)
+- Produces: `csrf::generate(&Session) -> String`, `csrf::verify(&Session, &str) -> bool`
+
+**Réutiliser le `RateLimiter` existant**, avec `new(5, Duration::from_secs(900))`
+et une instance distincte de celle du formulaire de contact — un attaquant du
+login ne doit pas consommer le quota des visiteurs légitimes.
+
+**Le jeton CSRF** est stocké en session et injecté dans chaque formulaire admin.
+Tout POST sans jeton valide est refusé en 403.
+
+- [ ] **Step 1: Tests**
+
+```rust
+#[actix_web::test]
+async fn la_sixieme_tentative_est_refusee() { /* 5 échecs puis 429 */ }
+
+#[actix_web::test]
+async fn le_rate_limit_du_login_est_independant_de_celui_du_contact() {
+    // Épuiser le quota de /api/contact ne doit pas bloquer /admin/login.
+}
+
+#[actix_web::test]
+async fn un_post_sans_jeton_csrf_est_refuse() { /* 403 */ }
+
+#[actix_web::test]
+async fn un_jeton_csrf_d_une_autre_session_est_refuse() {
+    // Un jeton valide en soi mais issu d'une autre session ne doit pas passer.
+}
+```
+
+- [ ] **Step 2 à 4** : rouge, implémentation, vert. Preuve par sabotage :
+désactiver la vérification CSRF doit faire échouer les tests correspondants.
+
+- [ ] **Step 5: Commit**
+
+---
 
 ### Task 14: CRUD projets et articles
-- `/admin/projects`, `/new`, `/{id}/edit`, `POST /{id}/delete` ; idem articles
-- Gestion des tags (création à la volée, purge des orphelins)
-- Tests : création → visible sur `/projets` ; `published=0` → absent du site public et du sitemap ; suppression → 404 sur le détail
 
-### Task 15: CRUD données personnelles + invalidation du cache
-- `/admin/career`, `/skills`, `/testimonials`, `/companies` avec boutons ↑/↓ sur `sort_order`
-- **Chaque écriture appelle `PromptCache::invalidate()`**
-- Tests : réordonner change l'ordre sur la page publique ; modifier un témoignage change le prompt au message suivant (le test le plus important de la phase)
+**Files:**
+- Create: `backend/src/admin/content.rs`
+- Create: `backend/templates/admin/{projects_list,project_form,posts_list,post_form}.html`
+- Modify: `backend/src/db/content.rs` (fonctions d'écriture), `backend/src/admin/mod.rs`
+
+**Interfaces:**
+- Produces: `content::create_project`, `update_project`, `delete_project`, et les équivalents articles
+- Produces: `content::list_all_projects` — **y compris les non publiés**, contrairement à `list_projects`
+- Produces: `GET /admin/projects`, `/new`, `/{id}/edit` ; `POST /admin/projects`, `/{id}`, `/{id}/delete`
+
+**Attention à un piège** : `list_projects` filtre `published = 1`. L'admin doit
+voir les brouillons — d'où une fonction distincte. Ne pas modifier la fonction
+publique, un test vérifie qu'elle exclut les non publiés.
+
+**Les tags.** Créer à la volée ceux qui n'existent pas, et purger les orphelins
+après suppression — sinon la table `tags` grossit indéfiniment. `sort_order`
+doit refléter l'ordre de saisie (le contrat établi au ruling 32).
+
+**L'éditeur** est un `<textarea>`, pas un éditeur riche. Un aperçu du rendu
+Markdown est calculé côté serveur à l'enregistrement.
+
+- [ ] **Step 1: Tests**
+
+```rust
+#[actix_web::test]
+async fn un_projet_cree_apparait_sur_le_site_public() { }
+
+#[actix_web::test]
+async fn un_brouillon_est_invisible_publiquement_mais_visible_en_admin() {
+    // published = 0 : absent de /projets, du sitemap et du RSS,
+    // mais présent dans /admin/projects.
+}
+
+#[actix_web::test]
+async fn supprimer_un_projet_le_retire_du_site_et_purge_ses_tags_orphelins() { }
+
+#[actix_web::test]
+async fn l_ordre_des_tags_saisi_est_conserve() {
+    // Contrat du ruling 32 : sort_order suit l'ordre de saisie.
+}
+```
+
+- [ ] **Step 2 à 5** : cycle TDD, puis commit.
+
+---
+
+### Task 15: CRUD données personnelles et invalidation du cache
+
+**Files:**
+- Create: `backend/src/admin/personal.rs`
+- Create: `backend/templates/admin/{career,skills,testimonials,companies}.html`
+- Modify: `backend/src/db/personal.rs`, `backend/src/prompt.rs`
+
+**Interfaces:**
+- Produces: CRUD sur `career`, `skills`, `testimonials`, `companies`
+- Produces: réordonnancement par `sort_order` (boutons ↑/↓ en POST, pas de
+  drag-and-drop : il exigerait du JS et une API dédiée)
+
+**C'est la tâche la plus importante de la phase.** `PromptCache::invalidate()`
+existe depuis la Task 11 et n'a **jamais été appelé**. Sans lui, modifier un
+témoignage ne change rien à ce que dit Marvin : l'admin donnerait l'illusion de
+fonctionner.
+
+**Chaque écriture** sur ces quatre tables doit invalider le cache.
+
+**Le piège du regroupement de `list_skills`.** Documenté au ruling 16 et
+verrouillé par le test `list_skills_duplique_les_categories_non_contigues` : le
+regroupement est séquentiel, donc entrelacer deux catégories produit des
+doublons à l'affichage.
+
+L'admin permettant de réordonner, ce cas devient atteignable. Deux options —
+choisir et justifier :
+- interdire l'entrelacement dans l'interface (réordonner déplace un groupe entier)
+- ou passer `list_skills` à un regroupement par clé préservant l'ordre d'apparition
+
+Si tu changes `list_skills`, le test existant devra être mis à jour : il
+documente le comportement actuel, pas un comportement souhaité.
+
+- [ ] **Step 1: Le test le plus important de la phase**
+
+```rust
+#[actix_web::test]
+async fn modifier_un_temoignage_change_le_prompt_au_message_suivant() {
+    let cache = PromptCache::default();
+    let p1 = cache.get_or_build(&pool).await.unwrap();
+    assert!(p1.contains("Hugo"));
+
+    // Écriture via l'admin
+    poster_admin("/admin/testimonials/1", &[("name", "Hugo Modifié"), ...]).await;
+
+    let p2 = cache.get_or_build(&pool).await.unwrap();
+    assert!(p2.contains("Hugo Modifié"), "le cache n'a pas été invalidé");
+}
+```
+
+**Preuve exigée** : retirer l'appel à `invalidate()` doit faire échouer ce test.
+S'il passe quand même, il ne teste rien.
+
+- [ ] **Step 2 à 6** : réordonnancement, CRUD des quatre tables, cycle TDD, commit.
+
+---
 
 ### Task 16: Messages de contact
-- `/admin/messages` : liste, marquage lu/non-lu, suppression
-- Tests : un message envoyé via l'API apparaît ; le marquage persiste
+
+**Files:**
+- Create: `backend/src/admin/messages.rs`, `backend/templates/admin/messages.html`
+- Modify: `backend/src/db/contact.rs`
+
+**Interfaces:**
+- Produces: `contact::list_messages`, `mark_read`, `delete_message`
+- Produces: `GET /admin/messages`, `POST /admin/messages/{id}/read`, `/{id}/delete`
+
+La colonne `read_at` existe depuis la migration `0001` et n'a jamais servi.
+
+**Le contenu est écrit par des tiers** : il doit être échappé à l'affichage.
+Askama le fait par défaut sur les templates `.html`, mais un test doit le
+verrouiller — un message contenant `<script>` ne doit pas s'exécuter dans
+l'admin.
+
+- [ ] **Step 1: Tests**
+
+```rust
+#[actix_web::test]
+async fn un_message_envoye_apparait_dans_l_admin() { }
+
+#[actix_web::test]
+async fn le_marquage_lu_persiste() { }
+
+#[actix_web::test]
+async fn un_message_contenant_du_html_est_echappe() {
+    // Contenu de tiers : jamais interprété.
+}
+```
+
+- [ ] **Step 2 à 4** : cycle TDD, commit.
+
+---
 
 ### Task 17: Upload d'images
-- `POST /admin/upload` multipart, validation MIME (png/jpeg/webp/svg), plafond 5 Mo, nom de fichier assaini
-- Tests : un fichier valide est stocké et servi ; un `.exe` renommé `.png` est refusé ; un fichier de 6 Mo est refusé
+
+**Files:**
+- Create: `backend/src/admin/upload.rs`
+- Modify: `backend/Cargo.toml` (actix-multipart 0.8), `templates/admin/project_form.html`
+
+**Interfaces:**
+- Produces: `POST /admin/upload` (multipart) → `{"url": "/static/projects/…"}`
+
+**Sans upload, l'admin perd son intérêt** : ajouter un projet exigerait de
+déposer un fichier en SSH.
+
+**Où écrire.** Les assets sont désormais versionnés dans `frontend/public/` et
+copiés vers `backend/static/` au build (revue finale). Un upload qui n'écrirait
+que dans `static/` serait **perdu au prochain build**.
+
+Décider et justifier : écrire dans `frontend/public/projects/` (versionnable,
+mais mélange contenu et sources), ou dans un dossier persistant distinct servi
+en plus de `static/`. La spec §9 prévoit un volume persistant en production —
+la seconde option s'y prête mieux.
+
+**Validations, toutes testées :**
+- type MIME réel, déduit du contenu et non de l'extension ni du `Content-Type`
+  déclaré — un `.exe` renommé `.png` doit être refusé
+- plafond 5 Mo
+- nom de fichier assaini : ni `..`, ni `/`, ni caractère de contrôle
+
+- [ ] **Step 1: Tests**
+
+```rust
+#[actix_web::test]
+async fn un_png_valide_est_stocke_et_servi() { }
+
+#[actix_web::test]
+async fn un_executable_renomme_en_png_est_refuse() {
+    // Les octets ne mentent pas, l'extension si.
+}
+
+#[actix_web::test]
+async fn un_fichier_de_six_mo_est_refuse() { }
+
+#[actix_web::test]
+async fn un_nom_de_fichier_avec_traversee_est_assaini() {
+    // "../../etc/passwd.png" ne doit pas sortir du dossier d'upload.
+}
+
+#[actix_web::test]
+async fn l_upload_exige_une_session_admin() {
+    // Sans session : 302 vers login, jamais d'écriture.
+}
+```
+
+- [ ] **Step 2 à 5** : cycle TDD, vérification qu'un fichier uploadé est bien
+servi, commit.
 
 ---
 
