@@ -1863,6 +1863,42 @@ async fn wargames_monte_l_ilot_de_jeu() {
 Run: `cargo test routes::pages`
 Expected: FAIL — les handlers n'existent pas encore
 
+**Images de projets — décision de l'utilisateur.**
+
+Les images sont cassées sur le site source : les 12 `.jpg` référencés n'existent
+pas, et `amiqo.md` pointe vers `/public/projects/amiqo.png` alors qu'Astro sert
+`public/` à la racine (chemin correct : `/projects/amiqo.png`). S'y ajoute un
+décalage propre à la nouvelle stack : le serveur sert ses assets sous `/static/`.
+
+L'utilisateur a choisi une **image de remplacement** plutôt que de masquer le
+bloc : la grille garde des cartes de hauteur uniforme.
+
+Implémentation retenue, au plus près de l'existant : le conteneur
+`aspect-video` de `ApercuProjets.astro` enveloppe déjà l'`<img>` dans un
+`<span class="text-4xl">`, prévu pour un caractère de remplacement. On garde ce
+conteneur et on y affiche **les initiales du projet** (deux lettres, tirées du
+titre) quand l'image est absente ou introuvable :
+
+```html
+<div class="aspect-video mb-4 flex items-center justify-center"
+     style="background: var(--accent-soft); border: 1px solid var(--border);">
+  {% match image_url %}
+    {% when Some with (url) %}
+      <img src="{{ url }}" alt="{{ p.title }}" class="w-full h-full object-cover" />
+    {% when None %}
+      <span class="text-4xl font-mono" style="color: var(--ink-faint);">{{ initiales }}</span>
+  {% endmatch %}
+</div>
+```
+
+Le handler résout le chemin : il normalise `/public/projects/x.png` et
+`/projects/x.png` vers `/static/projects/x.png`, puis vérifie que le fichier
+existe sur disque. S'il n'existe pas, `None` — le fallback s'affiche. Cela
+corrige au passage le chemin d'`amiqo`, dont l'image existe réellement.
+
+Un test doit couvrir les trois cas : image présente, image déclarée mais
+fichier absent, aucune image déclarée.
+
 - [ ] **Step 3: Implémenter les six handlers**
 
 Chaque handler suit le même schéma que `index`. Pour les pages de détail :
