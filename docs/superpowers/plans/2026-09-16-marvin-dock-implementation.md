@@ -2797,10 +2797,23 @@ export default function MarvinDock({ peekLines = SANS_REPLIQUE }: MarvinDockProp
     [chemin, suppressPeek]
   );
 
+  // Le focus ne peut pas revenir dans la même passe que la fermeture : React
+  // n'a pas encore committé, le panneau est toujours monté, et sous 640 px la
+  // règle `.marvin-dock:has(.marvin-panneau) .marvin-pastille { display: none }`
+  // s'applique donc encore. focus() sur un élément display:none ne fait rien et
+  // ne se rejoue pas. On attend le commit.
+  const focusARendre = useRef(false);
+
   const fermer = useCallback(() => {
+    focusARendre.current = true;
     setOuvert(false);
-    pastilleRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    if (ouvert || !focusARendre.current) return;
+    focusARendre.current = false;
+    pastilleRef.current?.focus();
+  }, [ouvert]);
 
   useEffect(() => {
     if (!ouvert) return;
@@ -3148,6 +3161,7 @@ Lancer `astro dev --background`, puis vérifier une à une :
 | §12.4 | Au clavier seul : Tab jusqu'à la pastille, Entrée pour ouvrir, le focus arrive dans le champ, taper puis Entrée pour envoyer, Échap pour fermer, le focus revient sur la pastille. |
 | §12.6 | Activer « Réduire les animations » dans les réglages système : aucune bulle même après 30 s, pas d'animation d'ouverture, le texte des réponses apparaît d'un bloc. |
 | §12.7 | Émuler un iPhone dans les outils de développement : le panneau devient une feuille pleine largeur ; au focus dans le champ avec clavier logiciel émulé, la saisie reste visible. |
+| §12.4 mobile | **Toujours sous 640 px**, fermer la feuille (Échap, puis la croix du panneau) et vérifier que le focus revient bien sur la pastille et non sur `<body>`. jsdom n'évalue pas la feuille de style, donc aucun test automatisé ne couvre ce chemin : c'est la seule vérification possible. |
 | Erreur | Passer hors ligne dans l'onglet Réseau, envoyer un message : « connexion perdue » apparaît, l'historique est conservé, « Réessayer » relance sans dupliquer le message. |
 | `/contact` | Aucune bulle, même après 30 s. Le dock reste ouvrable. |
 | `/wargames` | Aucun dock — la page est hors layout, c'est attendu. |
