@@ -65,7 +65,7 @@ La vérification de chaque tâche passe donc par `bun run test` (inchangé à 11
   monte dans `BaseLayout`.
 - Produit les classes CSS `.menu-burger`, `.menu-panneau`, `.menu-lien`,
   `.menu-lien--actif`, `.menu-contact`, l'animation `menu-apparition`, et la
-  variable `--nav-h` (84 px), que la tâche 2 replie à 70 px sous 767 px.
+  variable `--nav-h` (84 px), que la tâche 2 replie à 76 px sous 767 px.
 
 Cette tâche ne change **rien** au site : le composant existe mais n'est monté
 nulle part. C'est volontaire — elle concentre toute la logique, et se relit
@@ -254,10 +254,13 @@ export default function MenuMobile() {
   box-shadow: inset 2px 2px 0 0 var(--blue), -2px -2px 0 0 var(--blue);
 }
 
-/* Hauteur réelle de la barre de nav : le logo plus deux fois le retrait
-   vertical de `py-4`. Déclarée ici parce que c'est `.menu-panneau` qui la
-   consomme ; la tâche 2 la redéfinit sous le point de rupture, en même temps
-   que la taille du logo, pour que les deux ne puissent pas diverger. */
+/* Hauteur réelle de la barre : son plus grand enfant visible, plus deux fois le
+   retrait vertical de `py-4`. Ici, au-dessus du point de rupture, le bouton du
+   menu est masqué, donc c'est le logo qui décide : 52 + 32 = 84. En dessous
+   c'est le bouton (44 px) qui l'emporte sur le logo réduit à 38 — la tâche 2 y
+   replie la variable. Déclarée ici parce que c'est `.menu-panneau` qui la
+   consomme comme retrait haut, d'où l'importance de ne pas se tromper
+   d'enfant. */
 :root {
   --nav-h: 84px;
 }
@@ -372,7 +375,11 @@ le point de rupture. À la fin de `src/styles/retro.css` :
 }
 
 @media (max-width: 767px) {
-  :root { --nav-h: 70px; }
+  /* 76 et non 70 : sous ce point de rupture la barre est un `flex` en
+     `items-center` dont le plus grand enfant visible est le bouton du menu
+     (44 px), le logo tombant à 38. Les liens de bureau sont `display: none` et
+     ne comptent pas. 44 + 2×16 = 76. */
+  :root { --nav-h: 76px; }
   .nav-logo { height: 38px; }
 }
 ```
@@ -600,10 +607,17 @@ le HTML servi — il n'existe qu'après un clic.
 grep -o "\-\-nav-h:[^;]*" dist/client/_astro/BaseLayout*.css
 ```
 
-Attendu : deux valeurs, `84px` puis `70px`. Vérifier ensuite à la main que
-`70px` correspond bien au logo mobile plus deux fois le retrait : `38 + 2×16 =
-70`. Si la valeur du logo a été changée sans celle de `--nav-h`, le panneau
-recouvrira la barre ou laissera un blanc.
+Attendu : deux valeurs, `84px` puis `76px`.
+
+Vérifier ensuite l'arithmétique à la main, en prenant **le plus grand enfant
+visible** de la barre et non le logo :
+
+- au-dessus de 767 px le bouton est masqué, donc c'est le logo : `52 + 2×16 = 84` ;
+- en dessous le bouton du menu fait 44 px et l'emporte sur le logo réduit à
+  38 px, les liens de bureau étant `display: none` : `44 + 2×16 = 76`.
+
+Se tromper d'enfant est l'erreur naturelle ici, et elle fait que le panneau
+recouvre la barre ou laisse un blanc.
 
 - [ ] **Étape 4 : Parcours manuel dans le navigateur**
 
