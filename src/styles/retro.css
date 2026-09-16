@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
   --bg: oklch(98% 0.01 95);
@@ -11,6 +11,20 @@
   --blue: oklch(62% 0.19 250);
   --border: oklch(90% 0.01 95);
   --card-bg: #fff;
+  /* Dock MARVIN-42. Valeurs du brief §5, sauf --marvin-placeholder :
+     le #2A4C38 d'origine tombe à 2,0:1 sur --marvin-surface, sous le
+     4,5:1 exigé par WCAG 1.4.3 pour un texte porteur d'information.
+     #5C8F71 vaut 4,6:1 en gardant la même teinte vert sourd. */
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --marvin-pill-bg: #0F1C17;
+  --marvin-pill-fg: #B9F6CE;
+  --marvin-surface: #05120C;
+  --marvin-border: #1E3A2A;
+  --marvin-fg: #35D97A;
+  --marvin-user: #6FE3FF;
+  --marvin-placeholder: #5C8F71;
+  --marvin-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --marvin-z: 40;
 }
 
 @layer base {
