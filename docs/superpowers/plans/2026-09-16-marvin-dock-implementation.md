@@ -327,7 +327,7 @@ git commit -m "feat: emet les evenements d'usage du dock via CustomEvent"
     `PEEK_SESSION_CAP = 3`, `OPTOUT_MS`, `PEEK_KEY = 'marvin.peek'`,
     `OPTOUT_KEY = 'marvin.peek.optout'`
   - `interface PeekState { pages: string[]; lines: string[]; count: number; off: boolean }`
-  - `EMPTY_PEEK_STATE: PeekState`
+  - `emptyPeekState(): PeekState` (copie fraîche) et `EMPTY_PEEK_STATE: PeekState`
 
   - `readPeekState(): PeekState`
   - `writePeekState(state: PeekState): void`
@@ -530,17 +530,24 @@ export interface PeekState {
   off: boolean;
 }
 
-export const EMPTY_PEEK_STATE: PeekState = {
-  pages: [],
-  lines: [],
-  count: 0,
-  off: false,
-};
+/**
+ * État vide, toujours rendu en copie fraîche.
+ *
+ * Partager une seule instance exposerait ses tableaux : un appelant qui
+ * ferait `state.pages.push(...)` au lieu d'un spread corromprait la notion
+ * même d'« aucun état stocké » pour tout le reste de la session.
+ */
+export function emptyPeekState(): PeekState {
+  return { pages: [], lines: [], count: 0, off: false };
+}
+
+/** Repère de comparaison pour les tests. Ne jamais muter. */
+export const EMPTY_PEEK_STATE: PeekState = emptyPeekState();
 
 export function readPeekState(): PeekState {
   try {
     const brut = sessionStorage.getItem(PEEK_KEY);
-    if (!brut) return EMPTY_PEEK_STATE;
+    if (!brut) return emptyPeekState();
 
     const lu = JSON.parse(brut) as Partial<PeekState>;
     return {
@@ -552,7 +559,7 @@ export function readPeekState(): PeekState {
   } catch {
     // JSON corrompu ou stockage inaccessible : on repart d'un état vide
     // plutôt que de priver le visiteur du dock entier.
-    return EMPTY_PEEK_STATE;
+    return emptyPeekState();
   }
 }
 
@@ -629,7 +636,7 @@ export function choosePeekLine(
 - [ ] **Étape 4 : Lancer le test pour vérifier qu'il passe**
 
 Commande : `bun run test src/components/chatbot/usePeek.test.ts`
-Attendu : 22 tests au vert.
+Attendu : 21 tests au vert (4 + 5 + 12).
 
 - [ ] **Étape 5 : Commit**
 
