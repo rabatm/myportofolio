@@ -189,8 +189,12 @@ Transitions sortantes :
 Le fil accepte une troisième nature de message, `error`, rendue
 « connexion perdue » avec un bouton **Réessayer** qui renvoie le dernier
 message du visiteur. L'historique n'est jamais vidé. Les entrées `error`
-sont exclues du contexte envoyé à Groq, comme le sont déjà les entrées
-`auto` (`ChatBot.tsx:132`).
+sont exclues du contexte envoyé à Groq, sur le modèle du filtre `auto`
+existant (`ChatBot.tsx:132`).
+
+La notion de message `auto` disparaît : avec D1 les répliques contextuelles
+passent par la bulle, et avec D4 le panneau s'ouvre sur une phrase
+constante — plus aucun commentaire automatique n'entre dans le fil.
 
 ### 6.4 Analytics
 
@@ -317,6 +321,22 @@ Premier message du panneau (D4), constant :
 > Assistant portfolio. Pose-moi des questions, ou pas. Ça ne changera pas
 > grand-chose à mon état.
 
+## 10.1 Comportements existants à préserver
+
+Deux fonctions vivent aujourd'hui dans `ChatBot.tsx` et ne sont
+mentionnées nulle part dans le brief. Le §4 excluant toute modification du
+moteur de réponse, elles doivent survivre à la refonte :
+
+- le marqueur `[LANCER_JEU]` renvoyé par l'API déclenche une redirection
+  vers `/wargames` après 2,2 s, marqueur retiré du texte affiché
+  (`ChatBot.tsx:146-155`) ;
+- tous les quinze messages du visiteur, MARVIN ajoute « SESSION LONGUE
+  DÉTECTÉE. MÉMOIRE À COURT TERME UNIQUEMENT. » (`ChatBot.tsx:157-164`).
+
+Les préfixes `> ` et `$ ` sont en revanche déplacés du modèle vers le
+rendu. Ils sont aujourd'hui concaténés au contenu stocké, donc envoyés à
+Groq dans l'historique — un bruit inutile que la refonte supprime.
+
 ## 11. Tests
 
 Premier dispositif de test du projet : `vitest` et
@@ -340,8 +360,8 @@ Premier dispositif de test du projet : `vitest` et
 - plafond de 40 messages ;
 - une erreur réseau ajoute une entrée `error` sans vider l'historique ;
 - « Réessayer » renvoie le dernier message du visiteur ;
-- les entrées `error` et `auto` sont exclues de la charge envoyée à
-  l'API.
+- les entrées `error` sont exclues de la charge envoyée à l'API, qui ne
+  retient que les six derniers messages.
 
 Les composants de rendu restent vérifiés à l'œil.
 
