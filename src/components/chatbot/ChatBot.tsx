@@ -49,8 +49,6 @@ export default function ChatBot({ pageLine, sectionLines }: ChatBotProps) {
   const [typingIndex, setTypingIndex] = useState<number | null>(0);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [gameProposed, setGameProposed] = useState(false);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,13 +67,8 @@ export default function ChatBot({ pageLine, sectionLines }: ChatBotProps) {
     commentedRef.current.add(key);
     lastCommentRef.current = Date.now();
 
-    // Marvin reprend la parole : on repousse la proposition de jeu, qui ne doit
-    // pas interrompre un commentaire en cours d'écriture.
-    if (idleRef.current) clearTimeout(idleRef.current);
-
     setMessages(prev => {
       setTypingIndex(prev.length);
-      // Un commentaire automatique ne doit pas relancer le timer du jeu.
       return [...prev, { role: 'assistant', content: `> ${line}`, auto: true }];
     });
   }, []);
@@ -110,26 +103,9 @@ export default function ChatBot({ pageLine, sectionLines }: ChatBotProps) {
     return () => observer.disconnect();
   }, [sectionLines, comment]);
 
-  /**
-   * @param auto true si le message qui vient de s'afficher est un commentaire
-   *   de navigation. Dans ce cas on ne relance pas le timer : la proposition de
-   *   jeu ne doit surgir qu'après un vrai échange, pas pendant que Marvin parle
-   *   tout seul au fil du scroll.
-   */
   const handleTypeDone = useCallback((auto = false) => {
     setTypingIndex(null);
-    if (auto) return;
-
-    inputRef.current?.focus();
-    if (idleRef.current) clearTimeout(idleRef.current);
-    idleRef.current = setTimeout(() => {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: '> Veux-tu jouer à un jeu, Dave ? tape OUI ou NON.',
-      }]);
-      setGameProposed(true);
-    }, 10000);
-    // stable — refs + setState only
+    if (!auto) inputRef.current?.focus();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -137,20 +113,6 @@ export default function ChatBot({ pageLine, sectionLines }: ChatBotProps) {
     if (!input.trim() || isLoading) return;
 
     setTypingIndex(null);
-
-    if (idleRef.current) clearTimeout(idleRef.current);
-    if (gameProposed) {
-      const answer = input.trim().toLowerCase();
-      if (answer.startsWith('oui')) {
-        window.location.href = '/wargames';
-        return;
-      }
-      if (answer.startsWith('non')) {
-        setGameProposed(false);
-      }
-      // sinon (ex: "jouer à quoi ?") on laisse la proposition active
-      // et on transmet la question au LLM normalement
-    }
 
     const userMsg: Message = { role: 'user', content: `$ ${input}` };
     const newMessages = [...messages, userMsg];
@@ -258,10 +220,7 @@ export default function ChatBot({ pageLine, sectionLines }: ChatBotProps) {
           ref={inputRef}
           type="text"
           value={input}
-          onChange={e => {
-            setInput(e.target.value);
-            if (idleRef.current) clearTimeout(idleRef.current);
-          }}
+          onChange={e => setInput(e.target.value)}
           placeholder="Écris un message..."
           disabled={isLoading}
           className="flex-1 bg-transparent border-none text-sm font-mono outline-none"
