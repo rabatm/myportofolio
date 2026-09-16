@@ -35,7 +35,7 @@ implémentation :
 3. les sections ;
 4. le dock.
 
-Cette spec traite la nav, et **inclut en annexe (§7) la pastille mobile du
+Cette spec traite la nav, et **inclut en annexe (§8) la pastille mobile du
 dock** : la décision a été prise dans la même conversation, elle tient en une
 poignée de lignes de CSS, et lui consacrer un cycle complet serait
 disproportionné. Le reste du sous-chantier dock garde le sien.
@@ -105,26 +105,14 @@ quel — vert `--accent` au repos, bleu `--blue` une fois ouvert, comme le fait
 déjà `retro-border:hover`. Glyphe `≡` puis `✕`, JetBrains Mono.
 
 **Panneau** : fond `var(--bg)` **opaque** — translucide serait illisible
-par-dessus les sections colorées. Il couvre `inset: 0` avec un
-`padding-top` égal à la hauteur de la barre.
+par-dessus les sections colorées. Il couvre `inset: 0` avec un `padding-top`
+égal à la hauteur de la barre.
 
-Cette hauteur n'est pas une constante : elle vaut le logo plus deux fois le
-retrait vertical, et le logo change de taille au point de rupture. On déclare
-donc **`--nav-h`** dans `:root`, on l'applique à la `min-height` de la barre et
-au `padding-top` du panneau, et on la redéfinit dans la media query en même
-temps que la taille du logo. Une seule valeur à changer, jamais deux à tenir
-d'accord. Liens en
-JetBrains Mono 15 px, 44 px de haut minimum, séparés par
+**Liens** : JetBrains Mono 15 px, 44 px de haut minimum, séparés par
 `1px solid var(--border)`, chevron `>` en `--accent` — écho au terminal de
-MARVIN, et distinction visuelle entre navigation et contenu. Lien de la page courante en
-`--accent`.
-
-**Attention** : déterminer la page courante suppose de lire
-`window.location.pathname`, ce que le contrat `client:idle` interdit pendant le
-rendu. Le chemin se lit dans un effet de montage et vaut `''` au premier
-rendu — donc aucun lien n'est marqué actif côté serveur, et le marquage
-apparaît après hydratation. `MarvinDock` applique déjà exactement ce motif pour
-son `chemin` : le reprendre tel quel. Contact garde sa pilule `.btn-retro`, en bas de liste.
+MARVIN, et distinction visuelle entre navigation et contenu. Le lien de la page
+courante est en `--accent`. Contact garde sa pilule `.btn-retro`, en bas de
+liste.
 
 **Animation** : fondu et translation de 8 px sur 200 ms, le vocabulaire déjà
 employé par la bulle du dock. Supprimée sous `prefers-reduced-motion`.
@@ -132,6 +120,22 @@ employé par la bulle du dock. Supprimée sous `prefers-reduced-motion`.
 **Logo : 52 → 38 px** sous le point de rupture. À 52 px la barre mange 84 px de
 hauteur sur un écran de 667. **C'est le seul choix de cette spec dont la valeur
 reste à confirmer à l'œil** une fois en place.
+
+### 7.1 La hauteur de barre est une variable, pas une constante
+
+Elle vaut le logo plus deux fois le retrait vertical, et le logo change de
+taille au point de rupture. On déclare donc **`--nav-h`** dans `:root`, on
+l'applique à la `min-height` de la barre et au `padding-top` du panneau, et on
+la redéfinit dans la media query en même temps que la taille du logo. Une seule
+valeur à changer, jamais deux à tenir d'accord.
+
+### 7.2 Le lien actif ne peut pas être déterminé au rendu
+
+Déterminer la page courante suppose de lire `window.location.pathname`, ce que
+le contrat `client:idle` interdit pendant le rendu. Le chemin se lit dans un
+effet de montage et vaut `''` au premier rendu : aucun lien n'est donc marqué
+actif côté serveur, et le marquage apparaît après hydratation. `MarvinDock`
+applique déjà exactement ce motif pour son `chemin` — le reprendre tel quel.
 
 ## 8. Annexe : la pastille mobile du dock
 
