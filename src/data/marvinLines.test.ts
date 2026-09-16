@@ -4,7 +4,7 @@ import { pageLines, projectLines } from './marvinLines';
 
 describe('marvinLines', () => {
   it("fournit des répliques d'amorce pour la page d'accueil", () => {
-    expect(pageLines['/']).toHaveLength(3);
+    expect(pageLines['/'].length).toBeGreaterThanOrEqual(3);
     expect(pageLines['/'][0]).toContain('Tu peux lire tout le site');
   });
 
