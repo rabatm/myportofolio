@@ -39,7 +39,7 @@ Ce mécanisme suppose un terminal visible en permanence.
 | # | Décision | Motif |
 |---|---|---|
 | D1 | La bulle est la surface d'affichage de `marvinLines` | Source unique pour les répliques ; pas de seconde liste à maintenir |
-| D2 | La palette du §5 remplace le cyan-néon actuel | `#35D97A` sur `#05120C` passe WCAG AA, `#39ff14` non |
+| D2 | La palette du §5 remplace le cyan-néon actuel | Sobriété : le néon saturé fatigue sur un panneau qu'on garde ouvert. Contraste : les deux palettes passent AAA (§7.1) |
 | D3 | L'effet de frappe est conservé mais borné | Identité de MARVIN, sans pénaliser la lecture des réponses longues |
 | D4 | Le panneau s'ouvre toujours sur la phrase de présentation | Comportement constant et prévisible, indépendant du chemin d'ouverture |
 | D5 | Analytics via `CustomEvent`, pas de tiers | Zéro dépendance ; un listener de trois lignes suffira le jour venu |
@@ -66,6 +66,11 @@ inchangés. Aucune refonte du hero. Aucun changement sur `/wargames`.
   « toutes les pages » se lit donc « toutes les pages du layout ».
   Corollaire : `pageLines['/wargames']` n'est lu par personne — code
   mort, à supprimer.
+- `/contact` n'aura jamais de bulle (§4 du brief : ne pas concurrencer le
+  formulaire). `contact.astro` cesse donc de passer `peekLines`, et
+  `pageLines['/contact']` rejoint le code mort à supprimer. La condition
+  correspondante de §6.2 est conservée comme garde-fou, au cas où la page
+  repasserait des répliques un jour.
 - `/blog/[slug]` ne passe aucune réplique (`blog/[slug].astro:17`). Les
   articles n'auront pas de bulle. Le mécanisme les acceptera sans
   modification de code : il suffira d'ajouter des lignes dans
@@ -211,10 +216,30 @@ styles inline comme aujourd'hui.
 | Empilement | `z-40` pour tout le dock, feuille mobile comprise |
 | Pastille | 48 px, fond `#0F1C17`, glyphe `$_` en `#B9F6CE`, 15 px |
 | Bulle / panneau | fond `#05120C`, bordure `#1E3A2A`, rayon 12 px, ombre basse et large |
-| Texte MARVIN | `#35D97A` — saisie visiteur `#6FE3FF` — placeholder `#2A4C38` |
+| Texte MARVIN | `#35D97A` — saisie visiteur `#6FE3FF` — placeholder `#5C8F71` (voir §7.1) |
 | Typographie | JetBrains Mono 13 px, interligne 1,7 — jamais sous 13 px |
 | Cibles tactiles | pastille, croix, bouton d'envoi : 44 px minimum |
 | Panneau | 360 × 480 px |
+
+### 7.1 Contrastes mesurés
+
+| Paire | Ratio | Verdict |
+|---|---|---|
+| `#B9F6CE` sur `#0F1C17` (glyphe de la pastille) | 14,3:1 | AAA |
+| `#35D97A` sur `#05120C` (texte MARVIN) | 10,3:1 | AAA |
+| `#6FE3FF` sur `#05120C` (saisie visiteur) | 12,8:1 | AAA |
+| `#2A4C38` sur `#05120C` (placeholder) | **2,0:1** | **échoue AA** |
+
+Le placeholder du §5 est inutilisable tel quel : à 2,0:1 il est quasiment
+invisible, et WCAG 1.4.3 exige 4,5:1 dès lors qu'un texte porte de
+l'information — ce qui est le cas de « Écris un message… ». Correction
+retenue : **`#5C8F71`**, soit 4,6:1 sur `#05120C`, qui conserve la teinte
+vert sourd voulue par le brief tout en restant lisible. À signaler à
+Martin comme unique écart assumé aux valeurs du §5.
+
+Pour mémoire, la palette actuelle passait elle aussi largement : `#39ff14`
+sur `#0a0a0a` vaut 14,6:1. Le changement de D2 se justifie par la
+sobriété, pas par l'accessibilité.
 
 La nav est en `z-50` ; le dock est en bas à droite et ne la croise
 jamais. Le brief mentionne « sous la nav mobile ouverte » : il n'y a pas
