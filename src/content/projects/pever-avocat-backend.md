@@ -3,7 +3,7 @@ title: "Pever — API de gestion d'école de coaching juridique"
 date: 2026-06-01
 tags: ["Node.js", "TypeScript", "AdonisJS", "PostgreSQL"]
 description: "API REST pilotant une plateforme de coaching/école pour avocats avec gestion multi-rôles."
-image: "/projects/avocat-backend.jpg"
+image: "/projects/pever-avocat-backend/thumbnail.jpg"
 github: "https://github.com/rabatm/avocat_backend"
 ---
 

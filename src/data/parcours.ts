@@ -7,7 +7,19 @@ export interface ParcoursEntry {
 
 export const parcours: ParcoursEntry[] = [
   {
-    periode: '2026',
+    periode: 'Juillet—Août 2026',
+    titre: 'Tuteur — Piscine École 42 Perpignan',
+    entreprise: 'École 42 Perpignan',
+    desc: "Accompagnement des candidats de la Piscine (test d'admission) : aide au déblocage sur les bugs et erreurs de compilation, encouragement à la méthode (chercher, tester, déboguer soi-même) sans donner la solution, suivi de la progression et retours constructifs.",
+  },
+  {
+    periode: '2025—2026',
+    titre: 'Formateur logiciel de gestion commerciale (Shop & Co)',
+    entreprise: 'AMOPI',
+    desc: "Formations intra-entreprise (2 jours) pour les dirigeants et employés de magasins clients : back-office, achats/réceptions/retours fournisseurs, gestion des stocks et inventaires, fiches produits et recherche avancée, gestion des prix, étiquettes et gestion clients, statistiques de vente.",
+  },
+  {
+    periode: '01/2026—06/2026',
     titre: 'Développeur backend & DevOps',
     entreprise: 'AMOPI',
     desc: "Fiabilisation et migration d'une infrastructure de données critique : migration de passerelles PHP vers Python, dashboards Grafana/Prometheus pour le monitoring temps réel des flux de stocks multi-magasins, pipelines Jenkins et environnements Docker de pré-production.",
@@ -25,28 +37,10 @@ export const parcours: ParcoursEntry[] = [
     desc: 'Tronc commun validé, actuellement en spécialisation. Algorithmique en C, gestion bas niveau (mémoire, threads) : Minishell, Philosophers. Apprentissage approfondi de Rust en parallèle et participation à la Piscine Cyber.',
   },
   {
-    periode: '2015—2023',
-    titre: 'Administrateur systèmes',
-    entreprise: 'LCL',
-    desc: "Administration système et fiabilisation d'infrastructures bancaires critiques. Support niveau 3 et diagnostic de pannes complexes.",
-  },
-  {
-    periode: '2008—2015',
-    titre: 'Administrateur systèmes',
-    entreprise: 'Ministère de la Santé',
-    desc: "Exploitation et sécurisation de systèmes d'information sensibles. Scripting avancé (PowerShell/Bash) pour l'automatisation et les migrations massives (Active Directory, MS Exchange).",
-  },
-  {
-    periode: '2000—2008',
-    titre: 'Ingénieur systèmes',
-    entreprise: 'Steria',
-    desc: 'Infrastructure et support pour de grands comptes en environnement multi-clients. Industrialisation des déploiements (masters, WDS/MDT) et administration réseau (routeurs, NAT, pare-feu).',
-  },
-  {
-    periode: '1996—2000',
-    titre: 'Administrateur systèmes',
-    entreprise: 'Lafarge',
-    desc: "Débuts en infrastructure : premiers pas dans l'exploitation et l'administration système.",
+    periode: '2006—2022',
+    titre: 'Support et administration système',
+    entreprise: 'Lafarge, Steria, Ministère de la Santé, LCL, AMOPI',
+    desc: "Administration systèmes et support, de l'exploitation quotidienne jusqu'au support niveau 3 : sécurisation de systèmes sensibles, scripting d'automatisation (PowerShell/Bash) et migrations massives (Active Directory, MS Exchange), industrialisation des déploiements et administration réseau, diagnostic de pannes complexes.",
   },
   {
     periode: '2000',

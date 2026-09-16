@@ -78,5 +78,36 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
     <footer class="text-center py-8" style="color: var(--ink-faint); border-top: 1px solid var(--border);">
       <p class="text-sm">© 2026 Martin Info — Portfolio rétro 90s</p>
     </footer>
+
+    <div class="lightbox-overlay">
+      <button class="lightbox-close" aria-label="Fermer">✕</button>
+      <img alt="" />
+    </div>
   </body>
 </html>
+
+<script>
+  const overlay = document.querySelector<HTMLDivElement>('.lightbox-overlay')!;
+  const overlayImg = overlay.querySelector('img')!;
+
+  function close() {
+    overlay.classList.remove('is-open');
+  }
+
+  overlay.addEventListener('click', close);
+  overlay.querySelector('.lightbox-close')!.addEventListener('click', (e) => {
+    e.stopPropagation();
+    close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target instanceof HTMLImageElement && target.closest('.prose')) {
+      overlayImg.src = target.src;
+      overlayImg.alt = target.alt;
+      overlay.classList.add('is-open');
+    }
+  });
+</script>

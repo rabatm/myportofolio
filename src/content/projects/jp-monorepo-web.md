@@ -3,7 +3,7 @@ title: "Licence Web Portal — Portail étudiant (Next.js)"
 date: 2026-06-01
 tags: ["Next.js", "React", "TypeScript", "NextAuth.js", "Prisma", "Tailwind CSS"]
 description: "Portail étudiant Next.js avec authentification basée sur une base Django existante."
-image: "/projects/jp-monorepo-web.jpg"
+image: "/projects/jp-monorepo-web/thumbnail.jpg"
 ---
 
 Construite avec Next.js 15 (App Router) et React 19, cette application implémente une structure d'URL évolutive basée sur les rôles (`/student`, avec `/teacher`, `/admin`, `/coaching` prévus), à commencer par la connexion et le tableau de bord étudiant.

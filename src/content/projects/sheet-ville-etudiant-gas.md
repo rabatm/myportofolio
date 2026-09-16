@@ -3,7 +3,7 @@ title: "Sheet Ville Étudiant — Automatisation Google Sheets vers Calendar"
 date: 2026-06-01
 tags: ["Google Apps Script", "clasp", "Bash"]
 description: "Outil Google Apps Script qui synchronise automatiquement les emplois du temps depuis une feuille Google Sheets vers Google Calendar."
-image: "/projects/sheet-ville-etudiant-gas.jpg"
+image: "/projects/sheet-ville-etudiant-gas/thumbnail.jpg"
 github: "https://github.com/rabatm/JP_sheet_update"
 ---
 

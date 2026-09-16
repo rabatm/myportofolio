@@ -3,7 +3,7 @@ title: "Minouch Sync"
 date: 2026-06-01
 tags: ["Python", "SQLAlchemy", "PostgreSQL", "Architecture Hexagonale"]
 description: "Passerelle de synchronisation bidirectionnelle entre un ERP retail (BBSoft/PostgreSQL) et une plateforme e-commerce (API Minouch)."
-image: "/projects/minouch-sync.jpg"
+image: "/projects/minouch-sync/thumbnail.jpg"
 ---
 
 Minouch Sync est une passerelle de synchronisation bidirectionnelle entre **BBSoft**, un logiciel de gestion de magasin basé sur PostgreSQL, et **Minouch**, une API e-commerce dédiée aux listes de

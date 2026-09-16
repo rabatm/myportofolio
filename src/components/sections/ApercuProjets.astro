@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { hasImage, initials } from '../../utils/projectImage';
 
 export interface Props {
   projects: CollectionEntry<'projects'>[];
@@ -22,12 +23,16 @@ const displayed = sorted.slice(0, 4);
       displayed.map((p) => (
         <a href={`/projets/${p.id}`} class="card block no-underline">
           <div
-            class="aspect-video mb-4 flex items-center justify-center"
+            class="aspect-video mb-4 flex items-center justify-center overflow-hidden"
             style="background: var(--accent-soft); border: 1px solid var(--border);"
           >
-            <span class="text-4xl" style="color: var(--ink-faint);">
-              <img src={p.data.image} />
-            </span>
+            {hasImage(p.data.image) ? (
+              <img src={p.data.image} alt={p.data.title} class="w-full h-full object-cover" />
+            ) : (
+              <span class="text-4xl font-mono" style="color: var(--ink-faint);">
+                {initials(p.data.title)}
+              </span>
+            )}
           </div>
           <h3 class="font-bold text-lg mb-2" style="color: var(--ink);">
             {p.data.title}

@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 import { pageLines, pickLine } from '../data/marvinLines';
+import { hasImage, initials } from '../utils/projectImage';
 
 const projects = await getCollection('projects');
 projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -20,8 +21,14 @@ const marvinLine = pickLine(pageLines['/projets']);
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {projects.map(p => (
         <a href={`/projets/${p.id}`} class="card block no-underline">
-          <div class="aspect-video mb-4 flex items-center justify-center" style="background: var(--accent-soft); border: 1px solid var(--border);">
-            <span class="text-4xl" style="color: var(--ink-faint);">🖥</span>
+          <div class="aspect-video mb-4 flex items-center justify-center overflow-hidden" style="background: var(--accent-soft); border: 1px solid var(--border);">
+            {hasImage(p.data.image) ? (
+              <img src={p.data.image} alt={p.data.title} class="w-full h-full object-cover" />
+            ) : (
+              <span class="text-4xl font-mono" style="color: var(--ink-faint);">
+                {initials(p.data.title)}
+              </span>
+            )}
           </div>
           <h3 class="font-bold text-lg mb-2" style="color: var(--ink);">{p.data.title}</h3>
           <p class="text-sm mb-3" style="color: var(--ink-soft);">{p.data.description}</p>

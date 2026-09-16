@@ -3,7 +3,7 @@ title: "Licence Mobile — Application de suivi des cours étudiants"
 date: 2026-06-01
 tags: ["React Native", "Expo", "TypeScript", "MobX"]
 description: "Application mobile permettant aux étudiants de suivre leurs cours et l'état de leurs sessions."
-image: "/projects/licence-mobile.jpg"
+image: "/projects/licence-mobile/thumbnail.jpg"
 github: "https://github.com/rabatm/licence-mobile"
 ---
 

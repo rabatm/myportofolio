@@ -3,7 +3,7 @@ title: "Licence Portal — Plateforme de gestion académique multi-rôles"
 date: 2026-06-01
 tags: ["React", "TypeScript", "Vite", "Tailwind CSS", "Zustand"]
 description: "Plateforme web multi-rôles (étudiants, professeurs, coachs, admins) de gestion des notes, cours et coaching."
-image: "/projects/licence-portal.jpg"
+image: "/projects/licence-portal/thumbnail.jpg"
 url: "https://api.surikwat.com/licence"
 github: "https://github.com/rabatm/licence-portal"
 ---

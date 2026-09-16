@@ -3,7 +3,7 @@ title: "JurisPerform Infrastructure — Docker & Backup Automation"
 date: 2026-06-01
 tags: ["Docker", "Docker Compose", "Python", "PostgreSQL", "Nginx"]
 description: "Infrastructure Docker et système de sauvegarde automatisé pour la plateforme JurisPerform."
-image: "/projects/jp-vps-dockerconf.jpg"
+image: "/projects/jp-vps-dockerconf/thumbnail.jpg"
 github: "https://github.com/rabatm/JP_VPS_DOCKERCONF"
 ---
 

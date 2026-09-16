@@ -3,7 +3,7 @@ title: "Notes Avocat — Outil de notation Google Apps Script"
 date: 2026-06-01
 tags: ["Google Apps Script", "clasp", "Node.js"]
 description: "Outil Google Apps Script pour gérer les notes (precap, DM) directement dans Google Sheets."
-image: "/projects/notes-avocat-appscript.jpg"
+image: "/projects/notes-avocat-appscript/thumbnail.jpg"
 ---
 
 Utilise `clasp` pour gérer une base de code Apps Script unique déployée sur deux projets Google Script distincts — production et un environnement de pré-prod/staging ("R7") — basculables via des scripts npm (`push:prod`, `push:staging`, `pull:*`, `use:*`).
