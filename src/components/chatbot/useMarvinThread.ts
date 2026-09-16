@@ -6,6 +6,9 @@
  * le faisait l'ancien composant, revenait à les envoyer à Groq.
  */
 
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { track } from './track';
+
 export type Role = 'assistant' | 'user' | 'error';
 
 export interface Message {
@@ -83,4 +86,132 @@ export function writeThread(messages: Message[]): void {
   } catch {
     // Navigation privée : le fil ne survivra pas au changement de page.
   }
+}
+
+export interface UseMarvinThreadResult {
+  messages: Message[];
+  isLoading: boolean;
+  typing: boolean;
+  canRetry: boolean;
+  send: (text: string) => Promise<void>;
+  retry: () => Promise<void>;
+  finishTyping: () => void;
+}
+
+export function useMarvinThread(): UseMarvinThreadResult {
+  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [canRetry, setCanRetry] = useState(false);
+
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+  const chargementRef = useRef(false);
+  const nbMessagesVisiteur = useRef(0);
+
+  // Restauration après hydratation seulement : `client:idle` rend ce
+  // composant côté serveur, où sessionStorage n'existe pas. Le premier
+  // rendu client doit être identique au rendu serveur.
+  useEffect(() => {
+    const stocke = readThread();
+    if (stocke) setMessages(stocke);
+  }, []);
+
+  // La toute première exécution est ignorée : sans ça, elle écrirait
+  // [GREETING] par-dessus le fil que l'effet de restauration vient tout
+  // juste de lire, et la conversation ne survivrait pas au changement de page.
+  const premierPassage = useRef(true);
+  useEffect(() => {
+    if (premierPassage.current) {
+      premierPassage.current = false;
+      return;
+    }
+    writeThread(messages);
+  }, [messages]);
+
+  const requete = useCallback(async (historique: Message[]) => {
+    chargementRef.current = true;
+    setIsLoading(true);
+    setCanRetry(false);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: toApiMessages(historique) }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+      const { content, launchGame } = parseReply(String(data.content));
+
+      setMessages(capThread([...historique, { role: 'assistant', content }]));
+      setTyping(true);
+
+      if (launchGame) {
+        // Laisse le temps de lire la réplique avant de basculer sur le jeu.
+        setTimeout(() => {
+          window.location.href = '/wargames';
+        }, 2200);
+        return;
+      }
+
+      if (
+        nbMessagesVisiteur.current > 0 &&
+        nbMessagesVisiteur.current % LONG_SESSION_EVERY === 0
+      ) {
+        setTimeout(() => {
+          setMessages((prev) =>
+            capThread([...prev, { role: 'assistant', content: LONG_SESSION_NOTICE }])
+          );
+        }, 2500);
+      }
+    } catch {
+      setMessages(
+        capThread([...historique, { role: 'error', content: 'connexion perdue' }])
+      );
+      setCanRetry(true);
+    } finally {
+      chargementRef.current = false;
+      setIsLoading(false);
+    }
+  }, []);
+
+  const send = useCallback(
+    async (text: string) => {
+      const propre = text.trim();
+      if (!propre || chargementRef.current) return;
+
+      nbMessagesVisiteur.current += 1;
+      track('marvin_message_sent', {
+        length: propre.length,
+        index: nbMessagesVisiteur.current,
+      });
+
+      setTyping(false);
+      const historique = capThread([
+        ...messagesRef.current,
+        { role: 'user' as const, content: propre },
+      ]);
+      setMessages(historique);
+
+      await requete(historique);
+    },
+    [requete]
+  );
+
+  const retry = useCallback(async () => {
+    if (chargementRef.current) return;
+
+    // On retire la seule entrée d'erreur : le message du visiteur reste en
+    // place et n'est donc jamais dupliqué.
+    const historique = messagesRef.current.filter((m) => m.role !== 'error');
+    setMessages(historique);
+
+    await requete(historique);
+  }, [requete]);
+
+  const finishTyping = useCallback(() => setTyping(false), []);
+
+  return { messages, isLoading, typing, canRetry, send, retry, finishTyping };
 }
