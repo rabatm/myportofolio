@@ -475,3 +475,82 @@
 
   .marvin-dock:has(.marvin-panneau) .marvin-pastille { display: none; }
 }
+
+/* ---- Menu mobile ------------------------------------------------- */
+
+/* Le biseau `retro-border` du site, repris tel quel. L'état ouvert bascule au
+   bleu, comme le fait déjà `retro-border:hover` — on lit l'état directement
+   depuis l'attribut ARIA plutôt que d'ajouter une classe. */
+.menu-burger {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--ink);
+  border: 2px solid var(--accent);
+  box-shadow: inset -2px -2px 0 0 var(--accent), 2px 2px 0 0 var(--accent);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.menu-burger[aria-expanded='true'] {
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow: inset 2px 2px 0 0 var(--blue), -2px -2px 0 0 var(--blue);
+}
+
+/* Hauteur réelle de la barre de nav : le logo plus deux fois le retrait
+   vertical de `py-4`. Déclarée ici parce que c'est `.menu-panneau` qui la
+   consomme ; la tâche 2 la redéfinit sous le point de rupture, en même temps
+   que la taille du logo, pour que les deux ne puissent pas diverger. */
+:root {
+  --nav-h: 84px;
+}
+
+/* Opaque, pas translucide : illisible par-dessus les sections colorées. */
+.menu-panneau {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--nav-h) + 8px) 24px 24px;
+  background: var(--bg);
+  overflow-y: auto;
+  animation: menu-apparition 200ms ease-out;
+}
+
+@keyframes menu-apparition {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.menu-lien {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.menu-lien span { color: var(--accent); }
+
+.menu-lien--actif { color: var(--accent); }
+
+.menu-contact {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-panneau { animation: none; }
+}
