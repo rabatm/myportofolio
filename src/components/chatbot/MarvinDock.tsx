@@ -25,6 +25,10 @@ export default function MarvinDock({
   const [ouvert, setOuvert] = useState(false);
   const pastilleRef = useRef<HTMLButtonElement>(null);
 
+  // Le battement n'appelle que ceux qui n'ont pas encore répondu : un dock qui
+  // bat encore après qu'on a parlé à Marvin serait insistant pour rien.
+  const [dejaOuvert, setDejaOuvert] = useState(false);
+
   // Pas de `window` au rendu : ce composant est rendu côté serveur par
   // `client:idle`. Le chemin n'est connu qu'après hydratation.
   const [chemin, setChemin] = useState('');
@@ -42,6 +46,7 @@ export default function MarvinDock({
     (source: 'pill' | 'bubble') => {
       suppressPeek();
       setOuvert(true);
+      setDejaOuvert(true);
       track('marvin_open', { source, path: chemin });
     },
     [chemin, suppressPeek]
@@ -98,13 +103,20 @@ export default function MarvinDock({
       <button
         ref={pastilleRef}
         type="button"
-        className="marvin-pastille"
+        className={
+          ouvert || dejaOuvert ? 'marvin-pastille' : 'marvin-pastille marvin-pastille--appel'
+        }
         aria-expanded={ouvert}
         aria-controls="marvin-panneau"
         aria-label={ouvert ? 'Fermer le chat MARVIN-42' : 'Ouvrir le chat MARVIN-42'}
         onClick={() => (ouvert ? fermer() : ouvrir('pill'))}
       >
         <span aria-hidden="true">$_</span>
+        {/* Doublon visuel de l'aria-label : masqué aux lecteurs d'écran pour
+            ne pas faire annoncer deux fois la même chose. */}
+        <span className="marvin-pastille__libelle" aria-hidden="true">
+          Parler à MARVIN-42
+        </span>
       </button>
     </div>
   );

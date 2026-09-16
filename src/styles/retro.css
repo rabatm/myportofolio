@@ -414,6 +414,55 @@
   cursor: pointer;
 }
 
+/* Appel à l'action : deux battements puis une pause, huit fois — le temps
+   d'attirer l'œil à l'arrivée, puis la pastille se tait. `scale` seul, donc
+   composité par le GPU, sans reflow. */
+@keyframes marvin-battement {
+  0%   { transform: scale(1); }
+  8%   { transform: scale(1.14); }
+  16%  { transform: scale(1); }
+  24%  { transform: scale(1.09); }
+  32%  { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.marvin-pastille--appel {
+  animation: marvin-battement 2.4s ease-out 8;
+}
+
+/* Replié par défaut, déplié au survol ET au focus clavier : sans le focus,
+   qui navigue au clavier n'aurait jamais l'indice. */
+.marvin-pastille__libelle {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
+  transition: max-width 200ms ease-out, opacity 150ms ease-out;
+}
+
+.marvin-pastille:hover,
+.marvin-pastille:focus-visible {
+  width: auto;
+  grid-auto-flow: column;
+  gap: 8px;
+  padding: 0 16px;
+  border-radius: 24px;
+}
+
+.marvin-pastille:hover .marvin-pastille__libelle,
+.marvin-pastille:focus-visible .marvin-pastille__libelle {
+  max-width: 200px;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Le battement disparaît, le libellé reste : sinon ces visiteurs se
+     retrouveraient sans aucune affordance. L'étirement devient instantané. */
+  .marvin-pastille--appel { animation: none; }
+  .marvin-pastille__libelle { transition: none; }
+}
+
 /* La feuille mobile occupe toute la largeur : le dock s'ancre aux bords
    et la pastille s'efface, la fermeture passant par la barre de titre. */
 @media (max-width: 639px) {
