@@ -6,6 +6,9 @@
  * ne fait plus qu'ajouter le rythme — 6 s puis 12 s — par-dessus.
  */
 
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { track } from './track';
+
 export const PEEK_DELAY_MS = 6_000;
 export const PEEK_DURATION_MS = 12_000;
 export const PEEK_SESSION_CAP = 3;
@@ -125,4 +128,92 @@ export function choosePeekLine(
   if (jamaisVues.length === 0) return null;
 
   return jamaisVues[Math.floor(rand() * jamaisVues.length)];
+}
+
+export interface UsePeekResult {
+  peek: string | null;
+  /** Croix de la bulle : coupe la session et pose l'opt-out de 30 jours. */
+  dismissPeek: () => void;
+  /** Ouverture du panneau : coupe la session seule. */
+  suppressPeek: () => void;
+}
+
+export function usePeek(path: string, lines: string[]): UsePeekResult {
+  const [peek, setPeek] = useState<string | null>(null);
+  const minuterieRepli = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // `lines` vient des props et change d'identité à chaque rendu. On dépend
+  // de son contenu, pas de sa référence : sinon l'effet se relancerait sans
+  // cesse et la minuterie de 6 s n'arriverait jamais à son terme.
+  const lignesRef = useRef(lines);
+  lignesRef.current = lines;
+  const cleLignes = JSON.stringify(lines);
+
+  const arreter = useCallback(() => {
+    if (minuterieRepli.current) {
+      clearTimeout(minuterieRepli.current);
+      minuterieRepli.current = null;
+    }
+    setPeek(null);
+  }, []);
+
+  const suppressPeek = useCallback(() => {
+    writePeekState({ ...readPeekState(), off: true });
+    arreter();
+  }, [arreter]);
+
+  const dismissPeek = useCallback(() => {
+    writePeekState({ ...readPeekState(), off: true });
+    setOptOut();
+    track('marvin_peek_dismissed', { path });
+    arreter();
+  }, [path, arreter]);
+
+  useEffect(() => {
+    const reducedMotion = prefersReducedMotion();
+    const lignes = lignesRef.current;
+
+    // Pré-filtrage : inutile d'armer une minuterie si la bulle est déjà
+    // exclue. Le verdict qui compte est repris au déclenchement.
+    const possible = choosePeekLine({
+      path,
+      lines: lignes,
+      state: readPeekState(),
+      optedOut: isOptedOut(),
+      reducedMotion,
+    });
+    if (!possible) return;
+
+    const minuterieAffichage = setTimeout(() => {
+      // Réévaluation : le visiteur a pu ouvrir le panneau entre-temps.
+      const state = readPeekState();
+      const ligne = choosePeekLine({
+        path,
+        lines: lignes,
+        state,
+        optedOut: isOptedOut(),
+        reducedMotion,
+      });
+      if (!ligne) return;
+
+      writePeekState({
+        pages: [...state.pages, path],
+        lines: [...state.lines, ligne],
+        count: state.count + 1,
+        off: state.off,
+      });
+
+      setPeek(ligne);
+      track('marvin_peek_shown', { line: ligne, path });
+
+      minuterieRepli.current = setTimeout(() => setPeek(null), PEEK_DURATION_MS);
+    }, PEEK_DELAY_MS);
+
+    return () => {
+      clearTimeout(minuterieAffichage);
+      if (minuterieRepli.current) clearTimeout(minuterieRepli.current);
+    };
+  }, [path, cleLignes]);
+
+  return { peek, dismissPeek, suppressPeek };
 }
