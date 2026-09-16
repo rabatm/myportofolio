@@ -2958,7 +2958,7 @@ Dans `src/data/marvinLines.ts` :
 - [ ] **Étape 4 : Lancer le test pour vérifier qu'il passe**
 
 Commande : `bun run test src/data/marvinLines.test.ts`
-Attendu : 6 tests au vert.
+Attendu : 5 tests au vert.
 
 - [ ] **Étape 5 : Mettre à jour le layout**
 
@@ -3037,10 +3037,12 @@ fonctionnel.
 
 ```bash
 git rm src/components/chatbot/ChatBot.tsx
-grep -rn "ChatBot\|sectionLines\|pageLine" src/
+grep -rnE "ChatBot|sectionLines|pageLine\b" src/
 ```
 
-Attendu : la commande `grep` ne renvoie rien.
+Attendu : la commande `grep` ne renvoie rien. La limite de mot `\b` est
+indispensable : sans elle le motif `pageLine` matcherait `pageLines`, qui
+doit rester.
 
 - [ ] **Étape 8 : Vérifier la suite et la compilation**
 
