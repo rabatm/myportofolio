@@ -131,17 +131,29 @@ export function choosePeekLine(
 }
 
 /**
- * Les quatre garde-fous que les bulles de section partagent avec la bulle
- * d'arrivée. Les quatre autres conditions de `choosePeekLine` sont des brides
- * de fréquence (délai, plafond, une par page, réplique déjà vue) : elles ne
- * s'appliquent pas ici, puisque Marvin doit commenter chaque section.
+ * Garde-fous des bulles de section.
+ *
+ * Volontairement PAS `state.off`. Ouvrir le panneau pose `off: true` pour
+ * toute la session, ce qui conviendait quand la bulle n'était qu'une
+ * invitation à discuter : qui discute déjà n'a pas besoin d'être sollicité.
+ * Mais la bulle porte désormais la personnalité de Marvin, et le premier
+ * réflexe d'un visiteur curieux est de cliquer la pastille — ce qui le
+ * privait du commentaire pour tout le reste de la visite, rechargements
+ * compris, `sessionStorage` y survivant.
+ *
+ * On ne suspend donc que pendant que le panneau est réellement ouvert : une
+ * bulle derrière un panneau ouvert serait invisible et consommerait sa
+ * réplique pour rien. Refermé, Marvin reprend la parole.
+ *
+ * La croix de la bulle, elle, garde tout son pouvoir : elle pose l'opt-out de
+ * 30 jours, et c'est la porte de sortie de qui n'en veut pas.
  */
 export function sectionPeekAllowed(input: {
   reducedMotion: boolean;
   optedOut: boolean;
-  off: boolean;
+  panelOpen: boolean;
 }): boolean {
-  return !input.reducedMotion && !input.optedOut && !input.off;
+  return !input.reducedMotion && !input.optedOut && !input.panelOpen;
 }
 
 export interface UsePeekResult {
@@ -155,7 +167,8 @@ export interface UsePeekResult {
 export function usePeek(
   path: string,
   lines: string[],
-  sectionLines?: Record<string, string[]>
+  sectionLines?: Record<string, string[]>,
+  panneauOuvert = false
 ): UsePeekResult {
   const [peek, setPeek] = useState<string | null>(null);
   const minuterieRepli = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -197,6 +210,11 @@ export function usePeek(
   const cleSections = JSON.stringify(sectionLines ?? null);
   const sectionsVues = useRef(new Set<string>());
 
+  // Lu dans le rappel de l'observateur, qui capture l'état du rendu où il a
+  // été créé : sans la ref il verrait éternellement la valeur initiale.
+  const panneauRef = useRef(panneauOuvert);
+  panneauRef.current = panneauOuvert;
+
   useEffect(() => {
     const sections = sectionsRef.current;
     if (!path || !sections) return;
@@ -214,7 +232,13 @@ export function usePeek(
           if (sectionsVues.current.has(id)) continue;
 
           const state = readPeekState();
-          if (!sectionPeekAllowed({ reducedMotion, optedOut: isOptedOut(), off: state.off })) {
+          if (
+            !sectionPeekAllowed({
+              reducedMotion,
+              optedOut: isOptedOut(),
+              panelOpen: panneauRef.current,
+            })
+          ) {
             return;
           }
 
@@ -235,7 +259,12 @@ export function usePeek(
           minuterieRepli.current = setTimeout(() => setPeek(null), PEEK_DURATION_MS);
         }
       },
-      { threshold: 0.4 }
+      // Pas de seuil de proportion : `Parcours` fait quatre hauteurs d'écran,
+      // donc 40 % de lui-même ne sont jamais visibles d'un coup et il ne
+      // déclenchait jamais. On observe plutôt le passage par une bande
+      // centrale de 10 % de l'écran : « la section que le visiteur regarde »,
+      // quelle que soit sa hauteur.
+      { threshold: 0, rootMargin: '-45% 0px -45% 0px' }
     );
 
     for (const id of Object.keys(sections)) {

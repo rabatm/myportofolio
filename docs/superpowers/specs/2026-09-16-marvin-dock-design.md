@@ -86,6 +86,29 @@ mécanisme qui les justifiait étant rétabli.
 l'accueil : le payload passe de ~560 octets à ~2,8 Ko avant compression. Seule
 l'accueil est concernée.
 
+## 3.2 Correctifs du 2026-09-17 : deux défauts de D10
+
+Constatés en navigateur, preuve à l'appui : `off: true` avec `count: 0` — aucune
+bulle ne s'était jamais affichée.
+
+**D12 — `off` ne coupe plus les bulles de section.** Le §6.2 posait
+« ouverture du panneau → `off: true` pour la session ». C'était défendable quand
+la bulle n'était qu'une invitation à discuter. Ça ne tient plus dès que la bulle
+porte la personnalité : le premier réflexe d'un visiteur curieux est de cliquer
+la pastille, ce qui le privait du commentaire pour toute la visite,
+rechargements compris — `sessionStorage` y survit. Les bulles de section ne sont
+désormais suspendues que **pendant** que le panneau est ouvert. `off` conserve
+son effet sur la bulle d'arrivée, qui reste une sollicitation.
+
+**D13 — le déclenchement passe de la proportion à la position.** Le seuil de
+0,4 était inatteignable pour les sections longues : `Parcours` fait quatre
+hauteurs d'écran, donc 40 % de lui-même ne sont jamais visibles d'un coup, et il
+ne déclenchait jamais. Mesures relevées : `parcours` 0,25 — impossible ;
+`projets` 0,41 — à la limite ; `competences` 0,67. Remplacé par
+`threshold: 0` avec `rootMargin: '-45% 0px -45% 0px'`, soit le passage par une
+bande centrale de 10 % de l'écran : « la section que le visiteur regarde »,
+quelle que soit sa hauteur.
+
 ## 4. Périmètre
 
 **Inclus** : refonte de la couche d'interface du chatbot en dock

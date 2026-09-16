@@ -30,7 +30,12 @@ export default function MarvinDock({
   const [chemin, setChemin] = useState('');
   useEffect(() => setChemin(window.location.pathname), []);
 
-  const { peek, dismissPeek, suppressPeek } = usePeek(chemin, peekLines, sectionLines);
+  const { peek, dismissPeek, suppressPeek } = usePeek(
+    chemin,
+    peekLines,
+    sectionLines,
+    ouvert
+  );
   const fil = useMarvinThread();
 
   const ouvrir = useCallback(
