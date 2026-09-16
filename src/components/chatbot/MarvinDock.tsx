@@ -8,12 +8,20 @@ import { usePeek } from './usePeek';
 interface MarvinDockProps {
   /** Répliques d'amorce de la page courante. Absent = pas de bulle. */
   peekLines?: string[];
+  /**
+   * Répliques par section observable, indexées sur l'id du `<section>`.
+   * Seule la page d'accueil en fournit : elle seule a des sections.
+   */
+  sectionLines?: Record<string, string[]>;
 }
 
 /** Référence stable : un littéral par défaut relancerait l'effet à chaque rendu. */
 const SANS_REPLIQUE: string[] = [];
 
-export default function MarvinDock({ peekLines = SANS_REPLIQUE }: MarvinDockProps) {
+export default function MarvinDock({
+  peekLines = SANS_REPLIQUE,
+  sectionLines,
+}: MarvinDockProps) {
   const [ouvert, setOuvert] = useState(false);
   const pastilleRef = useRef<HTMLButtonElement>(null);
 
@@ -22,7 +30,7 @@ export default function MarvinDock({ peekLines = SANS_REPLIQUE }: MarvinDockProp
   const [chemin, setChemin] = useState('');
   useEffect(() => setChemin(window.location.pathname), []);
 
-  const { peek, dismissPeek, suppressPeek } = usePeek(chemin, peekLines);
+  const { peek, dismissPeek, suppressPeek } = usePeek(chemin, peekLines, sectionLines);
   const fil = useMarvinThread();
 
   const ouvrir = useCallback(

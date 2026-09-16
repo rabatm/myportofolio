@@ -130,6 +130,20 @@ export function choosePeekLine(
   return jamaisVues[Math.floor(rand() * jamaisVues.length)];
 }
 
+/**
+ * Les quatre garde-fous que les bulles de section partagent avec la bulle
+ * d'arrivée. Les quatre autres conditions de `choosePeekLine` sont des brides
+ * de fréquence (délai, plafond, une par page, réplique déjà vue) : elles ne
+ * s'appliquent pas ici, puisque Marvin doit commenter chaque section.
+ */
+export function sectionPeekAllowed(input: {
+  reducedMotion: boolean;
+  optedOut: boolean;
+  off: boolean;
+}): boolean {
+  return !input.reducedMotion && !input.optedOut && !input.off;
+}
+
 export interface UsePeekResult {
   peek: string | null;
   /** Croix de la bulle : coupe la session et pose l'opt-out de 30 jours. */
@@ -138,7 +152,11 @@ export interface UsePeekResult {
   suppressPeek: () => void;
 }
 
-export function usePeek(path: string, lines: string[]): UsePeekResult {
+export function usePeek(
+  path: string,
+  lines: string[],
+  sectionLines?: Record<string, string[]>
+): UsePeekResult {
   const [peek, setPeek] = useState<string | null>(null);
   const minuterieRepli = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -168,6 +186,65 @@ export function usePeek(path: string, lines: string[]): UsePeekResult {
     track('marvin_peek_dismissed', { path });
     arreter();
   }, [path, arreter]);
+
+  // Répliques de section : Marvin commente ce que le visiteur regarde.
+  // Aucune bride de fréquence ici — chaque section parle une fois par
+  // chargement, et la dernière entrée à l'écran remplace ce qui est affiché.
+  // La croix de la bulle reste la seule porte de sortie, d'où le garde-fou
+  // sur l'opt-out.
+  const sectionsRef = useRef(sectionLines);
+  sectionsRef.current = sectionLines;
+  const cleSections = JSON.stringify(sectionLines ?? null);
+  const sectionsVues = useRef(new Set<string>());
+
+  useEffect(() => {
+    const sections = sectionsRef.current;
+    if (!path || !sections) return;
+    // jsdom et le rendu serveur n'ont pas d'IntersectionObserver.
+    if (typeof IntersectionObserver === 'undefined') return;
+
+    const reducedMotion = prefersReducedMotion();
+
+    const observateur = new IntersectionObserver(
+      (entrees) => {
+        for (const entree of entrees) {
+          if (!entree.isIntersecting) continue;
+
+          const id = entree.target.id;
+          if (sectionsVues.current.has(id)) continue;
+
+          const state = readPeekState();
+          if (!sectionPeekAllowed({ reducedMotion, optedOut: isOptedOut(), off: state.off })) {
+            return;
+          }
+
+          // On ne répète jamais une réplique déjà montrée dans la session,
+          // que ce soit par l'arrivée sur une page ou par une autre section.
+          const jamaisVues = (sections[id] ?? []).filter((l) => !state.lines.includes(l));
+          if (jamaisVues.length === 0) continue;
+
+          const ligne = jamaisVues[Math.floor(Math.random() * jamaisVues.length)];
+          sectionsVues.current.add(id);
+          writePeekState({ ...state, lines: [...state.lines, ligne] });
+
+          // La nouvelle remplace l'ancienne : commenter ce qu'on ne regarde
+          // plus n'aurait pas de sens.
+          if (minuterieRepli.current) clearTimeout(minuterieRepli.current);
+          setPeek(ligne);
+          track('marvin_peek_shown', { line: ligne, path, section: id });
+          minuterieRepli.current = setTimeout(() => setPeek(null), PEEK_DURATION_MS);
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    for (const id of Object.keys(sections)) {
+      const el = document.getElementById(id);
+      if (el) observateur.observe(el);
+    }
+
+    return () => observateur.disconnect();
+  }, [path, cleSections]);
 
   useEffect(() => {
     // Le chemin n'est connu qu'après hydratation : `MarvinDock` l'initialise

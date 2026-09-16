@@ -24,7 +24,9 @@ describe('marvinLines', () => {
     expect(projectLines.some((l) => l.includes('{titre}'))).toBe(true);
   });
 
-  it("n'expose plus que les données, le tirage étant passé côté client", () => {
-    expect(Object.keys(marvinLines).sort()).toEqual(['pageLines', 'projectLines']);
+  it("n'expose plus pickLine, le tirage étant passé côté client", () => {
+    // choosePeekLine est seul à savoir quelles répliques ont déjà été vues
+    // dans la session : le tirage ne peut plus se faire côté serveur.
+    expect(Object.keys(marvinLines)).not.toContain('pickLine');
   });
 });

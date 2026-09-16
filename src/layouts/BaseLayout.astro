@@ -7,12 +7,15 @@ export interface Props {
   description?: string;
   /** Répliques d'amorce de la page. Absent = pas de bulle. */
   peekLines?: string[];
+  /** Répliques par section observable, indexées sur l'id du `<section>`. */
+  sectionLines?: Record<string, string[]>;
 }
 
 const {
   title,
   description = "Développeur concepteur d'applications web, mobile et DevOps. Architecture hexagonale, TDD, Django, React, Flutter. Basé à Perpignan, disponible en full remote.",
   peekLines,
+  sectionLines,
 } = Astro.props;
 
 // URLs absolues requises par Open Graph. Astro.site vient de `site` dans astro.config.mjs.
@@ -70,7 +73,7 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
       <slot />
     </main>
 
-    <MarvinDock client:idle peekLines={peekLines} />
+    <MarvinDock client:idle peekLines={peekLines} sectionLines={sectionLines} />
 
     <footer class="text-center py-8" style="color: var(--ink-faint); border-top: 1px solid var(--border);">
       <p class="text-sm">© 2026 Martin Info — Portfolio rétro 90s</p>

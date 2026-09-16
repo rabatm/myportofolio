@@ -48,6 +48,44 @@ Ce mécanisme suppose un terminal visible en permanence.
 | D8 | La bulle est `aria-hidden`, sa croix `tabIndex={-1}` | Lecture littérale du §7 ; la bulle est une sollicitation, pas un contrôle |
 | D9 | Vitest sur `usePeek` et `useMarvinThread`, en TDD | Les règles de session se vérifient mal à la main |
 
+## 3.1 Amendement du 2026-09-17 : interventions au scroll
+
+Martin a demandé après livraison que Marvin réagisse de nouveau à ce que le
+visiteur regarde — c'était le comportement de l'ancien terminal, et sa
+suppression (décision D7) lui a manqué. Cet amendement **écarte** deux règles
+du §4 du brief, en connaissance de cause et sur sa décision explicite :
+
+- « une seule réplique visible à la fois » : la bulle est bien un emplacement
+  unique, mais elle est désormais réécrite dès qu'une nouvelle section entre à
+  l'écran, sans délai d'espacement ;
+- « elle ne revient pas dans la même session » : sur l'accueil, chaque section
+  déclenche sa réplique, soit jusqu'à six bulles par visite.
+
+**D10** — `sectionLines` est rétabli (6 sections, 16 répliques) et alimente un
+`IntersectionObserver` au seuil 0,4 dans `usePeek`. La décision D7 est annulée ;
+D1 (la bulle est la surface des répliques) est confirmée et étendue.
+
+**D11** — la dernière section entrée à l'écran gagne la bulle. Commenter une
+section que le visiteur ne regarde plus n'aurait pas de sens, et une file
+d'attente ferait parler Marvin du haut de la page alors qu'on est en bas.
+
+**Garde-fous conservés.** Les bulles de section respectent quatre des huit
+conditions du §6.2 — celles qui ne sont pas des brides de fréquence :
+`prefers-reduced-motion`, l'opt-out de 30 jours, la coupure de session après
+ouverture du panneau, et l'exclusion de `/contact`. La croix de la bulle reste
+la porte de sortie, et c'est elle qui rend l'absence de bride acceptable.
+Chaque section ne parle qu'une fois par chargement de page, et aucune réplique
+n'est répétée dans la session.
+
+**Contenu.** Les répliques de page accueillent, celles de section commentent :
+aucun texte n'est partagé entre les deux jeux. Les huit répliques de section
+temporairement promues sur l'accueil le 2026-09-16 y ont été retirées, le
+mécanisme qui les justifiait étant rétabli.
+
+**Coût.** Les 16 répliques sont sérialisées dans les props de l'îlot sur
+l'accueil : le payload passe de ~560 octets à ~2,8 Ko avant compression. Seule
+l'accueil est concernée.
+
 ## 4. Périmètre
 
 **Inclus** : refonte de la couche d'interface du chatbot en dock

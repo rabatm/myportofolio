@@ -8,7 +8,7 @@ import ApercuProjets from '../components/sections/ApercuProjets.astro';
 import IlsMeFontConfiance from '../components/sections/IlsMeFontConfiance.astro';
 import Temoignages from '../components/sections/Temoignages.astro';
 import { getCollection } from 'astro:content';
-import { pageLines } from '../data/marvinLines';
+import { pageLines, sectionLines } from '../data/marvinLines';
 
 const projects = await getCollection('projects');
 ---
@@ -17,6 +17,7 @@ const projects = await getCollection('projects');
   title="Martin Rabat — Développeur concepteur d'applications"
   description="Développeur fullstack & DevOps indépendant : applications métier, intégration de systèmes et reprise de legacy. Django, React, Flutter, Docker. 20 ans d'infrastructure derrière moi. Perpignan, full remote."
   peekLines={pageLines['/']}
+  sectionLines={sectionLines}
 >
   <Hero />
   <APropos />
