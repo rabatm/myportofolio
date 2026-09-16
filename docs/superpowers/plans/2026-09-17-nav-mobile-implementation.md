@@ -108,6 +108,12 @@ export default function MenuMobile() {
     boutonRef.current?.focus();
   }, []);
 
+  // `window.location.pathname` ne contient jamais de fragment, donc comparer
+  // `chemin` à `/#parcours` ne peut jamais être vrai. Et rabattre l'ancre sur
+  // son chemin marquerait Accueil, Parcours et Partenaires actifs ensemble sur
+  // la page d'accueil. On ne marque donc que les vraies routes.
+  const estActif = (href: string) => !href.includes('#') && chemin === href;
+
   // Focus sur le premier lien à l'ouverture.
   useEffect(() => {
     if (!ouvert) return;
@@ -147,16 +153,22 @@ export default function MenuMobile() {
       ].filter((el): el is HTMLElement => el !== null);
       if (focusables.length === 0) return;
 
-      const premier = focusables[0];
-      const dernier = focusables[focusables.length - 1];
+      // On intercepte CHAQUE tabulation et on déplace le focus à l'index,
+      // au lieu de n'intercepter qu'aux extrémités. Le motif classique — ne
+      // rattraper que le premier et le dernier — suppose que les éléments sont
+      // contigus dans l'ordre de tabulation natif. Ils ne le sont pas ici : le
+      // bouton est dans la nav, le panneau est ajouté à la fin de
+      // `document.body`. Tabuler depuis le bouton, ou reculer depuis le premier
+      // lien, s'échapperait donc vers le contenu de la page — sous un panneau
+      // opaque annoncé `aria-modal`.
+      e.preventDefault();
 
-      if (e.shiftKey && document.activeElement === premier) {
-        e.preventDefault();
-        dernier.focus();
-      } else if (!e.shiftKey && document.activeElement === dernier) {
-        e.preventDefault();
-        premier.focus();
-      }
+      const courant = focusables.indexOf(document.activeElement as HTMLElement);
+      const suivant = e.shiftKey
+        ? (courant <= 0 ? focusables.length - 1 : courant - 1)
+        : (courant === -1 || courant === focusables.length - 1 ? 0 : courant + 1);
+
+      focusables[suivant].focus();
     };
 
     document.addEventListener('keydown', surTouche);
@@ -192,7 +204,7 @@ export default function MenuMobile() {
               <a
                 key={href}
                 href={href}
-                className={chemin === href ? 'menu-lien menu-lien--actif' : 'menu-lien'}
+                className={estActif(href) ? 'menu-lien menu-lien--actif' : 'menu-lien'}
                 onClick={fermer}
               >
                 <span aria-hidden="true">&gt;</span>
