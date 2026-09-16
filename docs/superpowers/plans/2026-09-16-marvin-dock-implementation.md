@@ -218,8 +218,13 @@ function capturer(action: () => void): CustomEvent[] {
   const ecouteur = (e: Event) => recus.push(e as CustomEvent);
 
   window.addEventListener(ANALYTICS_EVENT, ecouteur);
-  action();
-  window.removeEventListener(ANALYTICS_EVENT, ecouteur);
+  try {
+    action();
+  } finally {
+    // Sans le finally, une exception dans action() laisserait l'écouteur
+    // attaché au window partagé pour tout le reste du fichier.
+    window.removeEventListener(ANALYTICS_EVENT, ecouteur);
+  }
 
   return recus;
 }
@@ -655,7 +660,7 @@ git commit -m "feat: regles de selection de la bulle d'amorce"
 
 ```tsx
 import { act, renderHook } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest';
 import { setReducedMotion } from '../../../vitest.setup';
 import { ANALYTICS_EVENT } from './track';
 import {
@@ -673,6 +678,17 @@ const LIGNES = ['une', 'deux', 'trois'];
 
 beforeEach(() => vi.useFakeTimers());
 afterEach(() => vi.useRealTimers());
+
+/** Capte les événements analytics du test, et se désabonne à sa fin. */
+function capterAnalytics(): CustomEvent[] {
+  const recus: CustomEvent[] = [];
+  const ecouteur = (e: Event) => recus.push(e as CustomEvent);
+
+  window.addEventListener(ANALYTICS_EVENT, ecouteur);
+  onTestFinished(() => window.removeEventListener(ANALYTICS_EVENT, ecouteur));
+
+  return recus;
+}
 
 /** Fait avancer les minuteries en laissant React appliquer ses effets. */
 function avancer(ms: number) {
@@ -725,8 +741,7 @@ describe('usePeek', () => {
   });
 
   it('émet marvin_peek_shown avec la réplique et le chemin', () => {
-    const recus: CustomEvent[] = [];
-    window.addEventListener(ANALYTICS_EVENT, (e) => recus.push(e as CustomEvent));
+    const recus = capterAnalytics();
 
     const { result } = renderHook(() => usePeek('/projets', LIGNES));
     avancer(PEEK_DELAY_MS);
@@ -822,10 +837,10 @@ describe('usePeek', () => {
   });
 
   it('dismissPeek émet marvin_peek_dismissed', () => {
-    const recus: CustomEvent[] = [];
     const { result } = renderHook(() => usePeek('/projets', LIGNES));
     avancer(PEEK_DELAY_MS);
-    window.addEventListener(ANALYTICS_EVENT, (e) => recus.push(e as CustomEvent));
+    // Abonnement après coup : recus[0] doit être l'événement de fermeture.
+    const recus = capterAnalytics();
 
     act(() => result.current.dismissPeek());
 
@@ -1270,7 +1285,7 @@ vrai — plus aucun index à tenir à jour à travers les ajouts différés.
 
 ```tsx
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest';
 import { ANALYTICS_EVENT } from './track';
 import {
   GREETING,
@@ -1295,6 +1310,17 @@ beforeEach(() => {
 afterEach(() => {
   vi.unstubAllGlobals();
 });
+
+/** Capte les événements analytics du test, et se désabonne à sa fin. */
+function capterAnalytics(): CustomEvent[] {
+  const recus: CustomEvent[] = [];
+  const ecouteur = (e: Event) => recus.push(e as CustomEvent);
+
+  window.addEventListener(ANALYTICS_EVENT, ecouteur);
+  onTestFinished(() => window.removeEventListener(ANALYTICS_EVENT, ecouteur));
+
+  return recus;
+}
 
 describe('useMarvinThread', () => {
   it('démarre sur la phrase de présentation', () => {
@@ -1364,8 +1390,7 @@ describe('useMarvinThread', () => {
   });
 
   it('émet marvin_message_sent avec la longueur et le rang', async () => {
-    const recus: CustomEvent[] = [];
-    window.addEventListener(ANALYTICS_EVENT, (e) => recus.push(e as CustomEvent));
+    const recus = capterAnalytics();
     const { result } = renderHook(() => useMarvinThread());
 
     await act(() => result.current.send('salut'));
@@ -2576,7 +2601,7 @@ git commit -m "feat: panneau de conversation et feuille mobile"
 
 ```tsx
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest';
 import MarvinDock from './MarvinDock';
 import { ANALYTICS_EVENT } from './track';
 import { PEEK_DELAY_MS, readPeekState } from './usePeek';
@@ -2605,6 +2630,18 @@ function avancer(ms: number) {
 function pastille() {
   return screen.getByRole('button', { name: /ouvrir le chat marvin-42/i });
 }
+
+/** Capte les événements analytics du test, et se désabonne à sa fin. */
+function capterAnalytics(): CustomEvent[] {
+  const recus: CustomEvent[] = [];
+  const ecouteur = (e: Event) => recus.push(e as CustomEvent);
+
+  window.addEventListener(ANALYTICS_EVENT, ecouteur);
+  onTestFinished(() => window.removeEventListener(ANALYTICS_EVENT, ecouteur));
+
+  return recus;
+}
+
 
 describe('MarvinDock', () => {
   it("ne montre qu'une pastille au repos", () => {
@@ -2636,8 +2673,7 @@ describe('MarvinDock', () => {
   });
 
   it('émet marvin_open avec la source du clic', () => {
-    const recus: CustomEvent[] = [];
-    window.addEventListener(ANALYTICS_EVENT, (e) => recus.push(e as CustomEvent));
+    const recus = capterAnalytics();
     render(<MarvinDock peekLines={LIGNES} />);
 
     fireEvent.click(pastille());
