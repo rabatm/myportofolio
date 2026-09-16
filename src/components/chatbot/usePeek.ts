@@ -25,17 +25,24 @@ export interface PeekState {
   off: boolean;
 }
 
-export const EMPTY_PEEK_STATE: PeekState = {
-  pages: [],
-  lines: [],
-  count: 0,
-  off: false,
-};
+/**
+ * État vide, toujours rendu en copie fraîche.
+ *
+ * Partager une seule instance exposerait ses tableaux : un appelant qui
+ * ferait `state.pages.push(...)` au lieu d'un spread corromprait la notion
+ * même d'« aucun état stocké » pour tout le reste de la session.
+ */
+export function emptyPeekState(): PeekState {
+  return { pages: [], lines: [], count: 0, off: false };
+}
+
+/** Repère de comparaison pour les tests. Ne jamais muter. */
+export const EMPTY_PEEK_STATE: PeekState = emptyPeekState();
 
 export function readPeekState(): PeekState {
   try {
     const brut = sessionStorage.getItem(PEEK_KEY);
-    if (!brut) return EMPTY_PEEK_STATE;
+    if (!brut) return emptyPeekState();
 
     const lu = JSON.parse(brut) as Partial<PeekState>;
     return {
@@ -47,7 +54,7 @@ export function readPeekState(): PeekState {
   } catch {
     // JSON corrompu ou stockage inaccessible : on repart d'un état vide
     // plutôt que de priver le visiteur du dock entier.
-    return EMPTY_PEEK_STATE;
+    return emptyPeekState();
   }
 }
 
