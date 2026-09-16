@@ -59,6 +59,14 @@ export function TypewriterText({ text, onDone }: TypewriterTextProps) {
       {/* Masqué aux lecteurs d'écran : sans ça, la région aria-live du
           panneau annoncerait le texte par fragments à chaque battement. */}
       <span aria-hidden="true">{affiche}</span>
+      {/* Dans ChatPanel, la fin de frappe et l'arrêt de l'état `typing`
+          arrivent dans le même rendu (callback d'intervalle batché par
+          React) : ce composant est alors démonté et remplacé par le texte
+          brut, non `aria-hidden`, qui porte l'annonce à la région aria-live.
+          Ce jumeau `sr-only` ne joue donc aucun rôle dans ce parcours-là ;
+          il reste le repli correct pour tout appelant qui garde ce
+          composant monté une fois la frappe terminée, et c'est lui que
+          couvrent les tests d'isolation. */}
       {fini && <span className="sr-only">{text}</span>}
     </>
   );

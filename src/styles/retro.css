@@ -266,6 +266,7 @@
   flex-direction: column;
   width: 360px;
   height: 480px;
+  max-height: calc(100dvh - 96px);
   overflow: hidden;
   background: var(--marvin-surface);
   border: 1px solid var(--marvin-border);
@@ -315,7 +316,7 @@
   padding: 12px 14px;
 }
 
-.marvin-panneau__historique p { margin: 0 0 10px; }
+.marvin-panneau__historique p { margin: 0 0 10px; overflow-wrap: anywhere; }
 
 .marvin-panneau__reessayer {
   min-height: 44px;
@@ -355,7 +356,7 @@
    flex:1, donc la saisie reste collée en bas et visible. */
 @media (max-width: 639px) {
   .marvin-panneau {
-    width: 100vw;
+    width: auto;
     height: 80dvh;
     border-radius: 12px 12px 0 0;
     border-bottom: none;
@@ -378,6 +379,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .marvin-panneau { animation: none; }
+
+  /* Tailwind pose animate-pulse dans @layer utilities ; une règle non
+     layerée l'emporte sur l'ordre de cascade. */
+  .marvin-panneau .animate-pulse { animation: none; }
 }
 
 /* ---- Dock MARVIN-42 : conteneur et pastille ---------------------- */
@@ -413,6 +418,7 @@
    et la pastille s'efface, la fermeture passant par la barre de titre. */
 @media (max-width: 639px) {
   .marvin-dock:has(.marvin-panneau) {
+    left: 0;
     right: 0;
     bottom: 0;
     gap: 0;

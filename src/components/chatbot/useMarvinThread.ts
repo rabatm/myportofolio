@@ -108,6 +108,19 @@ export function useMarvinThread(): UseMarvinThreadResult {
   messagesRef.current = messages;
   const chargementRef = useRef(false);
   const nbMessagesVisiteur = useRef(0);
+  const minuterieJeuRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Le dock reste monté même quand le panneau est fermé (voir MarvinDock),
+  // donc ce nettoyage au démontage ne couvre pas le cas « fermer le panneau
+  // pendant les 2,2 s » — seul un remaniement de l'arbre le pourrait. Il
+  // reste la sécurité minimale : si ce hook venait à être démonté, un
+  // visiteur qui a fermé la page ne doit pas déclencher une navigation
+  // fantôme après coup.
+  useEffect(() => {
+    return () => {
+      if (minuterieJeuRef.current) clearTimeout(minuterieJeuRef.current);
+    };
+  }, []);
 
   // Restauration après hydratation seulement : `client:idle` rend ce
   // composant côté serveur, où sessionStorage n'existe pas. Le premier
@@ -150,7 +163,10 @@ export function useMarvinThread(): UseMarvinThreadResult {
 
       if (launchGame) {
         // Laisse le temps de lire la réplique avant de basculer sur le jeu.
-        setTimeout(() => {
+        // Le visiteur peut désormais fermer le panneau pendant ces 2,2 s
+        // (croix ou Échap) : l'id est gardé pour pouvoir annuler la
+        // navigation au démontage plutôt que de le rediriger malgré lui.
+        minuterieJeuRef.current = setTimeout(() => {
           window.location.href = '/wargames';
         }, 2200);
         return;

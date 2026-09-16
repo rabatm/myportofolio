@@ -2,9 +2,9 @@
  * Répliques pré-écrites de Marvin-42 pour la bulle d'amorce du dock.
  *
  * Ces répliques ne passent pas par le LLM : elles sont instantanées, gratuites,
- * et laissent tout le quota Groq au chat interactif (les vraies questions). Le
- * dock reste toujours accessible via sa pastille ; ces textes ne servent qu'à
- * amorcer la conversation sur certaines pages, plus un terminal toujours ouvert.
+ * et laissent tout le quota Groq au chat interactif (les vraies questions).
+ * Elles servent uniquement à amorcer la conversation via la bulle de la
+ * pastille, une réplique par page.
  *
  * Ton : blasé, pince-sans-rire — Marvin se plaint de lui et de l'univers,
  * jamais de Martin, et chaque réplique apporte une info réelle sur le contenu.

@@ -170,6 +170,12 @@ export function usePeek(path: string, lines: string[]): UsePeekResult {
   }, [path, arreter]);
 
   useEffect(() => {
+    // Le chemin n'est connu qu'après hydratation : `MarvinDock` l'initialise
+    // à '' puis le renseigne dans un effet de montage. Sans ce garde-fou, ce
+    // premier passage armerait une minuterie de 6 s pour rien, aussitôt
+    // nettoyée par le rendu suivant.
+    if (!path) return;
+
     const reducedMotion = prefersReducedMotion();
     const lignes = lignesRef.current;
 
