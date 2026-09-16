@@ -203,3 +203,58 @@
     background: var(--accent-hover);
   }
 }
+
+/* ---- Dock MARVIN-42 : bulle d'amorce ----------------------------- */
+
+.marvin-peek {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  max-width: 250px;
+  padding: 10px 4px 10px 14px;
+  background: var(--marvin-surface);
+  border: 1px solid var(--marvin-border);
+  border-radius: 12px;
+  box-shadow: var(--marvin-shadow);
+  color: var(--marvin-fg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  animation: marvin-bulle 240ms ease-out;
+}
+
+.marvin-peek button {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.marvin-peek__corps { flex: 1; }
+
+/* 44 px de cible tactile (§5) sans occuper 44 px de hauteur visible. */
+.marvin-peek__fermer {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin-top: -10px;
+  display: grid;
+  place-items: center;
+  color: var(--marvin-placeholder);
+}
+
+@keyframes marvin-bulle {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 639px) {
+  .marvin-peek { max-width: calc(100vw - 96px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marvin-peek { animation: none; }
+}
