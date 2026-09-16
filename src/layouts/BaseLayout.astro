@@ -1,21 +1,18 @@
 ---
 import '../styles/retro.css';
-import ChatBot from '../components/chatbot/ChatBot.tsx';
+import MarvinDock from '../components/chatbot/MarvinDock.tsx';
 
 export interface Props {
   title: string;
   description?: string;
-  /** Réplique de Marvin à l'arrivée sur la page. */
-  pageLine?: string;
-  /** Répliques par section observable, indexées sur l'id du <section>. */
-  sectionLines?: Record<string, string>;
+  /** Répliques d'amorce de la page. Absent = pas de bulle. */
+  peekLines?: string[];
 }
 
 const {
   title,
   description = "Développeur concepteur d'applications web, mobile et DevOps. Architecture hexagonale, TDD, Django, React, Flutter. Basé à Perpignan, disponible en full remote.",
-  pageLine,
-  sectionLines,
+  peekLines,
 } = Astro.props;
 
 // URLs absolues requises par Open Graph. Astro.site vient de `site` dans astro.config.mjs.
@@ -73,7 +70,7 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
       <slot />
     </main>
 
-    <ChatBot client:only="react" pageLine={pageLine} sectionLines={sectionLines} />
+    <MarvinDock client:idle peekLines={peekLines} />
 
     <footer class="text-center py-8" style="color: var(--ink-faint); border-top: 1px solid var(--border);">
       <p class="text-sm">© 2026 Martin Info — Portfolio rétro 90s</p>

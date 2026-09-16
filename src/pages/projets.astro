@@ -2,19 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-import { pageLines, pickLine } from '../data/marvinLines';
+import { pageLines } from '../data/marvinLines';
 import { hasImage, initials } from '../utils/projectImage';
 
 const projects = await getCollection('projects');
 projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
-const marvinLine = pickLine(pageLines['/projets']);
 ---
 
 <BaseLayout
   title="Projets — Martin Rabat, développeur fullstack"
   description="Applications métier, intégrations entre systèmes et reprises de legacy : ERP retail, backoffice de franchises, applications mobiles terrain, passerelles de synchronisation et infrastructure Docker."
-  pageLine={marvinLine}
+  peekLines={pageLines['/projets']}
 >
   <section class="px-4 pt-24 pb-20 max-w-5xl mx-auto">
     <h2 class="section-title">Projets</h2>

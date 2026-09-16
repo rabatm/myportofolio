@@ -1,14 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { pageLines, pickLine } from '../data/marvinLines';
-
-const marvinLine = pickLine(pageLines['/contact']);
 ---
 
 <BaseLayout
   title="Contact — Martin Rabat, développeur fullstack"
   description="Un projet, un poste à pourvoir, une question ? Martin Rabat, développeur fullstack & DevOps à Perpignan, disponible en full remote. Réponse sous 24h."
-  pageLine={marvinLine}
 >
   <section class="px-4 pt-24 pb-20 max-w-xl mx-auto">
     <h2 class="section-title">Contact</h2>
