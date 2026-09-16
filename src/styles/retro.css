@@ -258,3 +258,124 @@
 @media (prefers-reduced-motion: reduce) {
   .marvin-peek { animation: none; }
 }
+
+/* ---- Dock MARVIN-42 : panneau ------------------------------------ */
+
+.marvin-panneau {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  height: 480px;
+  overflow: hidden;
+  background: var(--marvin-surface);
+  border: 1px solid var(--marvin-border);
+  border-radius: 12px;
+  box-shadow: var(--marvin-shadow);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  transform-origin: bottom right;
+  animation: marvin-ouverture 200ms ease-out;
+}
+
+@keyframes marvin-ouverture {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.marvin-panneau__titre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 14px;
+  border-bottom: 1px solid var(--marvin-border);
+  color: var(--marvin-pill-fg);
+}
+
+.marvin-panneau__poignee { display: none; }
+
+.marvin-panneau__fermer,
+.marvin-panneau__saisie button {
+  margin-left: auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--marvin-fg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.marvin-panneau__historique {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+}
+
+.marvin-panneau__historique p { margin: 0 0 10px; }
+
+.marvin-panneau__reessayer {
+  min-height: 44px;
+  padding: 0 14px;
+  background: none;
+  border: 1px solid var(--marvin-border);
+  border-radius: 8px;
+  color: var(--marvin-pill-fg);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.marvin-panneau__saisie {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom)) 14px;
+  border-top: 1px solid var(--marvin-border);
+}
+
+.marvin-panneau__saisie input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--marvin-user);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.marvin-panneau__saisie input::placeholder { color: var(--marvin-placeholder); }
+
+/* Feuille pleine largeur sous 640 px.
+   `dvh` et non `vh` : c'est ce qui fait que la feuille se réduit quand le
+   clavier logiciel monte, au lieu de passer dessous. L'historique est en
+   flex:1, donc la saisie reste collée en bas et visible. */
+@media (max-width: 639px) {
+  .marvin-panneau {
+    width: 100vw;
+    height: 80dvh;
+    border-radius: 12px 12px 0 0;
+    border-bottom: none;
+  }
+
+  .marvin-panneau__titre { position: relative; padding-top: 16px; }
+
+  .marvin-panneau__poignee {
+    display: block;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--marvin-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marvin-panneau { animation: none; }
+}
