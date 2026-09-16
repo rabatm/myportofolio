@@ -7,6 +7,8 @@
 ╚══════════════════════════════════════════════╝
 ```
 
+![Aperçu du site](img/rabatmartin.png)
+
 Bienvenue dans le dépôt de mon portfolio perso, thème 90s assumé. C'est du code
 public : copie-le, forke-le, pique ce qui te plaît, améliore ce qui te semble
 moche. Aucune obligation de me créditer, mais un petit mot fait toujours
