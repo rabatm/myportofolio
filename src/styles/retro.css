@@ -379,3 +379,44 @@
 @media (prefers-reduced-motion: reduce) {
   .marvin-panneau { animation: none; }
 }
+
+/* ---- Dock MARVIN-42 : conteneur et pastille ---------------------- */
+
+.marvin-dock {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: var(--marvin-z);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.marvin-pastille {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--marvin-border);
+  background: var(--marvin-pill-bg);
+  box-shadow: var(--marvin-shadow);
+  color: var(--marvin-pill-fg);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* La feuille mobile occupe toute la largeur : le dock s'ancre aux bords
+   et la pastille s'efface, la fermeture passant par la barre de titre. */
+@media (max-width: 639px) {
+  .marvin-dock:has(.marvin-panneau) {
+    right: 0;
+    bottom: 0;
+    gap: 0;
+  }
+
+  .marvin-dock:has(.marvin-panneau) .marvin-pastille { display: none; }
+}
