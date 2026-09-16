@@ -6,8 +6,13 @@ function capturer(action: () => void): CustomEvent[] {
   const ecouteur = (e: Event) => recus.push(e as CustomEvent);
 
   window.addEventListener(ANALYTICS_EVENT, ecouteur);
-  action();
-  window.removeEventListener(ANALYTICS_EVENT, ecouteur);
+  try {
+    action();
+  } finally {
+    // Sans le finally, une exception dans action() laisserait l'écouteur
+    // attaché au window partagé pour tout le reste du fichier.
+    window.removeEventListener(ANALYTICS_EVENT, ecouteur);
+  }
 
   return recus;
 }
