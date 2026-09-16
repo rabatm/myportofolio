@@ -554,3 +554,22 @@
 @media (prefers-reduced-motion: reduce) {
   .menu-panneau { animation: none; }
 }
+
+/* Tâche 2 : la taille du logo sort du style en ligne pour pouvoir être
+   surchargée par une media query, et `--nav-h` se replie sous le point de
+   rupture en même temps que `.nav-logo` — les deux doivent rester solidaires
+   (38 + 2×16 = 70), sinon le panneau chevauche la barre ou laisse un vide. */
+.nav-logo {
+  height: 52px;
+  width: auto;
+  display: block;
+}
+
+.nav-barre {
+  min-height: var(--nav-h);
+}
+
+@media (max-width: 767px) {
+  :root { --nav-h: 70px; }
+  .nav-logo { height: 38px; }
+}
