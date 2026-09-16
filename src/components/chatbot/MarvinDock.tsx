@@ -34,10 +34,23 @@ export default function MarvinDock({ peekLines = SANS_REPLIQUE }: MarvinDockProp
     [chemin, suppressPeek]
   );
 
+  // Le focus ne peut pas revenir dans la même passe que la fermeture : React
+  // n'a pas encore committé, le panneau est toujours monté, et sous 640 px la
+  // règle `.marvin-dock:has(.marvin-panneau) .marvin-pastille { display: none }`
+  // s'applique donc encore. focus() sur un élément display:none ne fait rien et
+  // ne se rejoue pas. On attend le commit.
+  const focusARendre = useRef(false);
+
   const fermer = useCallback(() => {
+    focusARendre.current = true;
     setOuvert(false);
-    pastilleRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    if (ouvert || !focusARendre.current) return;
+    focusARendre.current = false;
+    pastilleRef.current?.focus();
+  }, [ouvert]);
 
   useEffect(() => {
     if (!ouvert) return;
