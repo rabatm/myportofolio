@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# worktrees et espace de travail des agents
+.claude/worktrees/
+.superpowers/
