@@ -579,3 +579,34 @@
   :root { --nav-h: 76px; }
   .nav-logo { height: 38px; }
 }
+
+/* ---- Pastille MARVIN au doigt ------------------------------------ */
+
+/* Par défaut, sur bureau, seul le libellé long existe : il sort au survol. */
+.marvin-pastille__libelle--court { display: none; }
+
+@media (max-width: 639px) {
+  /* Pas de survol au doigt, donc le libellé ne peut pas être révélé à la
+     demande : la pastille devient une gélule qui se nomme en permanence. Le
+     nom seul, choisi contre « Parler à MARVIN-42 » qui occuperait la moitié
+     de la largeur — le nom sans explication amorce la curiosité. */
+  .marvin-pastille {
+    width: auto;
+    grid-auto-flow: column;
+    gap: 9px;
+    padding: 0 16px;
+    border-radius: 24px;
+  }
+
+  .marvin-pastille__libelle--long { display: none; }
+
+  .marvin-pastille__libelle--court {
+    display: inline;
+    max-width: none;
+    opacity: 1;
+  }
+
+  /* Une gélule libellée n'a plus l'ambiguïté que le battement corrigeait ;
+     battre en plus serait une sollicitation de trop. */
+  .marvin-pastille--appel { animation: none; }
+}

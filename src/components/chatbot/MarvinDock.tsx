@@ -112,10 +112,21 @@ export default function MarvinDock({
         onClick={() => (ouvert ? fermer() : ouvrir('pill'))}
       >
         <span aria-hidden="true">$_</span>
-        {/* Doublon visuel de l'aria-label : masqué aux lecteurs d'écran pour
-            ne pas faire annoncer deux fois la même chose. */}
-        <span className="marvin-pastille__libelle" aria-hidden="true">
+        {/* Deux libellés, un par point de rupture : le texte diffère et le CSS
+            ne peut pas changer le contenu d'un élément existant. Tous deux
+            masqués aux lecteurs d'écran — l'aria-label du bouton porte déjà le
+            nom accessible, et l'annoncer deux fois serait du bruit. */}
+        <span
+          className="marvin-pastille__libelle marvin-pastille__libelle--long"
+          aria-hidden="true"
+        >
           Parler à MARVIN-42
+        </span>
+        <span
+          className="marvin-pastille__libelle marvin-pastille__libelle--court"
+          aria-hidden="true"
+        >
+          MARVIN
         </span>
       </button>
     </div>
