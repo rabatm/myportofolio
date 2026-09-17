@@ -351,13 +351,30 @@
 .marvin-panneau__saisie input::placeholder { color: var(--marvin-placeholder); }
 
 /* Feuille pleine largeur sous 640 px.
-   `dvh` et non `vh` : c'est ce qui fait que la feuille se réduit quand le
-   clavier logiciel monte, au lieu de passer dessous. L'historique est en
-   flex:1, donc la saisie reste collée en bas et visible. */
+
+   Ce commentaire affirmait autrefois que `dvh` faisait rétrécir la feuille à
+   la montée du clavier. C'est faux sur iOS, et ça a produit un vrai bug :
+   Safari ne rétrécit pas le viewport que `dvh` mesure, mais rétrécit bien
+   celui sur lequel `bottom: 0` s'ancre. La feuille gardait sa grande hauteur
+   avec un bas remonté, et sa barre de titre comme son historique sortaient par
+   le haut de l'écran.
+
+   Le chemin mobile n'utilise donc plus aucune unité de viewport : la hauteur
+   est un pourcentage du conteneur, lui-même ancré haut et bas. L'historique
+   reste en flex:1, donc la saisie reste collée en bas et visible. */
 @media (max-width: 639px) {
+  /* La hauteur vient du conteneur, jamais d'une unité de viewport.
+     `dvh` était calculé sur un viewport qu'iOS ne rétrécit PAS pour le clavier,
+     alors que `bottom: 0` s'ancre sur celui que Safari rétrécit bien. Les deux
+     étaient en désaccord et la différence sortait par le haut, emportant la
+     barre de titre et tout l'historique — on ne voyait plus qu'une plaque
+     sombre et le champ de saisie. Le conteneur étant désormais ancré haut ET
+     bas, il n'y a plus qu'une seule source de vérité. */
   .marvin-panneau {
     width: auto;
-    height: 80dvh;
+    height: 45%;
+    max-height: none;
+    pointer-events: auto;
     border-radius: 12px 12px 0 0;
     border-bottom: none;
   }
@@ -467,9 +484,16 @@
    et la pastille s'efface, la fermeture passant par la barre de titre. */
 @media (max-width: 639px) {
   .marvin-dock:has(.marvin-panneau) {
+    top: var(--nav-h);
     left: 0;
     right: 0;
     bottom: 0;
+    /* Le panneau reste collé en bas d'un conteneur qui, lui, couvre tout
+       l'espace sous la nav — c'est ce qui lui donne une hauteur définie. */
+    justify-content: flex-end;
+    /* Ce conteneur couvre maintenant l'écran : sans ça il intercepterait les
+       clics sur la page derrière le panneau. */
+    pointer-events: none;
     gap: 0;
   }
 
