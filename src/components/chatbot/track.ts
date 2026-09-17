@@ -24,8 +24,4 @@ export function track(
   window.dispatchEvent(
     new CustomEvent(ANALYTICS_EVENT, { detail: { name, ...detail } })
   );
-
-  if (import.meta.env.DEV) {
-    console.debug('[marvin]', name, detail);
-  }
 }

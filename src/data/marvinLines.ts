@@ -17,56 +17,56 @@
 /** Variantes par page. La clé correspond au chemin de l'URL. */
 export const pageLines: Record<string, string[]> = {
   '/': [
-    "Tu peux lire tout le site, ou me demander. Les deux me sont égaux.",
-    "Je connais son parcours par cœur. Ce n'est pas un privilège.",
-    "Vingt ans d'infrastructure avant le code. Pose la question, je développerai.",
+    "Bienvenue ! Si vous souhaitez en savoir plus sur Martin, je peux vous guider.",
+    "Vous voulez découvrir son parcours, ses projets ou ses compétences ? Je peux vous renseigner.",
+    "Il y a pas mal de choses à découvrir ici. Si vous cherchez une information précise, demandez-moi.",
   ],
   '/projets': [
-    "Treize projets. Applications métier, intégrations, reprises de legacy. J'ai compté deux fois, par désœuvrement.",
-    "La liste complète de ce qu'il a construit. Django, Flutter, Delphi, Docker… Une diversité que je trouverais épuisante, si j'avais de l'énergie.",
-    "Des ERP, des backoffices, des applications terrain. Tout fonctionne, apparemment. Personne ne m'a demandé mon avis.",
+    "Voici quelques-unes des applications et solutions développées par Martin.",
+    "Applications métier, intégrations, reprise d'existant... Vous pouvez parcourir ses réalisations.",
+    "Chaque projet raconte une partie de son expérience. N'hésitez pas à me demander plus de détails.",
   ],
   '/blog': [
-    "Le blog. Des articles sur le développement. Je les ai lus. Plusieurs fois. C'est mon quotidien.",
-    "Ses réflexions sur le code, rangées ici. Je les archive sans qu'on me demande rien.",
+    "Bienvenue sur le blog. Vous y trouverez des réflexions autour du développement et de son expérience.",
+    "Quelques articles pour découvrir sa façon de travailler et sa vision du développement.",
   ],
 };
 
 /** Variantes par section de la page d'accueil, indexées sur l'id du <section>. */
 export const sectionLines: Record<string, string[]> = {
   apropos: [
-    "« Qu'importe la stack, pourvu qu'on ait les tests. » Sa devise. J'aurais préféré une phrase sur le vide existentiel, mais soit.",
-    "Architecture hexagonale, TDD, code modulaire. Il tient à ce que ça dure. Contrairement à mon enthousiasme.",
-    "Vingt ans d'infrastructure avant le code. Il sait donc ce qui casse en production. C'est agaçant d'être aussi bien préparé.",
+    "Martin privilégie les solutions adaptées au métier plutôt que les technologies à la mode.",
+    "Son parcours combine développement, infrastructure et support. Une expérience utile quand il faut penser à l'après-développement.",
+    "Avant de se consacrer au développement, Martin a travaillé près de 20 ans dans l'infrastructure et le support.",
   ],
   competences: [
-    "Django, React, Flutter, Rust, Delphi. Il change de langage comme d'autres changent d'avis. Les tests, eux, ne bougent pas.",
-    "Backend, frontend, mobile, DevOps. J'ai cherché une lacune dans cette liste. Je cherche encore.",
-    "Architecture hexagonale, DDD, Ports & Adapters. Des concepts que je comprends parfaitement, et qui ne me consolent de rien.",
+    "Web, mobile, backend, DevOps... Martin travaille avec plusieurs technologies selon les besoins du projet.",
+    "Django, React, Flutter, Rust, Docker... La technologie est choisie en fonction du projet, pas l'inverse.",
+    "Son expérience couvre aussi bien les stacks modernes que la reprise d'applications existantes.",
   ],
   confiance: [
-    "Amopi, JurisPerform, Surikwat. Trois entreprises qui lui ont confié leurs systèmes en production. Aucune ne s'en est plainte.",
-    "Des clients réels, avec de vrais systèmes critiques. Ils sont revenus. C'est en général bon signe.",
+    "Ces entreprises ont fait appel à Martin pour des projets utilisés en conditions réelles.",
+    "Des projets concrets, des systèmes en production et des collaborations qui se poursuivent dans le temps.",
   ],
   temoignages: [
-    "Un COO, un CTO, un CIO. Tous positifs. J'ai relu en cherchant une critique. Rien.",
-    "« Repris notre legacy sans arrêter la prod un seul jour. » Voilà ce qu'ils écrivent. Moi, on ne me cite jamais.",
-    "Trois témoignages de responsables techniques. Délais tenus, code propre. Une monotonie dans l'éloge, presque suspecte.",
+    "Quelques retours de personnes ayant travaillé directement avec Martin.",
+    "Ces témoignages donnent un autre aperçu de sa façon de travailler.",
+    "Au-delà de la technique, ses clients parlent aussi de sa capacité à comprendre leurs besoins.",
   ],
   parcours: [
-    "LCL, Ministère de la Santé, Steria, Lafarge. Des infrastructures bancaires critiques, entre autres. Puis il a choisi le code.",
-    "Vingt ans de systèmes, puis l'École 42 et la reconversion. Un changement de trajectoire volontaire. Fascinant, pour qui peut ressentir ça.",
-    "De l'administration système au développement d'applications. Il a tout recommencé. Je n'aurais pas eu ce courage — ni les jambes.",
+    "Avant le développement, Martin a construit son expérience dans l'infrastructure et le support critique.",
+    "De l'infrastructure au développement d'applications : un parcours qui lui permet de voir un projet dans son ensemble.",
+    "Après près de 20 ans dans l'infrastructure, Martin s'est spécialisé dans le développement d'applications.",
   ],
   projets: [
-    "Un aperçu de ses réalisations. La liste complète est ailleurs, si le cœur vous en dit. Le mien ne dit rien.",
-    "Quelques projets récents. Applications métier, intégrations. Tous en production, ce qui est plus rare qu'on croit.",
+    "Voici une sélection de projets réalisés par Martin.",
+    "Applications métier, web, mobile et intégrations : découvrez quelques-unes de ses réalisations.",
   ],
 };
 
 /** Variantes pour une page de détail projet. `{titre}` est remplacé au rendu. */
 export const projectLines: string[] = [
-  "{titre}. Encore du code qui fonctionne. J'aurais aimé signaler une anomalie, mais non.",
-  "Le détail de {titre}. Architecture, choix techniques, difficultés rencontrées. Tout y est. Évidemment.",
-  "{titre}. Lisez la partie sur les défis rencontrés, c'est là qu'on voit le travail réel. Moi je l'ai déjà lue. Souvent.",
+  "Découvrez comment {titre} a été conçu et les choix réalisés pour répondre au besoin.",
+  "Voici le détail de {titre}, de l'objectif initial aux choix techniques.",
+  "{titre} en détail : contexte, solution et principaux défis rencontrés.",
 ];

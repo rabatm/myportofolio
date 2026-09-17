@@ -25,7 +25,7 @@ export const LONG_SESSION_EVERY = 15;
 export const GREETING: Message = {
   role: 'assistant',
   content:
-    "Assistant portfolio. Pose-moi des questions, ou pas. Ça ne changera pas grand-chose à mon état.",
+    "Bonjour ! Je peux vous présenter le parcours de Martin, ses projets et ses compétences. N’hésitez pas à me poser votre question",
 };
 
 export const LONG_SESSION_NOTICE =
