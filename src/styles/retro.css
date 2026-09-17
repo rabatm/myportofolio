@@ -445,7 +445,7 @@
 .marvin-pastille:focus-visible {
   width: auto;
   grid-auto-flow: column;
-  gap: 8px;
+  gap: 9px;
   padding: 0 16px;
   border-radius: 24px;
 }
@@ -508,7 +508,9 @@
    c'est le bouton (44 px) qui l'emporte sur le logo réduit à 38 — la tâche 2 y
    replie la variable. Déclarée ici parce que c'est `.menu-panneau` qui la
    consomme comme retrait haut, d'où l'importance de ne pas se tromper
-   d'enfant. */
+   d'enfant. Ce calcul exclut la bordure basse de 1px : avec le `border-box` du
+   preflight, la hauteur réellement utilisée est donc 85px, et la marge
+   d'air sous la barre est de 7px, pas 8. */
 :root {
   --nav-h: 84px;
 }
@@ -571,11 +573,13 @@
   min-height: var(--nav-h);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   /* 76 et non 70 : sous ce point de rupture la barre est un `flex` en
      `items-center` dont le plus grand enfant visible est le bouton du menu
      (44 px), le logo tombant à 38. Les liens de bureau sont `display: none` et
-     ne comptent pas. 44 + 2×16 = 76. */
+     ne comptent pas. 44 + 2×16 = 76. Ce calcul exclut la bordure basse de
+     1px : avec le `border-box` du preflight, la hauteur réellement utilisée
+     est donc 77px, et la marge d'air sous la barre est de 7px, pas 8. */
   :root { --nav-h: 76px; }
   .nav-logo { height: 38px; }
 }

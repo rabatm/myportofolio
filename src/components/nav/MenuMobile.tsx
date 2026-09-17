@@ -42,6 +42,24 @@ export default function MenuMobile() {
     panneauRef.current?.querySelector<HTMLElement>('a[href]')?.focus();
   }, [ouvert]);
 
+  // Rien ne masque le panneau quand la largeur franchit le point de rupture :
+  // l'enveloppe `md:hidden` fait disparaître le bouton, mais le panneau vit
+  // dans `document.body` via le portail et lui échappe. On se retrouverait avec
+  // une liste plein écran sans aucun contrôle de fermeture. `matchMedia` dans
+  // un effet, donc le contrat `client:idle` tient.
+  useEffect(() => {
+    if (!ouvert) return;
+
+    const requete = window.matchMedia('(min-width: 768px)');
+    const surChangement = () => {
+      if (requete.matches) setOuvert(false);
+    };
+
+    requete.addEventListener('change', surChangement);
+
+    return () => requete.removeEventListener('change', surChangement);
+  }, [ouvert]);
+
   // Verrou de scroll. On restaure la valeur précédente, pas la chaîne vide :
   // une autre feuille de style pourrait avoir posé la sienne.
   useEffect(() => {
@@ -127,6 +145,7 @@ export default function MenuMobile() {
                 key={href}
                 href={href}
                 className={estActif(href) ? 'menu-lien menu-lien--actif' : 'menu-lien'}
+                aria-current={estActif(href) ? 'page' : undefined}
                 onClick={fermer}
               >
                 <span aria-hidden="true">&gt;</span>
