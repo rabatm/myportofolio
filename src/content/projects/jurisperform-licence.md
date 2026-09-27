@@ -167,8 +167,8 @@ Chaque année, il faut repartir de zéro sans perdre la configuration.
 ### 📷 Visuels
 
 ![Espace étudiant — déclaration des TD](/projects/jurisperform-licence/capture-1.png)
-![Trombinoscope](/projects/jurisperform-licence/trombi.png)
-![coaching](/projects/jurisperform-licence/coaching.png)
+![Trombinoscope professeur](/projects/jurisperform-licence/capture-2.png)
+![Tableau de bord administrateur](/projects/jurisperform-licence/capture-3.png)
 
 ---
 
