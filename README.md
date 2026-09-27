@@ -60,7 +60,8 @@ Ajoute/modifie des catégories et des listes de compétences librement.
 
 ### Projets
 
-Crée un fichier `.md` dans `src/content/projects/` :
+Crée un fichier `.md` dans `src/content/projects/` — le plus simple est de copier le
+template complet `docs/templates/projet.md` (sections prêtes à remplir) :
 
 ```md
 ---

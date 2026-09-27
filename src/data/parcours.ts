@@ -34,7 +34,7 @@ export const parcours: ParcoursEntry[] = [
     periode: '2023—2026',
     titre: 'École 42 Perpignan',
     entreprise: '',
-    desc: 'Tronc commun validé, actuellement en spécialisation. Algorithmique en C, gestion bas niveau (mémoire, threads) : Minishell, Philosophers. Apprentissage approfondi de Rust en parallèle et participation à la Piscine Cyber.',
+    desc: 'Tronc commun validé : algorithmique et programmation système en C (Minishell, Philosophers), C++ et réseau (modules C++, webserv, NetPractice), raycasting (cub3D), Docker (Inception) et web temps réel (ft_transcendence). Actuellement en spécialisation, sur la Piscine Python for Data Science. Apprentissage approfondi de Rust en parallèle et participation à la Piscine Cyber.',
   },
   {
     periode: '2006—2022',
