@@ -8,7 +8,7 @@ import { skills } from '../../data/skills';
     « Qu'importe la stack, pourvu qu'on ait les tests. »
   </p>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {Object.entries(skills).map(([categorie, items]) => (
+    {Object.entries(skills.fr).map(([categorie, items]) => (
       <div class="card">
         <h3 class="font-mono text-sm mb-3" style="color: var(--accent-hover);">
           ── {categorie} ──

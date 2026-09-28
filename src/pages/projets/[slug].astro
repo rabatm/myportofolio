@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 
-const peekLines = projectLines.map((l) => l.replace('{titre}', project.data.title));
+const peekLines = projectLines.fr.map((l) => l.replace('{titre}', project.data.title));
 ---
 
 <BaseLayout

@@ -12,7 +12,7 @@ import { temoignages } from '../../data/temoignages';
       </div>
     </div>
     <div class="carousel-track">
-      {temoignages.map((t, i) => (
+      {temoignages.fr.map((t, i) => (
         <div class="carousel-slide" data-index={i}>
           <div class="quote-box">
             <div class="quote-collapse" data-expanded="false">
@@ -29,7 +29,7 @@ import { temoignages } from '../../data/temoignages';
     </div>
 
     <div class="carousel-dots">
-      {temoignages.map((_, i) => (
+      {temoignages.fr.map((_, i) => (
         <span class="carousel-dot" data-index={i}></span>
       ))}
     </div>

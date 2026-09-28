@@ -1,27 +1,10 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import Groq from 'groq-sdk';
+import { companies } from '../../data/companies';
 import { parcours } from '../../data/parcours';
 import { skills } from '../../data/skills';
 import { temoignages } from '../../data/temoignages';
-
-const companies = [
-  {
-    name: 'Amopi',
-    url: 'https://amopi.fr',
-    desc: "Le Groupe Amopi accompagne la transformation numérique des entreprises, particulièrement dans le secteur du commerce, en proposant une offre globale allant de l'intégration de logiciels de gestion et d'équipements de point de vente à l'hébergement cloud et l'infogérance.",
-  },
-  {
-    name: 'JurisPerform',
-    url: 'https://jurisperform.fr',
-    desc: "Cabinet de conseil et organisme de formation dédié aux professionnels du droit (avocats, notaires, commissaires de justice), spécialisé dans l'accompagnement stratégique, le management et le développement de la performance de leurs cabinets.",
-  },
-  {
-    name: 'Surikwat',
-    url: 'https://surikwat.com',
-    desc: 'Studio créatif de communication (web et print) basé dans les Pyrénées-Orientales, spécialisé dans la création de sites internet sur mesure, le design graphique et la production de contenus audiovisuels.',
-  },
-];
 
 let groq: Groq | null = null;
 
@@ -56,22 +39,22 @@ async function buildSystemPrompt(): Promise<string> {
     .map((p) => `- ${p.data.title} (${p.data.tags.join(', ')})`)
     .join('\n');
 
-  const parcoursBlock = parcours
+  const parcoursBlock = parcours.fr
     .map((e) => {
       const company = e.entreprise ? ` — ${e.entreprise}` : '';
       return `- ${e.periode}${company} : ${e.titre}`;
     })
     .join('\n');
 
-  const skillsBlock = Object.entries(skills)
+  const skillsBlock = Object.entries(skills.fr)
     .map(([cat, items]) => `- ${cat} : ${items.join(', ')}`)
     .join('\n');
 
-  const companiesBlock = companies
+  const companiesBlock = companies.fr
     .map((c) => `- ${c.name} (${c.url})`)
     .join('\n');
 
-  const temoignagesBlock = temoignages
+  const temoignagesBlock = temoignages.fr
     .map(
       (t) =>
         `- ${t.name} (${t.title}, ${t.company}) : "${firstSentence(t.quote)}"`

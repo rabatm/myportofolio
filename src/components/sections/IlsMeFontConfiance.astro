@@ -1,27 +1,6 @@
 ---
-const companies = [
-  {
-    name: 'Amopi',
-    url: 'https://amopi.fr',
-    logo: '/amopi.png',
-    bgWhite: true,
-    desc: "Transformation numérique & cloud",
-  },
-  {
-    name: 'JurisPerform',
-    url: 'https://www.juris-perform.fr/',
-    logo: '/jurisperform.png',
-    bgWhite: true,
-    desc: 'Conseil & formation pour le droit',
-  },
-  {
-    name: 'Surikwat',
-    url: 'https://surikwat.com',
-    logo: '/surikwat.png',
-    bgDark: true,
-    desc: 'Studio créatif web & print',
-  },
-];
+import { companies } from '../../data/companies';
+const liste = companies.fr;
 ---
 
 <section id="confiance" class="px-4 py-20 max-w-3xl mx-auto">
@@ -31,7 +10,7 @@ const companies = [
   </p>
 
   <div class="trust-row">
-    {companies.map((c, i) => (
+    {liste.map((c, i) => (
       <>
         {i > 0 && <span class="trust-sep">│</span>}
         <a href={c.url} target="_blank" rel="noopener noreferrer" class="trust-item">
@@ -40,11 +19,11 @@ const companies = [
               src={c.logo}
               alt={c.name}
               class="trust-logo"
-              style={c.bgWhite ? 'background: #fff; padding: 6px; border-radius: 4px;' : c.bgDark ? 'background: #1a1a1a; padding: 6px; border-radius: 4px;' : ''}
+              style={c.logoBg === 'white' ? 'background: #fff; padding: 6px; border-radius: 4px;' : 'background: #1a1a1a; padding: 6px; border-radius: 4px;'}
             />
           </div>
           <span class="trust-name">{c.name}</span>
-          <span class="trust-desc">{c.desc}</span>
+          <span class="trust-desc">{c.tagline}</span>
         </a>
       </>
     ))}
