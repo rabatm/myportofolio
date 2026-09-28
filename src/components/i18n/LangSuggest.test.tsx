@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, onTestFinished, vi } from 'vitest';
 import { LANG_CHOICE_KEY } from '../../i18n/utils';
 import LangSuggest, { SUGGEST_DISMISSED_KEY, suggestTarget } from './LangSuggest';
 
@@ -69,6 +69,10 @@ describe('LangSuggest', () => {
   it('mémorise le choix au clic sur le lien', () => {
     langues(['en-US']);
     render(<LangSuggest lang="fr" altHref="/en/" />);
+
+    const bloque = (e: Event) => e.preventDefault();
+    document.addEventListener('click', bloque);
+    onTestFinished(() => document.removeEventListener('click', bloque));
 
     fireEvent.click(screen.getByRole('link', { name: /View in English/ }));
 
