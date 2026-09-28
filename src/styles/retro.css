@@ -638,3 +638,16 @@
      battre en plus serait une sollicitation de trop. */
   .marvin-pastille--appel { animation: none; }
 }
+
+/* Switch FR | EN de la nav */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+.lang-switch strong {
+  color: var(--accent-hover);
+}

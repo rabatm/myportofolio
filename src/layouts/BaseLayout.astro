@@ -2,8 +2,18 @@
 import '../styles/retro.css';
 import MarvinDock from '../components/chatbot/MarvinDock.tsx';
 import MenuMobile from '../components/nav/MenuMobile.tsx';
+import { t } from '../i18n/ui';
+import {
+  alternatePath,
+  buildPath,
+  localizePath,
+  OG_LOCALE,
+  otherLang,
+  type Lang,
+} from '../i18n/utils';
 
 export interface Props {
+  lang: Lang;
   title: string;
   description?: string;
   /** Répliques d'amorce de la page. Absent = pas de bulle. */
@@ -12,20 +22,30 @@ export interface Props {
   sectionLines?: Record<string, string[]>;
 }
 
-const {
-  title,
-  description = "Développeur concepteur d'applications web, mobile et DevOps. Architecture hexagonale, TDD, Django, React, Flutter. Basé à Perpignan, disponible en full remote.",
-  peekLines,
-  sectionLines,
-} = Astro.props;
+const { lang, title, description = t(lang)['layout.defaultDescription'], peekLines, sectionLines } =
+  Astro.props;
+const d = t(lang);
+const autre = otherLang(lang);
 
-// URLs absolues requises par Open Graph. Astro.site vient de `site` dans astro.config.mjs.
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+// URLs absolues requises par Open Graph et hreflang. Astro.site vient de `site` dans astro.config.mjs.
+const pathname = Astro.url.pathname;
+const canonicalUrl = new URL(pathname, Astro.site);
+const hrefFr = new URL(localizePath(pathname, 'fr'), Astro.site);
+const hrefEn = new URL(localizePath(pathname, 'en'), Astro.site);
 const ogImageUrl = new URL('/og-image.jpg', Astro.site);
+const altHref = alternatePath(pathname);
+
+const liens = [
+  { href: buildPath('home', lang), label: d['nav.home'] },
+  { href: buildPath('projects', lang), label: d['nav.projects'] },
+  { href: buildPath('home', lang, undefined, '#parcours'), label: d['nav.parcours'] },
+  { href: buildPath('home', lang, undefined, '#confiance'), label: d['nav.partners'] },
+  { href: buildPath('blog', lang), label: d['nav.blog'] },
+];
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, interactive-widget=resizes-content" />
@@ -34,6 +54,9 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
     <meta name="description" content={description} />
     <meta name="author" content="Martin Rabat" />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="fr" href={hrefFr} />
+    <link rel="alternate" hreflang="en" href={hrefEn} />
+    <link rel="alternate" hreflang="x-default" href={hrefFr} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Martin Rabat — Martin Info" />
@@ -43,7 +66,8 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale" content={OG_LOCALE[lang]} />
+    <meta property="og:locale:alternate" content={OG_LOCALE[autre]} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
@@ -56,22 +80,29 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
   </head>
   <body class="min-h-screen">
     <nav class="nav-barre fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);">
-      <a href="/" class="flex items-center">
+      <a href={buildPath('home', lang)} class="flex items-center">
         <img src="/martininfologo.jpeg" alt="Martin Info" class="nav-logo" />
       </a>
 
       <div class="hidden md:flex items-center gap-6 text-sm">
-        <a href="/" class="nav-link" style="color: var(--ink-soft);">Accueil</a>
-        <a href="/projets" class="nav-link" style="color: var(--ink-soft);">Projets</a>
-        <a href="/#parcours" class="nav-link" style="color: var(--ink-soft);">Parcours</a>
-        <a href="/#confiance" class="nav-link" style="color: var(--ink-soft);">Partenaires</a>
-        <a href="/blog" class="nav-link" style="color: var(--ink-soft);">Blog</a>
+        {liens.map((l) => (
+          <a href={l.href} class="nav-link" style="color: var(--ink-soft);">{l.label}</a>
+        ))}
+        <span class="lang-switch">
+          {lang === 'fr' ? <strong>FR</strong> : (
+            <a href={altHref} data-lang-switch="fr" hreflang="fr" lang="fr" aria-label={d['nav.switchAria']} class="nav-link">FR</a>
+          )}
+          <span aria-hidden="true">|</span>
+          {lang === 'en' ? <strong>EN</strong> : (
+            <a href={altHref} data-lang-switch="en" hreflang="en" lang="en" aria-label={d['nav.switchAria']} class="nav-link">EN</a>
+          )}
+        </span>
         <span style="color: var(--border);">│</span>
-        <a href="/contact" class="btn-retro" style="padding: 8px 20px; font-size: 0.875rem;">Contact</a>
+        <a href={buildPath('contact', lang)} class="btn-retro" style="padding: 8px 20px; font-size: 0.875rem;">{d['nav.contact']}</a>
       </div>
 
       <div class="md:hidden">
-        <MenuMobile client:idle />
+        <MenuMobile client:idle lang={lang} altHref={altHref} />
       </div>
     </nav>
 
@@ -82,17 +113,33 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
     <MarvinDock client:idle peekLines={peekLines} sectionLines={sectionLines} />
 
     <footer class="text-center py-8" style="color: var(--ink-faint); border-top: 1px solid var(--border);">
-      <p class="text-sm">© 2026 Martin Info — Portfolio rétro 90s</p>
+      <p class="text-sm">{d['layout.footer']}</p>
     </footer>
 
     <div class="lightbox-overlay">
-      <button class="lightbox-close" aria-label="Fermer">✕</button>
+      <button class="lightbox-close" aria-label={d['layout.lightboxClose']}>✕</button>
       <img alt="" />
     </div>
   </body>
 </html>
 
 <script>
+  import { LANG_CHOICE_KEY, switchHref } from '../i18n/utils';
+
+  // Switch de langue : on retient le choix (le bandeau de suggestion ne
+  // reviendra plus) et on garde la section courante. Délégation sur le
+  // document, pour couvrir aussi les liens rendus dans des portails React.
+  document.addEventListener('click', (e) => {
+    const lien = (e.target as Element | null)?.closest<HTMLAnchorElement>('a[data-lang-switch]');
+    if (!lien) return;
+    try {
+      localStorage.setItem(LANG_CHOICE_KEY, lien.dataset.langSwitch ?? '');
+    } catch {
+      // Navigation privée : le choix ne sera pas retenu, la navigation se fait quand même.
+    }
+    lien.href = switchHref(lien.getAttribute('href') ?? '', location.hash);
+  });
+
   const overlay = document.querySelector<HTMLDivElement>('.lightbox-overlay')!;
   const overlayImg = overlay.querySelector('img')!;
 

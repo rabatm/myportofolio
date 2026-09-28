@@ -14,7 +14,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BaseLayout title={`${post.data.title} — Blog de Martin Rabat`} description={post.data.description}>
+<BaseLayout lang="fr" title={`${post.data.title} — Blog de Martin Rabat`} description={post.data.description}>
   <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
     <a href="/blog" class="text-sm mb-8 inline-block font-mono" style="color: var(--accent-hover);">&lt; Retour au blog</a>
     <p class="text-xs font-mono mb-2" style="color: var(--ink-faint);">{post.data.date.toLocaleDateString('fr-FR')}</p>

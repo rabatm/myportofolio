@@ -1,17 +1,30 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { t } from '../../i18n/ui';
+import { buildPath, normalizePath, otherLang, type Lang } from '../../i18n/utils';
+
+interface MenuMobileProps {
+  lang?: Lang;
+  /** Page équivalente dans l'autre langue. */
+  altHref?: string;
+}
 
 /** Les destinations, dans l'ordre de la nav de bureau. Contact est à part : il
  *  garde sa pilule et se place en bas de liste. */
-const LIENS = [
-  { href: '/', libelle: 'Accueil' },
-  { href: '/projets', libelle: 'Projets' },
-  { href: '/#parcours', libelle: 'Parcours' },
-  { href: '/#confiance', libelle: 'Partenaires' },
-  { href: '/blog', libelle: 'Blog' },
-];
+function liens(lang: Lang) {
+  const d = t(lang);
+  return [
+    { href: buildPath('home', lang), libelle: d['nav.home'] },
+    { href: buildPath('projects', lang), libelle: d['nav.projects'] },
+    { href: buildPath('home', lang, undefined, '#parcours'), libelle: d['nav.parcours'] },
+    { href: buildPath('home', lang, undefined, '#confiance'), libelle: d['nav.partners'] },
+    { href: buildPath('blog', lang), libelle: d['nav.blog'] },
+  ];
+}
 
-export default function MenuMobile() {
+export default function MenuMobile({ lang = 'fr', altHref = '/en/' }: MenuMobileProps) {
+  const d = t(lang);
+  const LIENS = liens(lang);
   const [ouvert, setOuvert] = useState(false);
   const boutonRef = useRef<HTMLButtonElement>(null);
   const panneauRef = useRef<HTMLDivElement>(null);
@@ -34,7 +47,7 @@ export default function MenuMobile() {
   // `chemin` à `/#parcours` ne peut jamais être vrai. Et rabattre l'ancre sur
   // son chemin marquerait Accueil, Parcours et Partenaires actifs ensemble sur
   // la page d'accueil. On ne marque donc que les vraies routes.
-  const estActif = (href: string) => !href.includes('#') && chemin === href;
+  const estActif = (href: string) => !href.includes('#') && normalizePath(chemin) === normalizePath(href);
 
   // Focus sur le premier lien à l'ouverture.
   useEffect(() => {
@@ -124,7 +137,7 @@ export default function MenuMobile() {
         className="menu-burger"
         aria-expanded={ouvert}
         aria-controls="menu-mobile"
-        aria-label={ouvert ? 'Fermer le menu' : 'Ouvrir le menu'}
+        aria-label={ouvert ? d['nav.menuClose'] : d['nav.menuOpen']}
         onClick={() => (ouvert ? fermer() : setOuvert(true))}
       >
         <span aria-hidden="true">{ouvert ? '✕' : '≡'}</span>
@@ -137,7 +150,7 @@ export default function MenuMobile() {
             id="menu-mobile"
             role="dialog"
             aria-modal="true"
-            aria-label="Navigation"
+            aria-label={d['nav.menuLabel']}
             className="menu-panneau"
           >
             {LIENS.map(({ href, libelle }) => (
@@ -153,8 +166,20 @@ export default function MenuMobile() {
               </a>
             ))}
 
-            <a href="/contact" className="menu-contact btn-retro" onClick={fermer}>
-              Contact
+            <a
+              href={altHref}
+              data-lang-switch={otherLang(lang)}
+              hrefLang={otherLang(lang)}
+              lang={otherLang(lang)}
+              className="menu-lien"
+              onClick={fermer}
+            >
+              <span aria-hidden="true">&gt;</span>
+              {d['nav.otherLangName']}
+            </a>
+
+            <a href={buildPath('contact', lang)} className="menu-contact btn-retro" onClick={fermer}>
+              {d['nav.contact']}
             </a>
           </div>,
           document.body
