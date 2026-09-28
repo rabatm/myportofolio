@@ -1,5 +1,6 @@
 ---
 import '../styles/retro.css';
+import LangSuggest from '../components/i18n/LangSuggest.tsx';
 import MarvinDock from '../components/chatbot/MarvinDock.tsx';
 import MenuMobile from '../components/nav/MenuMobile.tsx';
 import { t } from '../i18n/ui';
@@ -105,6 +106,8 @@ const liens = [
         <MenuMobile client:idle lang={lang} altHref={altHref} />
       </div>
     </nav>
+
+    <LangSuggest client:idle lang={lang} altHref={altHref} />
 
     <main>
       <slot />
