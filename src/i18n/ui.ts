@@ -102,7 +102,7 @@ const fr = {
   'contact.error': '> ERREUR : envoi impossible. Écris-moi directement à martin.rabat@gmail.com',
 
   'marvin.greeting':
-    "Bonjour ! Je peux vous présenter le parcours de Martin, ses projets et ses compétences. N'hésitez pas à me poser votre question",
+    'Bonjour ! Je peux vous présenter le parcours de Martin, ses projets et ses compétences. N’hésitez pas à me poser votre question',
   'marvin.longSession': 'SESSION LONGUE DÉTECTÉE. MÉMOIRE À COURT TERME UNIQUEMENT.',
   'marvin.connectionLost': 'connexion perdue',
   'marvin.retry': 'Réessayer',
@@ -115,7 +115,7 @@ const fr = {
   'marvin.pillLong': 'Parler à MARVIN-42',
 
   'chat.rateLimit':
-    "Le service est momentanément indisponible en raison d'un nombre élevé de demandes. Merci de réessayer dans quelques instants.",
+    'Le service est momentanément indisponible en raison d’un nombre élevé de demandes. Merci de réessayer dans quelques instants.',
   'chat.error': 'ERREUR: connexion au serveur perdue. Réessaie plus tard.',
 
   'wargames.intro': 'BIENVENUE AU JEU.\n\nTROIS ROUNDS.\n\nQUE LE MEILLEUR GAGNE.',
@@ -179,7 +179,7 @@ const en: Record<UiKey, string> = {
   'hero.ctaContact': "Let's talk about your project",
 
   'about.title': 'About',
-  'about.quote': '"Tools that work for your business."',
+  'about.quote': '“Tools that work for your business.”',
   'about.p1':
     "I build custom applications for businesses: easy to use, reliable day to day, and able to grow with you. Whether it's a new project or an existing tool that needs improving and connecting to your other software, that's often where it all happens.",
   'about.p2':
@@ -188,7 +188,7 @@ const en: Record<UiKey, string> = {
     'Currently in the specialization track at École 42 Perpignan (a peer-to-peer, project-based coding school), I build web and mobile applications.',
 
   'skills.title': 'Skills',
-  'skills.subtitle': '"Never mind the stack, as long as there are tests."',
+  'skills.subtitle': '“Never mind the stack, as long as there are tests.”',
 
   'trust.title': 'Trusted by',
   'trust.subtitle': 'Companies that have trusted me with their production systems.',
