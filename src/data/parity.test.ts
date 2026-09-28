@@ -4,6 +4,7 @@ import { pageLines, projectLines, sectionLines } from './marvinLines';
 import { parcours } from './parcours';
 import { skills } from './skills';
 import { temoignages } from './temoignages';
+import { wargamesLines } from './wargamesLines';
 
 /**
  * Le français et l'anglais doivent décrire les mêmes faits : même nombre
@@ -48,5 +49,18 @@ describe('parité FR/EN des données', () => {
 
   it('répliques de projet : le gabarit {titre} est gardé dans chaque langue', () => {
     expect(projectLines.en.every((l) => l.includes('{titre}'))).toBe(true);
+  });
+
+  it('répliques du jeu : mêmes tailles, gabarit {n} gardé', () => {
+    const { fr, en } = wargamesLines;
+    for (const cle of Object.keys(fr) as (keyof typeof fr)[]) {
+      const a = fr[cle];
+      const b = en[cle];
+      if (Array.isArray(a)) expect(b).toHaveLength(a.length);
+      else expect(typeof b).toBe('string');
+    }
+    expect(en.nextRound.filter((l) => l.includes('{n}'))).toHaveLength(
+      fr.nextRound.filter((l) => l.includes('{n}')).length
+    );
   });
 });

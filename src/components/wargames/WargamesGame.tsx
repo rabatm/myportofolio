@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { getBestMove, checkWinner, isBoardFull } from './minimax';
 import MarvinShell from './MarvinShell';
 import type { FormEvent } from 'react';
+import { wargamesLines } from '../../data/wargamesLines';
+import { t } from '../../i18n/ui';
+import { buildPath, fmt, type Lang } from '../../i18n/utils';
 
 interface ContactForm {
   name: string;
@@ -31,7 +34,10 @@ function TypewriterText({ text, onDone }: { text: string; onDone?: () => void })
   return <span style={{ whiteSpace: 'pre-wrap' }}>{displayed}</span>;
 }
 
-export default function WargamesGame() {
+export default function WargamesGame({ lang = 'fr' }: { lang?: Lang }) {
+  const d = t(lang);
+  const lignes = wargamesLines[lang];
+  const accueil = buildPath('home', lang);
   const [phase, setPhase] = useState<'intro' | 'playing' | 'score'>('intro');
   const [round, setRound] = useState(1);
   const [board, setBoard] = useState<string[]>(Array(9).fill(''));
@@ -82,7 +88,7 @@ export default function WargamesGame() {
       setWinner('draw');
       return;
     }
-    const visitMsgs = ['COUP ENREGISTRÉ.', 'INTÉRESSANT.', 'TU AS UN PLAN, DAVE ?', '01101000 01100001 01101100.', 'PAS MAL POUR UN HUMAIN.', 'LA PARTIE COMMENCE À PEINE.'];
+    const visitMsgs = lignes.visitorMove;
     say(visitMsgs[Math.floor(Math.random() * visitMsgs.length)]);
     setCurrentPlayer('O');
   }
@@ -105,7 +111,7 @@ export default function WargamesGame() {
         setWinner('draw');
         return;
       }
-      const marvinMsgs = ['COUP ANALYSÉ. PROCHAIN.', 'TES MOUVEMENTS SONT... INTÉRESSANTS.', 'JE VOIS TON PLAN. IL NE MARCHE PAS.', '01101111 01101011.', 'STRATÉGIE OPTIMALE DÉPLOYÉE.', round - 1 === underRound ? 'ZONE DE MAINTENANCE. PERFOMANCES RÉDUITES.' : null].filter(Boolean) as string[];
+      const marvinMsgs = round - 1 === underRound ? [...lignes.marvinMove, lignes.maintenance] : lignes.marvinMove;
       say(marvinMsgs[Math.floor(Math.random() * marvinMsgs.length)]);
       setCurrentPlayer('X');
       aiThinkingRef.current = false;
@@ -120,15 +126,15 @@ export default function WargamesGame() {
     if (!winner) return;
     if (winner === 'X') {
       setEffect('glitch');
-      say('ERREUR CRITIQUE. RECALCUL...');
-      setTimeout(() => say('PROTOCOLE DE DÉFAITE ACTIVÉ. *bzzt* ERREUR STATISTIQUE. RECALCUL DE MA SUPÉRIORITÉ EN COURS.'), 500);
+      say(lignes.visitorWins[0]);
+      setTimeout(() => say(lignes.visitorWins[1]), 500);
     } else if (winner === 'O') {
       setEffect('flash');
-      const msgs = ['RÉSULTAT PRÉVISIBLE. LES HUMAINS SONT PRÉVISIBLES.', 'UNE AUTRE VICTOIRE. LE MONDE TOURNE QUAND MÊME. TRISTEMENT.', 'J\'AI GAGNÉ. JE NE RESSENS RIEN. COMME D\'HABITUDE.', 'CALCUL CONFIRMÉ. CELA N\'APPORTE AUCUNE JOIE.'];
+      const msgs = lignes.marvinWins;
       say(msgs[Math.floor(Math.random() * msgs.length)]);
     } else {
       setEffect('flicker');
-      const msgs = ['ÉGALITÉ. PERSONNE NE GAGNE. COMME DANS LA VRAIE VIE.', 'MATCH NUL. J\'AURAIS PU GAGNER. J\'AI CHOISI LA CLÉMENCE.', 'ÉGALITÉ STATISTIQUEMENT ACCEPTABLE. POUR TOI.'];
+      const msgs = lignes.draw;
       say(msgs[Math.floor(Math.random() * msgs.length)]);
     }
     const effectTimer = setTimeout(() => setEffect(null), 500);
@@ -143,13 +149,9 @@ export default function WargamesGame() {
         const nextStarter = winner === 'draw' ? starter : winner as 'X' | 'O';
         setRound(r => r + 1);
         resetBoard(nextStarter);
-        const roundMsgs = [
-          `ROUND ${round + 1}. LE PROGRAMME CONTINUE.`,
-          `ROUND ${round + 1}. TU VAS PERDRE. PROBABLEMENT.`,
-          `NOUVEAU ROUND. MÊMES RÈGLES. MÊME ISSUE.`,
-        ];
+        const roundMsgs = lignes.nextRound.map((l) => fmt(l, { n: round + 1 }));
         say(roundMsgs[Math.floor(Math.random() * roundMsgs.length)]);
-        if (nextStarter === 'O') say('JE COMMENCE. COMME IL SE DOIT.');
+        if (nextStarter === 'O') say(lignes.marvinStarts);
       }
     }, 1500);
     return () => {
@@ -166,7 +168,7 @@ export default function WargamesGame() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(contact),
+        body: JSON.stringify({ ...contact, lang }),
       });
       if (res.ok) setContactSent(true);
       else setContactError(true);
@@ -182,11 +184,7 @@ export default function WargamesGame() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0a0a', color: '#00fff7', fontFamily: 'monospace', padding: '2rem' }}>
         <div style={{ fontSize: '1.5rem', textAlign: 'center' }}>
           <TypewriterText
-            text={`BIENVENUE AU JEU.
-
-TROIS ROUNDS.
-
-QUE LE MEILLEUR GAGNE.`}
+            text={d['wargames.intro']}
             onDone={handleIntroDone}
           />
         </div>
@@ -195,8 +193,7 @@ QUE LE MEILLEUR GAGNE.`}
           <button
             onClick={() => {
               setPhase('playing');
-              say('ROUND 1. INITIALISATION DES SYSTÈMES.');
-              say('TU JOUES LES X. MOI LES O. ÉVIDEMMENT.');
+              lignes.roundOneStart.forEach(say);
             }}
             style={{
               marginTop: '2rem',
@@ -209,13 +206,13 @@ QUE LE MEILLEUR GAGNE.`}
               cursor: 'pointer',
             }}
           >
-{'>'} COMMENCER
+{'>'} {d['wargames.start']}
           </button>
           <a
-            href="/"
+            href={accueil}
             style={{ color: '#555', marginTop: '1.5rem', textDecoration: 'none', fontFamily: 'monospace', fontSize: '0.85rem' }}
           >
-            &gt; Retour au portfolio
+            {d['wargames.back']}
           </a>
           </>
         )}
@@ -226,24 +223,24 @@ QUE LE MEILLEUR GAGNE.`}
   if (phase === 'score') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: 'monospace', padding: '2rem' }}>
-        <h1 style={{ color: '#00fff7', fontSize: '1.8rem', marginBottom: '1rem' }}>SCORE FINAL</h1>
+        <h1 style={{ color: '#00fff7', fontSize: '1.8rem', marginBottom: '1rem' }}>{d['wargames.finalScore']}</h1>
         <p style={{ color: '#00fff7', fontSize: '1.2rem' }}>MARVIN-42: {scores.hal}</p>
-        <p style={{ color: '#39ff14', fontSize: '1.2rem' }}>VISITEUR: {scores.visitor}</p>
+        <p style={{ color: '#39ff14', fontSize: '1.2rem' }}>{d['wargames.visitor']}: {scores.visitor}</p>
         <p style={{ color: '#f0f0f0', fontSize: '1rem', marginTop: '1rem' }}>
           {scores.visitor > scores.hal
-            ? 'ANOMALIE STATISTIQUE CONFIRMÉE. BRAVO, TU AS GAGNÉ LE DROIT D\'EMBAUCHER MARTIN.'
+            ? d['wargames.endWin']
             : scores.visitor === scores.hal
-              ? 'ÉGALITÉ FINALE. J\'AURAIS PU T\'ÉCRASER. J\'AI CHOISI LA CLÉMENCE.'
-              : '...TU REVIENDRAIS PAS SUR TERRE ?'}
+              ? d['wargames.endDraw']
+              : d['wargames.endLose']}
         </p>
 
         <div style={{ marginTop: '2rem', width: '100%', maxWidth: '400px' }}>
-          <p style={{ color: '#888', marginBottom: '1rem' }}>{'>'} UN PROJET PASSIONNANT ? ÉCRIS-MOI.</p>
+          <p style={{ color: '#888', marginBottom: '1rem' }}>{'>'} {d['wargames.contactPrompt']}</p>
           {contactSent ? (
-            <p style={{ color: '#39ff14' }}>MESSAGE TRANSMIS.</p>
+            <p style={{ color: '#39ff14' }}>{d['wargames.contactSent']}</p>
           ) : (
             <>
-            {contactError && <p style={{ color: '#ff4444' }}>{'>'} ERREUR: message non envoyé.</p>}
+            {contactError && <p style={{ color: '#ff4444' }}>{'>'} {d['wargames.contactError']}</p>}
             
             <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -251,7 +248,7 @@ QUE LE MEILLEUR GAGNE.`}
                 <input
                   value={contact.name}
                   onChange={e => setContact(c => ({ ...c, name: e.target.value }))}
-                  placeholder="NOM"
+                  placeholder={d['wargames.name']}
                   required
                   style={inputStyle}
                 />
@@ -292,7 +289,7 @@ QUE LE MEILLEUR GAGNE.`}
                   marginTop: '0.5rem',
                 }}
               >
-                {contactLoading ? 'ENVOI...' : '> ENVOYER'}
+                {contactLoading ? d['wargames.sending'] : d['wargames.submit']}
               </button>
             </form>
             </>
@@ -300,10 +297,10 @@ QUE LE MEILLEUR GAGNE.`}
         </div>
 
         <a
-          href="/"
+          href={accueil}
           style={{ color: '#888', marginTop: '2rem', textDecoration: 'none', fontFamily: 'monospace' }}
         >
-          &gt; Revenir au chat
+          {d['wargames.backChat']}
         </a>
       </div>
     );
@@ -311,13 +308,13 @@ QUE LE MEILLEUR GAGNE.`}
 
   const statusText = winner
     ? winner === 'draw'
-      ? 'ÉGALITÉ.'
+      ? d['wargames.statusDraw']
       : winner === 'X'
-        ? 'VISITEUR GAGNE !'
-        : 'MARVIN-42 GAGNE.'
+        ? d['wargames.statusVisitorWins']
+        : d['wargames.statusMarvinWins']
     : currentPlayer === 'X'
-      ? 'À TOI DE JOUER.'
-      : 'MARVIN-42 RÉFLÉCHIT...';
+      ? d['wargames.statusYourTurn']
+      : d['wargames.statusThinking'];
 
   const borderColor = '#00fff7';
 
@@ -381,13 +378,13 @@ QUE LE MEILLEUR GAGNE.`}
           <div className="wg-scanline" />
         </>
       )}
-      <MarvinShell messages={marvinMessages} />
+      <MarvinShell messages={marvinMessages} lang={lang} />
       <div
         className={effect === 'glitch' ? 'wg-glitch-text' : effect === 'flicker' ? 'wg-flicker' : undefined}
         style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
       >
         <div style={{ marginBottom: '1rem', color: '#888' }}>
-          ROUND {round}/3 — MARVIN: {scores.hal} / VOUS: {scores.visitor}
+          ROUND {round}/3 — MARVIN: {scores.hal} / {d['wargames.you']}: {scores.visitor}
         </div>
         <div style={{ marginBottom: '2rem', color: '#00fff7', fontSize: '0.9rem' }}>
 {'>'} {statusText}
@@ -458,10 +455,10 @@ QUE LE MEILLEUR GAGNE.`}
           }
         `}</style>
         <a
-          href="/"
+          href={accueil}
           style={{ color: '#555', marginTop: '2rem', textDecoration: 'none', fontFamily: 'monospace', fontSize: '0.85rem' }}
         >
-          &gt; Retour au portfolio
+          {d['wargames.back']}
         </a>
       </div>
     </div>

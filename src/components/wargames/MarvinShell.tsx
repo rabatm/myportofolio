@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react';
+import { t } from '../../i18n/ui';
+import { buildPath, type Lang } from '../../i18n/utils';
 
-export default function MarvinShell({ messages }: { messages: string[] }) {
+export default function MarvinShell({ messages, lang = 'fr' }: { messages: string[]; lang?: Lang }) {
   const endRef = useRef<HTMLDivElement>(null);
+  const d = t(lang);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -33,10 +36,10 @@ export default function MarvinShell({ messages }: { messages: string[] }) {
       ))}
       <div ref={endRef} />
       <a
-        href="/"
+        href={buildPath('home', lang)}
         style={{ color: '#555', textDecoration: 'none', display: 'block', marginTop: '1rem', fontSize: '0.85rem' }}
       >
-        &gt; Retour au portfolio
+        {d['wargames.back']}
       </a>
     </div>
   );
