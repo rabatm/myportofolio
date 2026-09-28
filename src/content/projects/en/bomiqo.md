@@ -12,7 +12,7 @@ BOMIQO is a web back office built for a multi-brand franchise network (ADBB / BB
 
 ### 📦 Terminal rental
 
-AMOPI lends terminals to the store brands so they can run their inventories. BOMIQO tracks the full lifecycle of each loan:
+AMOPI lends terminals to the network's retail chains so they can run their inventories. BOMIQO tracks the full lifecycle of each loan:
 - Date the terminal was shipped.
 - Date it was delivered to the client.
 - Expected and actual return dates.

@@ -23,7 +23,7 @@ It automates data exchange in both directions:
 - **In-store payments**: payments made in the shop are sent to the site.
 - **Photos**: product images are synced along with their display order.
 
-The gateway also handles calculating the customer balance (the *cagnotte*, a stored-value fund), based on the payments and refunds recorded in the ERP.
+The gateway also handles calculating the customer's cash fund (*cagnotte*), based on the payments and refunds recorded in the ERP.
 
 ## What it delivers
 
@@ -47,7 +47,7 @@ The gateway acts as the intermediary between these two environments and transfor
 
 ### Guaranteeing the reliability of financial data
 
-The customer balance calculation had to stay accurate to the cent.
+The cash fund calculation had to stay accurate to the cent.
 
 Amounts are therefore handled without converting them to floating-point numbers, to avoid rounding errors during calculations and exchanges.
 
