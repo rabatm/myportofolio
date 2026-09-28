@@ -7,6 +7,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { routeIdFromPath } from '../../i18n/utils';
 import { track } from './track';
 
 export const PEEK_DELAY_MS = 6_000;
@@ -117,7 +118,7 @@ export function choosePeekLine(
   const { path, lines, state, optedOut, reducedMotion } = input;
 
   if (lines.length === 0) return null;
-  if (path === '/contact') return null;
+  if (routeIdFromPath(path) === 'contact') return null;
   if (reducedMotion) return null;
   if (optedOut) return null;
   if (state.off) return null;

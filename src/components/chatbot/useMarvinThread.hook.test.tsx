@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 
 import { ANALYTICS_EVENT } from './track';
 import {
   GREETING,
+  greetingFor,
   LONG_SESSION_NOTICE,
   useMarvinThread,
   writeThread,
@@ -220,5 +221,49 @@ describe('useMarvinThread', () => {
     await waitFor(() =>
       expect(JSON.parse(sessionStorage.getItem('marvin.thread')!)).toEqual(fil)
     );
+  });
+
+  it('salue dans la langue de la page', () => {
+    const { result } = renderHook(() => useMarvinThread('en'));
+
+    expect(result.current.messages).toEqual([greetingFor('en')]);
+    expect(greetingFor('en').content).toMatch(/^Hello!/);
+  });
+
+  it("transmet la langue à l'API", async () => {
+    const appel = repond('Hi.');
+    vi.stubGlobal('fetch', appel);
+    const { result } = renderHook(() => useMarvinThread('en'));
+
+    await act(() => result.current.send('hello'));
+
+    const corps = JSON.parse((appel.mock.calls[0][1] as RequestInit).body as string);
+    expect(corps.lang).toBe('en');
+  });
+
+  it("signale la coupure dans la langue de la page", async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network')));
+    const { result } = renderHook(() => useMarvinThread('en'));
+
+    await act(() => result.current.send('hello'));
+
+    expect(result.current.messages.at(-1)).toEqual({ role: 'error', content: 'connection lost' });
+  });
+
+  it('redirige vers /en/wargames depuis la version anglaise', async () => {
+    vi.useFakeTimers();
+    const vraieLocation = window.location;
+    const destination = { href: '' };
+    Object.defineProperty(window, 'location', { configurable: true, value: destination });
+    vi.stubGlobal('fetch', repond("Let's play. [LANCER_JEU]"));
+    const { result } = renderHook(() => useMarvinThread('en'));
+
+    await act(() => result.current.send('play?'));
+    act(() => vi.advanceTimersByTime(2200));
+
+    expect(destination.href).toBe('/en/wargames');
+
+    Object.defineProperty(window, 'location', { configurable: true, value: vraieLocation });
+    vi.useRealTimers();
   });
 });

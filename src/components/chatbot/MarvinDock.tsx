@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
 import ChatPanel from './ChatPanel';
 import PeekBubble from './PeekBubble';
 import { track } from './track';
@@ -13,6 +15,8 @@ interface MarvinDockProps {
    * Seule la page d'accueil en fournit : elle seule a des sections.
    */
   sectionLines?: Record<string, string[]>;
+  /** Langue de la page : textes du dock et langue demandée à l'API. */
+  lang?: Lang;
 }
 
 /** Référence stable : un littéral par défaut relancerait l'effet à chaque rendu. */
@@ -21,7 +25,9 @@ const SANS_REPLIQUE: string[] = [];
 export default function MarvinDock({
   peekLines = SANS_REPLIQUE,
   sectionLines,
+  lang = 'fr',
 }: MarvinDockProps) {
+  const d = t(lang);
   const [ouvert, setOuvert] = useState(false);
   const pastilleRef = useRef<HTMLButtonElement>(null);
 
@@ -40,7 +46,7 @@ export default function MarvinDock({
     sectionLines,
     ouvert
   );
-  const fil = useMarvinThread();
+  const fil = useMarvinThread(lang);
 
   const ouvrir = useCallback(
     (source: 'pill' | 'bubble') => {
@@ -93,6 +99,7 @@ export default function MarvinDock({
           onRetry={fil.retry}
           onClose={fermer}
           onFinishTyping={fil.finishTyping}
+          lang={lang}
         />
       )}
 
@@ -108,7 +115,7 @@ export default function MarvinDock({
         }
         aria-expanded={ouvert}
         aria-controls="marvin-panneau"
-        aria-label={ouvert ? 'Fermer le chat MARVIN-42' : 'Ouvrir le chat MARVIN-42'}
+        aria-label={ouvert ? d['marvin.pillClose'] : d['marvin.pillOpen']}
         onClick={() => (ouvert ? fermer() : ouvrir('pill'))}
       >
         <span aria-hidden="true">$_</span>
@@ -120,7 +127,7 @@ export default function MarvinDock({
           className="marvin-pastille__libelle marvin-pastille__libelle--long"
           aria-hidden="true"
         >
-          Parler à MARVIN-42
+          {d['marvin.pillLong']}
         </span>
         <span
           className="marvin-pastille__libelle marvin-pastille__libelle--court"

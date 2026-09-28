@@ -98,6 +98,11 @@ describe('choosePeekLine', () => {
     expect(choosePeekLine(entree({ path: '/contact' }))).toBeNull();
   });
 
+  it('2 bis. bloque aussi sur /en/contact et avec un slash final', () => {
+    expect(choosePeekLine(entree({ path: '/en/contact' }))).toBeNull();
+    expect(choosePeekLine(entree({ path: '/contact/' }))).toBeNull();
+  });
+
   it('3. bloque sous prefers-reduced-motion', () => {
     expect(choosePeekLine(entree({ reducedMotion: true }))).toBeNull();
   });

@@ -110,7 +110,7 @@ const liens = [
       <slot />
     </main>
 
-    <MarvinDock client:idle peekLines={peekLines} sectionLines={sectionLines} />
+    <MarvinDock client:idle lang={lang} peekLines={peekLines} sectionLines={sectionLines} />
 
     <footer class="text-center py-8" style="color: var(--ink-faint); border-top: 1px solid var(--border);">
       <p class="text-sm">{d['layout.footer']}</p>

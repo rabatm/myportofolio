@@ -7,6 +7,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { t } from '../../i18n/ui';
+import { buildPath, type Lang } from '../../i18n/utils';
 import { track } from './track';
 
 export type Role = 'assistant' | 'user' | 'error';
@@ -22,14 +24,13 @@ export const CONTEXT_WINDOW = 6;
 export const GAME_MARKER = '[LANCER_JEU]';
 export const LONG_SESSION_EVERY = 15;
 
-export const GREETING: Message = {
-  role: 'assistant',
-  content:
-    "Bonjour ! Je peux vous présenter le parcours de Martin, ses projets et ses compétences. N’hésitez pas à me poser votre question",
-};
+export function greetingFor(lang: Lang): Message {
+  return { role: 'assistant', content: t(lang)['marvin.greeting'] };
+}
 
-export const LONG_SESSION_NOTICE =
-  'SESSION LONGUE DÉTECTÉE. MÉMOIRE À COURT TERME UNIQUEMENT.';
+/** Valeurs françaises, conservées pour la version historique du site. */
+export const GREETING: Message = greetingFor('fr');
+export const LONG_SESSION_NOTICE = t('fr')['marvin.longSession'];
 
 export function capThread(messages: Message[]): Message[] {
   return messages.length <= THREAD_CAP ? messages : messages.slice(-THREAD_CAP);
@@ -98,8 +99,8 @@ export interface UseMarvinThreadResult {
   finishTyping: () => void;
 }
 
-export function useMarvinThread(): UseMarvinThreadResult {
-  const [messages, setMessages] = useState<Message[]>([GREETING]);
+export function useMarvinThread(lang: Lang = 'fr'): UseMarvinThreadResult {
+  const [messages, setMessages] = useState<Message[]>(() => [greetingFor(lang)]);
   const [isLoading, setIsLoading] = useState(false);
   const [typing, setTyping] = useState(false);
   const [canRetry, setCanRetry] = useState(false);
@@ -151,7 +152,7 @@ export function useMarvinThread(): UseMarvinThreadResult {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: toApiMessages(historique) }),
+        body: JSON.stringify({ messages: toApiMessages(historique), lang }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -167,7 +168,7 @@ export function useMarvinThread(): UseMarvinThreadResult {
         // (croix ou Échap) : l'id est gardé pour pouvoir annuler la
         // navigation au démontage plutôt que de le rediriger malgré lui.
         minuterieJeuRef.current = setTimeout(() => {
-          window.location.href = '/wargames';
+          window.location.href = buildPath('wargames', lang);
         }, 2200);
         return;
       }
@@ -178,20 +179,20 @@ export function useMarvinThread(): UseMarvinThreadResult {
       ) {
         setTimeout(() => {
           setMessages((prev) =>
-            capThread([...prev, { role: 'assistant', content: LONG_SESSION_NOTICE }])
+            capThread([...prev, { role: 'assistant', content: t(lang)['marvin.longSession'] }])
           );
         }, 2500);
       }
     } catch {
       setMessages(
-        capThread([...historique, { role: 'error', content: 'connexion perdue' }])
+        capThread([...historique, { role: 'error', content: t(lang)['marvin.connectionLost'] }])
       );
       setCanRetry(true);
     } finally {
       chargementRef.current = false;
       setIsLoading(false);
     }
-  }, []);
+  }, [lang]);
 
   const send = useCallback(
     async (text: string) => {

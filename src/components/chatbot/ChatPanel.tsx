@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
 import { TypewriterText } from './TypewriterText';
 import type { Message } from './useMarvinThread';
 
@@ -11,6 +13,7 @@ interface ChatPanelProps {
   onRetry: () => void;
   onClose: () => void;
   onFinishTyping: () => void;
+  lang?: Lang;
 }
 
 /** Le préfixe de terminal est décoratif : il ne part jamais vers l'API. */
@@ -35,7 +38,9 @@ export function ChatPanel({
   onRetry,
   onClose,
   onFinishTyping,
+  lang = 'fr',
 }: ChatPanelProps) {
+  const d = t(lang);
   const [saisie, setSaisie] = useState('');
   const champRef = useRef<HTMLInputElement>(null);
   const finRef = useRef<HTMLDivElement>(null);
@@ -71,7 +76,7 @@ export function ChatPanel({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Fermer la conversation"
+          aria-label={d['marvin.closeChat']}
           className="marvin-panneau__fermer"
         >
           ✕
@@ -108,7 +113,7 @@ export function ChatPanel({
 
         {canRetry && (
           <button type="button" onClick={onRetry} className="marvin-panneau__reessayer">
-            Réessayer
+            {d['marvin.retry']}
           </button>
         )}
 
@@ -124,11 +129,11 @@ export function ChatPanel({
           type="text"
           value={saisie}
           onChange={(e) => setSaisie(e.target.value)}
-          placeholder="Écris un message…"
-          aria-label="Votre message pour MARVIN-42"
+          placeholder={d['marvin.placeholder']}
+          aria-label={d['marvin.inputAria']}
           disabled={isLoading}
         />
-        <button type="submit" aria-label="Envoyer le message" disabled={isLoading}>
+        <button type="submit" aria-label={d['marvin.send']} disabled={isLoading}>
           ⏎
         </button>
       </form>

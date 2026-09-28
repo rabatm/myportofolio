@@ -145,4 +145,17 @@ describe('MarvinDock', () => {
     expect(pastille()).toBeInTheDocument();
     expect(screen.queryByTestId('peek-corps')).not.toBeInTheDocument();
   });
+
+  it("parle anglais sur la version anglaise", () => {
+    render(<MarvinDock lang="en" peekLines={LIGNES} />);
+
+    const bouton = screen.getByRole('button', { name: /open marvin-42 chat/i });
+    expect(bouton).toHaveTextContent('Talk to MARVIN-42');
+
+    fireEvent.click(bouton);
+    expect(screen.getByRole('textbox', { name: /your message to marvin-42/i })).toHaveAttribute(
+      'placeholder',
+      'Type a message…'
+    );
+  });
 });
