@@ -15,7 +15,7 @@ moche. Aucune obligation de me créditer, mais un petit mot fait toujours
 plaisir si tu t'en sers.
 
 Un détail qui sort du lot : le site embarque un agent conversationnel façon
-HAL-9000 (voir `src/pages/api/chat.ts`), branché sur Groq, qui répond aux
+Marvin-42 (voir `src/pages/api/chat.ts`), branché sur Groq, qui répond aux
 questions des visiteurs à partir des vraies données du portfolio (parcours,
 compétences, témoignages) — pas d'improvisation, il ne répond que sur ce qui
 est réellement dans le repo.
@@ -43,24 +43,38 @@ Fichier : `src/data/parcours.ts`
 
 Les entrées s'affichent dans l'ordre du tableau (de la plus récente à la plus ancienne).
 
+Le fichier exporte un `Record<Lang, ...>` : un bloc `fr` et un bloc `en`, à tenir
+alignés (mêmes entrées, même ordre). `bun run test` (`src/data/parity.test.ts`)
+vérifie cette parité et échoue si les deux langues divergent.
+
 ### Compétences
 
 Fichier : `src/data/skills.ts`
 
 ```ts
-export const skills: Record<string, string[]> = {
-  Frontend: ["HTML", "CSS", "JavaScript"],
-  Backend: ["Node.js", "Python"],
-  Design: ["Figma"],
-  Outils: ["Git", "VS Code"],
+export const skills: Record<Lang, Record<string, string[]>> = {
+  fr: {
+    Frontend: ["HTML", "CSS", "JavaScript"],
+    Backend: ["Node.js", "Python"],
+    Design: ["Figma"],
+    Outils: ["Git", "VS Code"],
+  },
+  en: {
+    Frontend: ["HTML", "CSS", "JavaScript"],
+    Backend: ["Node.js", "Python"],
+    Design: ["Figma"],
+    Tools: ["Git", "VS Code"],
+  },
 };
 ```
 
-Ajoute/modifie des catégories et des listes de compétences librement.
+Ajoute/modifie des catégories et des listes de compétences librement, en gardant
+le bloc `en` aligné sur le bloc `fr` (même vérifié par `bun run test`).
 
 ### Projets
 
-Crée un fichier `.md` dans `src/content/projects/` — le plus simple est de copier le
+Crée un fichier `.md` dans `src/content/projects/fr/` puis, sa traduction, sous le
+même nom dans `src/content/projects/en/` — le plus simple est de copier le
 template complet `docs/templates/projet.md` (sections prêtes à remplir) :
 
 ```md
@@ -77,7 +91,9 @@ github: "https://github.com/..." # optionnel
 Description détaillée en Markdown…
 ```
 
-Les projets s'affichent du plus récent au plus ancien.
+Les projets s'affichent du plus récent au plus ancien. Sans version anglaise
+(même nom de fichier absent de `en/`), la page EN affiche le texte français
+avec un badge signalant qu'il n'est pas encore traduit.
 
 #### Images
 
@@ -100,7 +116,8 @@ dans les articles de blog.
 
 ### Articles de blog
 
-Crée un fichier `.md` dans `src/content/blog/` :
+Crée un fichier `.md` dans `src/content/blog/fr/` puis, sa traduction, sous le
+même nom dans `src/content/blog/en/` :
 
 ```md
 ---
@@ -114,6 +131,9 @@ description: "Accroche de l'article."
 
 Ton article en Markdown…
 ```
+
+Même règle de repli que pour les projets : sans traduction, la page EN affiche
+le texte français avec un badge.
 
 ## Développement
 
