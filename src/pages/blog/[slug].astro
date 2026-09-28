@@ -1,33 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, render } from 'astro:content';
+import BlogPostPage from '../../components/pages/BlogPostPage.astro';
+import { localizedStaticPaths, type LocalizedPost } from '../../i18n/collections';
 
-export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(p => ({
-    params: { slug: p.id },
-    props: { post: p },
-  }));
+export function getStaticPaths() {
+  return localizedStaticPaths('blog', 'fr');
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { item } = Astro.props as { item: LocalizedPost };
 ---
 
-<BaseLayout lang="fr" title={`${post.data.title} — Blog de Martin Rabat`} description={post.data.description}>
-  <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
-    <a href="/blog" class="text-sm mb-8 inline-block font-mono" style="color: var(--accent-hover);">&lt; Retour au blog</a>
-    <p class="text-xs font-mono mb-2" style="color: var(--ink-faint);">{post.data.date.toLocaleDateString('fr-FR')}</p>
-    <h1 class="text-4xl font-bold mb-4" style="color: var(--ink);">{post.data.title}</h1>
-    <div class="flex flex-wrap gap-2 mb-6">
-      {post.data.tags.map(tag => (
-        <span class="text-xs px-2 py-1 font-mono rounded-full" style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);">
-          #{tag}
-        </span>
-      ))}
-    </div>
-    <div class="prose max-w-none" style="color: var(--ink-soft);">
-      <Content />
-    </div>
-  </article>
-</BaseLayout>
+<BlogPostPage lang="fr" item={item} />

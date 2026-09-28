@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../sections/Hero.astro';
+import APropos from '../sections/APropos.astro';
+import Parcours from '../sections/Parcours.astro';
+import Skills from '../sections/Skills.astro';
+import ApercuProjets from '../sections/ApercuProjets.astro';
+import IlsMeFontConfiance from '../sections/IlsMeFontConfiance.astro';
+import Temoignages from '../sections/Temoignages.astro';
+import { pageLines, sectionLines } from '../../data/marvinLines';
+import { getLocalizedCollection } from '../../i18n/collections';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const projects = await getLocalizedCollection('projects', lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={d['home.title']}
+  description={d['home.description']}
+  peekLines={pageLines[lang].home}
+  sectionLines={sectionLines[lang]}
+>
+  <Hero lang={lang} />
+  <APropos lang={lang} />
+  <Skills lang={lang} />
+  <IlsMeFontConfiance lang={lang} />
+  <Temoignages lang={lang} />
+  <Parcours lang={lang} />
+  <ApercuProjets lang={lang} items={projects} />
+</BaseLayout>

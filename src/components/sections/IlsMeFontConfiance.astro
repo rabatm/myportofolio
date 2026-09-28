@@ -1,12 +1,21 @@
 ---
 import { companies } from '../../data/companies';
-const liste = companies.fr;
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const liste = companies[lang];
 ---
 
 <section id="confiance" class="px-4 py-20 max-w-3xl mx-auto">
-  <h2 class="section-title">Ils me font confiance</h2>
+  <h2 class="section-title">{d['trust.title']}</h2>
   <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
-    Des entreprises qui m'ont confié leurs systèmes en production.
+    {d['trust.subtitle']}
   </p>
 
   <div class="trust-row">

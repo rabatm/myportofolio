@@ -1,0 +1,48 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import OnlyInBadge from '../i18n/OnlyInBadge.astro';
+import { projectLines } from '../../data/marvinLines';
+import type { LocalizedProject } from '../../i18n/collections';
+import { t } from '../../i18n/ui';
+import { buildPath, type Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+  item: LocalizedProject;
+}
+
+const { lang, item } = Astro.props;
+const d = t(lang);
+const project = item.entry;
+const { Content } = await render(project);
+
+const peekLines = projectLines[lang].map((l) => l.replace('{titre}', project.data.title));
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${project.data.title} — Martin Rabat`}
+  description={project.data.description}
+  peekLines={peekLines}
+>
+  <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
+    <a href={buildPath('projects', lang)} class="text-sm mb-8 inline-block font-mono" style="color: var(--accent-hover);">{d['project.back']}</a>
+    {item.isFallback && <div><OnlyInBadge lang={lang} /></div>}
+    <h1 class="text-4xl font-bold mb-2" style="color: var(--ink);" lang={item.contentLang}>{project.data.title}</h1>
+    <div class="flex flex-wrap gap-2 mb-6">
+      {project.data.tags.map(tag => (
+        <span class="text-xs px-2 py-1 font-mono rounded-full" style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);">
+          {tag}
+        </span>
+      ))}
+    </div>
+    <div class="prose max-w-none" style="color: var(--ink-soft);" lang={item.contentLang}>
+      <Content />
+    </div>
+    <div class="flex gap-4 mt-8">
+      {project.data.url && <a href={project.data.url} class="btn-retro" target="_blank">{d['project.visit']}</a>}
+      {project.data.github && <a href={project.data.github} class="btn-retro" target="_blank">GitHub</a>}
+    </div>
+  </article>
+</BaseLayout>

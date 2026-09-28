@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import OnlyInBadge from '../i18n/OnlyInBadge.astro';
+import { pageLines } from '../../data/marvinLines';
+import { getLocalizedCollection } from '../../i18n/collections';
+import { t } from '../../i18n/ui';
+import { buildPath, type Lang } from '../../i18n/utils';
+import { hasImage, initials } from '../../utils/projectImage';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const projects = await getLocalizedCollection('projects', lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={d['projects.title']}
+  description={d['projects.description']}
+  peekLines={pageLines[lang].projects}
+>
+  <section class="px-4 pt-24 pb-20 max-w-5xl mx-auto">
+    <h2 class="section-title">{d['projects.heading']}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {projects.map(({ entry: p, slug, isFallback }) => (
+        <a href={buildPath('projects', lang, slug)} class="card block no-underline">
+          <div class="aspect-video mb-4 flex items-center justify-center overflow-hidden" style="background: var(--accent-soft); border: 1px solid var(--border);">
+            {hasImage(p.data.image) ? (
+              <img src={p.data.image} alt={p.data.title} class="w-full h-full object-cover" />
+            ) : (
+              <span class="text-4xl font-mono" style="color: var(--ink-faint);">
+                {initials(p.data.title)}
+              </span>
+            )}
+          </div>
+          {isFallback && <OnlyInBadge lang={lang} />}
+          <h3 class="font-bold text-lg mb-2" style="color: var(--ink);">{p.data.title}</h3>
+          <p class="text-sm mb-3" style="color: var(--ink-soft);">{p.data.description}</p>
+          <div class="flex flex-wrap gap-2">
+            {p.data.tags.map(tag => (
+              <span class="text-xs px-2 py-1 font-mono rounded-full" style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

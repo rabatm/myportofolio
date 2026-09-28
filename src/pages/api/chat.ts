@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
 import Groq from 'groq-sdk';
+import { getLocalizedCollection } from '../../i18n/collections';
 import { companies } from '../../data/companies';
 import { parcours } from '../../data/parcours';
 import { skills } from '../../data/skills';
@@ -32,11 +32,11 @@ let cachedPrompt: string | null = null;
 async function buildSystemPrompt(): Promise<string> {
   if (cachedPrompt) return cachedPrompt;
 
-  const projects = await getCollection('projects');
+  const projects = await getLocalizedCollection('projects', 'fr');
   // Titre + technos seulement : les descriptions complètes pesaient trop lourd
   // pour un contexte renvoyé à chaque message.
   const projectsBlock = projects
-    .map((p) => `- ${p.data.title} (${p.data.tags.join(', ')})`)
+    .map(({ entry: p }) => `- ${p.data.title} (${p.data.tags.join(', ')})`)
     .join('\n');
 
   const parcoursBlock = parcours.fr

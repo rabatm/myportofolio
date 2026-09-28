@@ -1,38 +1,50 @@
 ---
 import { temoignages } from '../../data/temoignages';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
 ---
 
 <section id="temoignages" class="px-4 py-20 max-w-3xl mx-auto">
   <div class="carousel" data-current="0">
     <div class="carousel-header">
-      <h2 class="section-title">Témoignages</h2>
+      <h2 class="section-title">{d['testimonials.title']}</h2>
       <div class="carousel-nav">
-        <button class="carousel-btn prev" aria-label="Précédent">◀</button>
-        <button class="carousel-btn next" aria-label="Suivant">▶</button>
+        <button class="carousel-btn prev" aria-label={d['testimonials.prev']}>◀</button>
+        <button class="carousel-btn next" aria-label={d['testimonials.next']}>▶</button>
       </div>
     </div>
     <div class="carousel-track">
-      {temoignages.fr.map((t, i) => (
+      {temoignages[lang].map((item, i) => (
         <div class="carousel-slide" data-index={i}>
           <div class="quote-box">
             <div class="quote-collapse" data-expanded="false">
-              <p class="quote-text">"{t.quote}"</p>
+              <p class="quote-text">"{item.quote}"</p>
               <div class="quote-fade"></div>
             </div>
-            <button class="quote-toggle" aria-label="Voir plus">Lire la suite</button>
+            <button class="quote-toggle" aria-label={d['testimonials.moreAria']} data-more={d['testimonials.more']} data-less={d['testimonials.less']}>{d['testimonials.more']}</button>
           </div>
-          <p class="quote-author">— {t.name}</p>
-          <p class="quote-title">{t.title}</p>
-          <p class="quote-company">{t.company}</p>
+          <p class="quote-author">— {item.name}</p>
+          <p class="quote-title">{item.title}</p>
+          <p class="quote-company">{item.company}</p>
         </div>
       ))}
     </div>
 
     <div class="carousel-dots">
-      {temoignages.fr.map((_, i) => (
+      {temoignages[lang].map((_, i) => (
         <span class="carousel-dot" data-index={i}></span>
       ))}
     </div>
+    {d['testimonials.translated'] && (
+      <p class="quote-translated">{d['testimonials.translated']}</p>
+    )}
   </div>
 </section>
 
@@ -79,7 +91,8 @@ import { temoignages } from '../../data/temoignages';
       const collapse = btn.previousElementSibling as HTMLElement;
       const expanded = collapse.dataset.expanded === 'true';
       collapse.dataset.expanded = expanded ? 'false' : 'true';
-      btn.textContent = expanded ? 'Lire la suite' : 'Voir moins';
+      const b = btn as HTMLElement;
+      b.textContent = (expanded ? b.dataset.more : b.dataset.less) ?? '';
       // pause auto-rotation when expanded
       if (!expanded) clearInterval(interval);
     });
@@ -223,6 +236,14 @@ import { temoignages } from '../../data/temoignages';
     justify-content: center;
     gap: 0.5rem;
     margin-top: 1rem;
+  }
+  .quote-translated {
+    text-align: center;
+    font-family: monospace;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--ink-faint);
+    margin-top: 0.75rem;
   }
   .carousel-dot {
     width: 8px;

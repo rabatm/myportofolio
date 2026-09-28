@@ -1,14 +1,23 @@
 ---
 import { parcours } from '../../data/parcours';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
 ---
 
 <section id="parcours" class="px-4 py-20 max-w-3xl mx-auto">
-  <h2 class="section-title">Parcours</h2>
+  <h2 class="section-title">{d['parcours.title']}</h2>
   <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
-    20 ans d'infrastructure, puis le code.
+    {d['parcours.subtitle']}
   </p>
   <div class="space-y-6">
-    {parcours.fr.map(entry => (
+    {parcours[lang].map(entry => (
       <div class="card">
         <p class="text-sm font-mono mb-3" style="color: var(--accent-hover);">
           ── {entry.periode} ──

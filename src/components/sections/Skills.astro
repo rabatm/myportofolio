@@ -1,14 +1,23 @@
 ---
 import { skills } from '../../data/skills';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
 ---
 
 <section id="competences" class="px-4 py-20 max-w-3xl mx-auto">
-  <h2 class="section-title">Compétences</h2>
+  <h2 class="section-title">{d['skills.title']}</h2>
   <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
-    « Qu'importe la stack, pourvu qu'on ait les tests. »
+    {d['skills.subtitle']}
   </p>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {Object.entries(skills.fr).map(([categorie, items]) => (
+    {Object.entries(skills[lang]).map(([categorie, items]) => (
       <div class="card">
         <h3 class="font-mono text-sm mb-3" style="color: var(--accent-hover);">
           ── {categorie} ──

@@ -1,24 +1,33 @@
 ---
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
 ---
 
 <section id="apropos" class="px-4 py-20 max-w-3xl mx-auto">
-  <h2 class="section-title">À propos</h2>
+  <h2 class="section-title">{d['about.title']}</h2>
   <div class="flex flex-col md:flex-row gap-8 items-start">
     <div class="w-32 h-32 shrink-0 retro-border rounded-full overflow-hidden">
       <img src="/martin.png" alt="Martin Rabat" class="w-full h-full object-cover" style="object-position: center 15%;" />
     </div>
     <div>
       <p class="mb-4 italic leading-relaxed" style="color: var(--ink);">
-        « Des outils au service de votre activité. »
+        {d['about.quote']}
       </p>
       <p class="mb-4 leading-relaxed" style="color: var(--ink-soft);">
-        Je crée des applications sur mesure pour les entreprises : simples à utiliser, fiables au quotidien et capables d'évoluer avec vous. Nouveau projet ou outil existant à améliorer et à connecter à vos autres logiciels, c'est souvent là que tout se joue.
+        {d['about.p1']}
       </p>
       <p class="leading-relaxed" style="color: var(--ink-soft);">
-        Avant de devenir développeur, j'ai passé près de 20 ans à maintenir des systèmes informatiques critiques et à former des équipes à leurs outils. J'en ai retenu l'essentiel : une application ne vaut que si elle est pensée pour et avec ses utilisateurs.
+        {d['about.p2']}
       </p>
       <p class="mb-4 leading-relaxed" style="color: var(--ink-soft);">
-        Aujourd'hui en spécialisation à l'École 42 Perpignan, je développe des applications web et mobiles.
+        {d['about.p3']}
       </p>
     </div>
   </div>

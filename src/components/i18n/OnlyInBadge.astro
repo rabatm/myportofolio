@@ -1,0 +1,18 @@
+---
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  /** Langue de la page, pas du contenu : le badge s'adresse au lecteur. */
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<span
+  class="inline-block text-xs px-2 py-1 mb-2 font-mono rounded-full"
+  style="background: var(--accent-soft); color: var(--ink-soft); border: 1px dashed var(--border);"
+>
+  {t(lang)['content.onlyIn']}
+</span>

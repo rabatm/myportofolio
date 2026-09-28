@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={d['contact.title']}
+  description={d['contact.description']}
+>
+  <section class="px-4 pt-24 pb-20 max-w-xl mx-auto">
+    <h2 class="section-title">{d['contact.heading']}</h2>
+
+    <p class="text-center text-sm mb-8 -mt-6" style="color: var(--ink-soft);">
+      {d['contact.intro']}
+    </p>
+
+    <div class="flex gap-4 mb-8 justify-center">
+      <a href="https://github.com/rabatm" target="_blank" rel="noopener noreferrer" class="btn-retro" style="padding: 8px 16px;">GitHub</a>
+      <a href="mailto:martin.rabat@gmail.com" class="btn-retro" style="padding: 8px 16px;">Email</a>
+    </div>
+
+    <div class="card">
+      <p class="font-mono text-sm mb-6" style="color: var(--accent-hover);">{d['contact.command']}</p>
+      <form
+        id="contact-form"
+        class="space-y-6"
+        data-sending={d['contact.sending']}
+        data-success={d['contact.success']}
+        data-error={d['contact.error']}
+      >
+        <input type="hidden" name="lang" value={lang} />
+        <div>
+          <label class="font-mono text-sm" style="color: var(--ink-soft);">{d['contact.name']}</label>
+          <input type="text" name="name" required class="terminal-input" />
+        </div>
+        <div>
+          <label class="font-mono text-sm" style="color: var(--ink-soft);">{d['contact.email']}</label>
+          <input type="email" name="email" required class="terminal-input" />
+        </div>
+        <div>
+          <label class="font-mono text-sm" style="color: var(--ink-soft);">{d['contact.message']}</label>
+          <textarea name="message" required rows="4" class="terminal-input" style="resize: vertical;"></textarea>
+        </div>
+        <button type="submit" class="btn-retro w-full text-center font-mono">
+          {d['contact.submit']}
+        </button>
+        <p id="contact-status" class="font-mono text-sm text-center" style="display: none;"></p>
+      </form>
+    </div>
+
+    <p class="text-center text-xs font-mono mt-6" style="color: var(--ink-faint);">Martin Info</p>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const status = document.getElementById('contact-status') as HTMLParagraphElement | null;
+
+  if (form && status) {
+    const f = form;
+    const button = f.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const initialLabel = button.textContent;
+
+    function setStatus(message: string, color: string) {
+      status!.textContent = message;
+      status!.style.color = color;
+      status!.style.display = 'block';
+    }
+
+    f.addEventListener('submit', async e => {
+      e.preventDefault();
+      button.disabled = true;
+      button.textContent = f.dataset.sending ?? '';
+      status.style.display = 'none';
+
+      const data = Object.fromEntries(new FormData(f));
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('request failed');
+        f.reset();
+        setStatus(f.dataset.success ?? '', 'var(--accent-hover)');
+      } catch {
+        setStatus(f.dataset.error ?? '', '#c0392b');
+      } finally {
+        button.disabled = false;
+        button.textContent = initialLabel;
+      }
+    });
+  }
+</script>

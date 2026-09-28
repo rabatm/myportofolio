@@ -1,0 +1,12 @@
+---
+import ProjectPage from '../../../components/pages/ProjectPage.astro';
+import { localizedStaticPaths, type LocalizedProject } from '../../../i18n/collections';
+
+export function getStaticPaths() {
+  return localizedStaticPaths('projects', 'en');
+}
+
+const { item } = Astro.props as { item: LocalizedProject };
+---
+
+<ProjectPage lang="en" item={item} />

@@ -1,0 +1,12 @@
+---
+import BlogPostPage from '../../../components/pages/BlogPostPage.astro';
+import { localizedStaticPaths, type LocalizedPost } from '../../../i18n/collections';
+
+export function getStaticPaths() {
+  return localizedStaticPaths('blog', 'en');
+}
+
+const { item } = Astro.props as { item: LocalizedPost };
+---
+
+<BlogPostPage lang="en" item={item} />

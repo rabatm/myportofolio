@@ -1,44 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, render } from 'astro:content';
-import { projectLines } from '../../data/marvinLines';
+import ProjectPage from '../../components/pages/ProjectPage.astro';
+import { localizedStaticPaths, type LocalizedProject } from '../../i18n/collections';
 
-export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects.map(p => ({
-    params: { slug: p.id },
-    props: { project: p },
-  }));
+export function getStaticPaths() {
+  return localizedStaticPaths('projects', 'fr');
 }
 
-const { project } = Astro.props;
-const { Content } = await render(project);
-
-const peekLines = projectLines.fr.map((l) => l.replace('{titre}', project.data.title));
+const { item } = Astro.props as { item: LocalizedProject };
 ---
 
-<BaseLayout
-  lang="fr"
-  title={`${project.data.title} — Martin Rabat`}
-  description={project.data.description}
-  peekLines={peekLines}
->
-  <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
-    <a href="/projets" class="text-sm mb-8 inline-block font-mono" style="color: var(--accent-hover);">&lt; Retour aux projets</a>
-    <h1 class="text-4xl font-bold mb-2" style="color: var(--ink);">{project.data.title}</h1>
-    <div class="flex flex-wrap gap-2 mb-6">
-      {project.data.tags.map(tag => (
-        <span class="text-xs px-2 py-1 font-mono rounded-full" style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);">
-          {tag}
-        </span>
-      ))}
-    </div>
-    <div class="prose max-w-none" style="color: var(--ink-soft);">
-      <Content />
-    </div>
-    <div class="flex gap-4 mt-8">
-      {project.data.url && <a href={project.data.url} class="btn-retro" target="_blank">Voir le projet</a>}
-      {project.data.github && <a href={project.data.github} class="btn-retro" target="_blank">GitHub</a>}
-    </div>
-  </article>
-</BaseLayout>
+<ProjectPage lang="fr" item={item} />

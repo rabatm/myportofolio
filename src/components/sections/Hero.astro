@@ -1,4 +1,14 @@
 ---
+import { t } from '../../i18n/ui';
+import { buildPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
 ---
 
 <section
@@ -12,25 +22,25 @@
     class="inline-block text-xs font-bold uppercase mb-6 px-4 py-2 rounded-full"
     style="letter-spacing: 0.06em; background: var(--accent-soft); color: var(--accent-hover);"
   >
-    Développeur concepteur d'applications — Web, mobile &amp; DevOps
+    {d['hero.badge']}
   </span>
   <h1 class="text-5xl md:text-7xl font-bold mb-4" style="color: var(--ink);">
     Martin Rabat
   </h1>
     <div class="font-mono">
     <p class="text-lg md:text-xl mb-1" style="color: var(--accent);">
-        &gt; Je crée des applications qui s'adaptent à votre métier.
+        &gt; {d['hero.tagline']}
     </p>
     <p class="text-md pl-4" style="color: var(--ink-soft);">
-        Applications web et mobiles sur mesure, conçues pour répondre à vos besoins réels et accompagner votre activité dans la durée.
+        {d['hero.sub']}
     </p>
     </div>
   <p class="text-md mb-8 font-mono" style="color: var(--ink-soft);">
-    &gt; Basé à Perpignan, disponible en full remote
+    &gt; {d['hero.location']}
   </p>
   <div class="flex gap-4">
-    <a href="/projets" class="btn-retro">Voir les projets</a>
-    <a href="/contact" class="btn-retro">Discutons de votre besoin</a>
+    <a href={buildPath('projects', lang)} class="btn-retro">{d['hero.ctaProjects']}</a>
+    <a href={buildPath('contact', lang)} class="btn-retro">{d['hero.ctaContact']}</a>
   </div>
   <p class="mt-16 text-sm" style="color: var(--ink-faint);">─── ✦ ─── ✦ ─── ✦ ───</p>
 </section>

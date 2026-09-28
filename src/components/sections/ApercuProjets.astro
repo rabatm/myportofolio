@@ -1,27 +1,30 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { LocalizedProject } from '../../i18n/collections';
+import { t } from '../../i18n/ui';
+import { buildPath, type Lang } from '../../i18n/utils';
 import { hasImage, initials } from '../../utils/projectImage';
+import OnlyInBadge from '../i18n/OnlyInBadge.astro';
 
 export interface Props {
-  projects: CollectionEntry<'projects'>[];
+  lang: Lang;
+  /** Déjà triés du plus récent au plus ancien par getLocalizedCollection. */
+  items: LocalizedProject[];
 }
 
-const { projects } = Astro.props;
-const sorted = [...projects].sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
-const displayed = sorted.slice(0, 4);
+const { lang, items } = Astro.props;
+const d = t(lang);
+const displayed = items.slice(0, 4);
 ---
 
 <section id="projets" class="px-4 py-20 max-w-5xl mx-auto">
-  <h2 class="section-title">Projets récents</h2>
+  <h2 class="section-title">{d['projectsPreview.title']}</h2>
   <p class="text-center text-sm mb-10 -mt-6" style="color: var(--ink-soft);">
-    Applications métier, intégrations et reprises de legacy.
+    {d['projectsPreview.subtitle']}
   </p>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     {
-      displayed.map((p) => (
-        <a href={`/projets/${p.id}`} class="card block no-underline">
+      displayed.map(({ entry: p, slug, isFallback }) => (
+        <a href={buildPath('projects', lang, slug)} class="card block no-underline">
           <div
             class="aspect-video mb-4 flex items-center justify-center overflow-hidden"
             style="background: var(--accent-soft); border: 1px solid var(--border);"
@@ -34,6 +37,7 @@ const displayed = sorted.slice(0, 4);
               </span>
             )}
           </div>
+          {isFallback && <OnlyInBadge lang={lang} />}
           <h3 class="font-bold text-lg mb-2" style="color: var(--ink);">
             {p.data.title}
           </h3>
@@ -52,10 +56,10 @@ const displayed = sorted.slice(0, 4);
     }
   </div>
   {
-    projects.length > 4 && (
+    items.length > 4 && (
       <div class="text-center mt-8">
-        <a href="/projets" class="btn-retro">
-          Voir tous les projets
+        <a href={buildPath('projects', lang)} class="btn-retro">
+          {d['projectsPreview.all']}
         </a>
       </div>
     )

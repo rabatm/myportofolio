@@ -1,0 +1,37 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import OnlyInBadge from '../i18n/OnlyInBadge.astro';
+import type { LocalizedPost } from '../../i18n/collections';
+import { t } from '../../i18n/ui';
+import { buildPath, formatDate, type Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+  item: LocalizedPost;
+}
+
+const { lang, item } = Astro.props;
+const d = t(lang);
+const post = item.entry;
+const { Content } = await render(post);
+---
+
+<BaseLayout lang={lang} title={`${post.data.title} ${d['post.titleSuffix']}`} description={post.data.description}>
+  <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
+    <a href={buildPath('blog', lang)} class="text-sm mb-8 inline-block font-mono" style="color: var(--accent-hover);">{d['post.back']}</a>
+    <p class="text-xs font-mono mb-2" style="color: var(--ink-faint);">{formatDate(post.data.date, lang)}</p>
+    {item.isFallback && <div><OnlyInBadge lang={lang} /></div>}
+    <h1 class="text-4xl font-bold mb-4" style="color: var(--ink);" lang={item.contentLang}>{post.data.title}</h1>
+    <div class="flex flex-wrap gap-2 mb-6">
+      {post.data.tags.map(tag => (
+        <span class="text-xs px-2 py-1 font-mono rounded-full" style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);">
+          #{tag}
+        </span>
+      ))}
+    </div>
+    <div class="prose max-w-none" style="color: var(--ink-soft);" lang={item.contentLang}>
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
