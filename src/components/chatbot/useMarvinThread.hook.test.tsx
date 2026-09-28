@@ -250,6 +250,17 @@ describe('useMarvinThread', () => {
     expect(result.current.messages.at(-1)).toEqual({ role: 'error', content: 'connection lost' });
   });
 
+  it("remplace la présentation restaurée dans l'autre langue par celle de la page courante", async () => {
+    const fil: Message[] = [greetingFor('fr'), { role: 'user', content: 'salut' }];
+    writeThread(fil);
+
+    const { result } = renderHook(() => useMarvinThread('en'));
+
+    await waitFor(() =>
+      expect(result.current.messages).toEqual([greetingFor('en'), { role: 'user', content: 'salut' }])
+    );
+  });
+
   it('redirige vers /en/wargames depuis la version anglaise', async () => {
     vi.useFakeTimers();
     const vraieLocation = window.location;

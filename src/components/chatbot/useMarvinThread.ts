@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { t } from '../../i18n/ui';
-import { buildPath, type Lang } from '../../i18n/utils';
+import { buildPath, otherLang, type Lang } from '../../i18n/utils';
 import { track } from './track';
 
 export type Role = 'assistant' | 'user' | 'error';
@@ -126,10 +126,24 @@ export function useMarvinThread(lang: Lang = 'fr'): UseMarvinThreadResult {
   // Restauration après hydratation seulement : `client:idle` rend ce
   // composant côté serveur, où sessionStorage n'existe pas. Le premier
   // rendu client doit être identique au rendu serveur.
+  //
+  // Le fil peut avoir été entamé dans l'autre langue (changement de langue
+  // en cours de conversation via le switch FR/EN) : sa présentation reste
+  // alors celle de l'ancienne langue tant qu'on ne la corrige pas ici, alors
+  // que le reste de la page (dock, panneau) est déjà dans la langue courante.
   useEffect(() => {
     const stocke = readThread();
-    if (stocke) setMessages(stocke);
-  }, []);
+    if (!stocke) return;
+
+    const [premier, ...reste] = stocke;
+    const salutAutreLangue = greetingFor(otherLang(lang));
+    const corrige =
+      premier?.role === salutAutreLangue.role && premier?.content === salutAutreLangue.content
+        ? [greetingFor(lang), ...reste]
+        : stocke;
+
+    setMessages(corrige);
+  }, [lang]);
 
   // La toute première exécution est ignorée : sans ça, elle écrirait
   // [GREETING] par-dessus le fil que l'effet de restauration vient tout

@@ -35,6 +35,12 @@ describe('parité FR/EN des données', () => {
     expect(companies.en.map(cle)).toEqual(companies.fr.map(cle));
   });
 
+  it('clients : chaque langue a une accroche et une description non vides, en nombre égal', () => {
+    expect(companies.en).toHaveLength(companies.fr.length);
+    expect(companies.fr.every((c) => c.tagline && c.desc)).toBe(true);
+    expect(companies.en.every((c) => c.tagline && c.desc)).toBe(true);
+  });
+
   it('répliques de Marvin : mêmes pages, mêmes sections, même nombre de répliques', () => {
     expect(Object.keys(pageLines.en).sort()).toEqual(Object.keys(pageLines.fr).sort());
     for (const cle of Object.keys(pageLines.fr) as (keyof typeof pageLines.fr)[]) {

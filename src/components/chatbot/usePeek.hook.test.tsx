@@ -73,7 +73,7 @@ describe('usePeek', () => {
     avancer(PEEK_DELAY_MS);
 
     const etat = readPeekState();
-    expect(etat.pages).toEqual(['/projets']);
+    expect(etat.pages).toEqual(['projects']);
     expect(etat.lines).toEqual([result.current.peek]);
     expect(etat.count).toBe(1);
     expect(etat.off).toBe(false);
@@ -118,8 +118,17 @@ describe('usePeek', () => {
   });
 
   it("n'affiche pas de seconde bulle sur une page déjà servie", () => {
-    writePeekState({ ...EMPTY_PEEK_STATE, pages: ['/projets'], count: 1 });
+    writePeekState({ ...EMPTY_PEEK_STATE, pages: ['projects'], count: 1 });
     const { result } = renderHook(() => usePeek('/projets', LIGNES));
+
+    avancer(PEEK_DELAY_MS);
+
+    expect(result.current.peek).toBeNull();
+  });
+
+  it("n'affiche pas de seconde bulle sur l'équivalent EN d'une page déjà servie", () => {
+    writePeekState({ ...EMPTY_PEEK_STATE, pages: ['projects'], count: 1 });
+    const { result } = renderHook(() => usePeek('/en/projects', LIGNES));
 
     avancer(PEEK_DELAY_MS);
 

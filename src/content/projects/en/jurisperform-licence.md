@@ -69,7 +69,7 @@ I designed and built the entire system on my own, from the API to deployment. Th
 
 - **Daily summary** sent to administrators.
 - **Weekly summary**.
-- **"Missed session" alerts**.
+- **"Session not held" alerts**.
 - **Nightly photo validation**.
 - **Annual reset**, with an audit.
 

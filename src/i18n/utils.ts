@@ -81,6 +81,49 @@ export function routeIdFromPath(pathname: string): RouteId | null {
   return parsePath(pathname)?.route ?? null;
 }
 
+export interface SeoLinks {
+  canonical: string;
+  alternates: { hreflang: string; href: string }[];
+}
+
+/**
+ * URLs absolues de référencement (canonical, hreflang, et par extension
+ * og:url) construites avec le même helper `localizePath`, pour que le
+ * canonical soit toujours égal au hreflang « self » — Google attend les deux
+ * identiques, slash final compris.
+ *
+ * En repli de contenu (`contentLang` renseigné et différent de `lang`), la
+ * page sert du contenu dans une autre langue que la sienne : le canonical
+ * pointe alors vers l'URL de la langue du contenu, et aucune alternance
+ * hreflang n'est émise — annoncer une version dans l'autre langue serait
+ * mensonger tant qu'elle n'existe pas vraiment.
+ */
+export function seoLinks(
+  pathname: string,
+  lang: Lang,
+  site: URL | string,
+  contentLang?: Lang
+): SeoLinks {
+  if (contentLang && contentLang !== lang) {
+    return {
+      canonical: new URL(localizePath(pathname, contentLang), site).toString(),
+      alternates: [],
+    };
+  }
+
+  const canonical = new URL(localizePath(pathname, lang), site).toString();
+  const alternates = LANGS.map((l) => ({
+    hreflang: l as string,
+    href: new URL(localizePath(pathname, l), site).toString(),
+  }));
+  alternates.push({
+    hreflang: 'x-default',
+    href: new URL(localizePath(pathname, DEFAULT_LANG), site).toString(),
+  });
+
+  return { canonical, alternates };
+}
+
 /**
  * `Astro.url.pathname` ne contient jamais le fragment : c'est au clic, côté
  * client, qu'on recolle l'ancre courante pour rester sur la même section.

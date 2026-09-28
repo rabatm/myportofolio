@@ -8,7 +8,7 @@ export interface Company {
   logoBg: 'white' | 'dark';
   /** Accroche courte, affichée sous le logo. */
   tagline: string;
-  /** Description complète, injectée dans le prompt de Marvin. */
+  /** Description complète, réservée à un usage futur plus riche : pas encore utilisée dans le prompt de Marvin (qui ne s'appuie que sur name + url). */
   desc: string;
 }
 

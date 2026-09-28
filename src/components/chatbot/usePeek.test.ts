@@ -122,9 +122,15 @@ describe('choosePeekLine', () => {
   });
 
   it('7. bloque quand cette page a déjà eu sa bulle', () => {
-    const state = { ...EMPTY_PEEK_STATE, pages: ['/projets'] };
+    const state = { ...EMPTY_PEEK_STATE, pages: ['projects'] };
 
     expect(choosePeekLine(entree({ state }))).toBeNull();
+  });
+
+  it("7 bis. bloque par route, pas par chemin brut : une page déjà servie en FR bloque son équivalent EN", () => {
+    const state = { ...EMPTY_PEEK_STATE, pages: ['projects'] };
+
+    expect(choosePeekLine(entree({ path: '/en/projects', state }))).toBeNull();
   });
 
   it('8. bloque quand toutes les répliques ont déjà été vues', () => {

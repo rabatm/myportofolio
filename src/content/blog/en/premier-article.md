@@ -23,4 +23,4 @@ The hardest part wasn't technical. It was choosing what to show. I've worked on 
 
 ## The goal
 
-I'm keeping every door open for what comes next: a freelance engagement, a full-time role, a collaboration on a project. Above all, this site is meant for that — to give an accurate picture of what I can do to anyone who'd like to work with me.
+I'm keeping every door open for what comes next: a freelance engagement, a full-time role, a collaboration on a project. Above all, this site is meant for that — to give anyone who'd like to work with me an accurate picture of what I can do.

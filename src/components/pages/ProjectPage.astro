@@ -24,6 +24,7 @@ const peekLines = projectLines[lang].map((l) => l.replace('{titre}', project.dat
   lang={lang}
   title={`${project.data.title} — Martin Rabat`}
   description={project.data.description}
+  contentLang={item.contentLang}
   peekLines={peekLines}
 >
   <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">

@@ -12,6 +12,7 @@ import {
   parsePath,
   pathLang,
   routeIdFromPath,
+  seoLinks,
   switchHref,
 } from './utils';
 
@@ -133,6 +134,58 @@ describe('switchHref', () => {
   it("ne touche à rien sans ancre, ou si le lien en porte déjà une", () => {
     expect(switchHref('/en/', '')).toBe('/en/');
     expect(switchHref('/en/#confiance', '#parcours')).toBe('/en/#confiance');
+  });
+});
+
+describe('seoLinks', () => {
+  const site = 'https://martininfo.fr';
+
+  it('canonical égale le hreflang self, avec ou sans slash final, dans les deux langues', () => {
+    const cas: [string, 'fr' | 'en'][] = [
+      ['/projets/amiqo/', 'fr'],
+      ['/projets/amiqo', 'fr'],
+      ['/en/projects/amiqo/', 'en'],
+      ['/en/projects/amiqo', 'en'],
+    ];
+    for (const [path, lang] of cas) {
+      const { canonical, alternates } = seoLinks(path, lang, site);
+      const self = alternates.find((a) => a.hreflang === lang);
+      expect(canonical).toBe(self?.href);
+    }
+  });
+
+  it('pareil pour les deux accueils, avec ou sans slash final', () => {
+    const cas: [string, 'fr' | 'en'][] = [
+      ['/', 'fr'],
+      ['/en/', 'en'],
+      ['/en', 'en'],
+    ];
+    for (const [path, lang] of cas) {
+      const { canonical, alternates } = seoLinks(path, lang, site);
+      const self = alternates.find((a) => a.hreflang === lang);
+      expect(canonical).toBe(self?.href);
+    }
+  });
+
+  it('construit les hreflang fr, en et x-default, calés sur localizePath', () => {
+    const { canonical, alternates } = seoLinks('/projets/amiqo/', 'fr', site);
+    expect(canonical).toBe('https://martininfo.fr/projets/amiqo');
+    expect(alternates).toEqual([
+      { hreflang: 'fr', href: 'https://martininfo.fr/projets/amiqo' },
+      { hreflang: 'en', href: 'https://martininfo.fr/en/projects/amiqo' },
+      { hreflang: 'x-default', href: 'https://martininfo.fr/projets/amiqo' },
+    ]);
+  });
+
+  it('repli de contenu : canonical dans la langue du contenu, sans alternates', () => {
+    const { canonical, alternates } = seoLinks('/en/blog/premier-article', 'en', site, 'fr');
+    expect(canonical).toBe('https://martininfo.fr/blog/premier-article');
+    expect(alternates).toEqual([]);
+  });
+
+  it("sans repli réel (contentLang égale lang), comportement normal", () => {
+    const { alternates } = seoLinks('/projets/amiqo', 'fr', site, 'fr');
+    expect(alternates.length).toBeGreaterThan(0);
   });
 });
 

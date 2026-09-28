@@ -19,7 +19,11 @@ export const PEEK_KEY = 'marvin.peek';
 export const OPTOUT_KEY = 'marvin.peek.optout';
 
 export interface PeekState {
-  /** Chemins ayant déjà servi une bulle, pour n'en servir qu'une par page. */
+  /**
+   * Routes ayant déjà servi une bulle (clé `routeIdFromPath`, pas le chemin
+   * brut), pour n'en servir qu'une par page — FR et EN de la même page
+   * comptent comme une seule.
+   */
   pages: string[];
   /** Répliques déjà montrées, pour ne jamais répéter dans la session. */
   lines: string[];
@@ -123,7 +127,7 @@ export function choosePeekLine(
   if (optedOut) return null;
   if (state.off) return null;
   if (state.count >= PEEK_SESSION_CAP) return null;
-  if (state.pages.includes(path)) return null;
+  if (state.pages.includes(routeIdFromPath(path) ?? path)) return null;
 
   const jamaisVues = lines.filter((ligne) => !state.lines.includes(ligne));
   if (jamaisVues.length === 0) return null;
@@ -310,7 +314,7 @@ export function usePeek(
       if (!ligne) return;
 
       writePeekState({
-        pages: [...state.pages, path],
+        pages: [...state.pages, routeIdFromPath(path) ?? path],
         lines: [...state.lines, ligne],
         count: state.count + 1,
         off: state.off,

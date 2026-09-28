@@ -69,7 +69,7 @@ A robust back-office platform, tested under real-world conditions through a stru
 
 ### 🔭 Vision (coming next)
 
-A store-facing portal is planned down the road, so each brand can view its own numbers directly.
+A store-facing portal is planned down the road, so each chain can view its own numbers directly.
 
 ---
 
