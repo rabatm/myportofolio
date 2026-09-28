@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
+import sitemap from '@astrojs/sitemap';
 
 // ⚠️ À REMPLACER par le domaine réel une fois le site déployé.
 // Utilisé pour les URLs absolues (Open Graph, canonical, sitemap).
@@ -13,7 +14,19 @@ export default defineConfig({
   site: SITE_URL,
   output: 'static',
   adapter: node({ mode: 'standalone' }),
-  integrations: [react()],
+  integrations: [
+    react(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'fr',
+        locales: {
+          fr: 'fr-FR',
+          en: 'en-US',
+        },
+      },
+      filter: (page) => !page.includes('/api/'),
+    }),
+  ],
   i18n: {
     defaultLocale: 'fr',
     locales: ['fr', 'en'],
