@@ -162,13 +162,15 @@ export default function WargamesGame({ lang = 'fr' }: { lang?: Lang }) {
 
   async function handleContactSubmit(e: FormEvent) {
     e.preventDefault();
+    // Champ piège, non contrôlé : seul un robot le remplit.
+    const website = new FormData(e.currentTarget as HTMLFormElement).get('website');
     setContactLoading(true);
     setContactError(false);
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...contact, lang }),
+        body: JSON.stringify({ ...contact, lang, website }),
       });
       if (res.ok) setContactSent(true);
       else setContactError(true);
@@ -243,6 +245,14 @@ export default function WargamesGame({ lang = 'fr' }: { lang?: Lang }) {
             {contactError && <p style={{ color: '#ff4444' }}>{'>'} {d['wargames.contactError']}</p>}
             
             <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{ position: 'absolute', left: '-9999px' }}
+              />
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ color: '#39ff14' }}>$</span>
                 <input
