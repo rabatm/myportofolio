@@ -3,7 +3,7 @@ title: "BOMIQO — Back office for fleet, license, and client infrastructure man
 date: 2026-07-30
 tags: ["Django", "DRF", "React", "TypeScript", "TailwindCSS", "PostgreSQL", "MySQL", "AMOPI", "Equipment rental", "License management"]
 description: "Web back office for a multi-brand franchise network (AMOPI). It manages the rental of inventory terminals, the software licenses deployed at client sites, and the syncing of their technical infrastructure."
-image: "/projects/bomiqo/thumbnail.png"
+image: "../images/bomiqo/thumbnail.png"
 ---
 
 BOMIQO is a web back office built for a multi-brand franchise network (ADBB / BB9 / BVES) managed by AMOPI. The application brings together three pillars: renting out inventory terminals, managing the software licenses deployed at client sites, and syncing their technical infrastructure.
@@ -75,20 +75,20 @@ A store-facing portal is planned down the road, so each chain can view its own n
 
 ### 📷 Visuals
 
-![BOMIQO home screen](/projects/bomiqo/dashboard.png)
+![BOMIQO home screen](../images/bomiqo/dashboard.png)
 *Home: overdue loans, licenses about to expire, available stock, and quick actions (receiving, new terminal, search, inventory).*
 
-![Rental management](/projects/bomiqo/gestion-location.png)
+![Rental management](../images/bomiqo/gestion-location.png)
 *Rental management: timeline of rental requests by store, with statuses (scheduled, shipped, overdue, completed).*
 
-![Rental stock](/projects/bomiqo/stock-location.png)
+![Rental stock](../images/bomiqo/stock-location.png)
 *Rental stock: grid of terminals set aside for rental, with each device's status and license countdown.*
 
-![Receiving](/projects/bomiqo/reception.png)
+![Receiving](../images/bomiqo/reception.png)
 *Receiving: scanning a returned terminal to close out its loan.*
 
-![Loans](/projects/bomiqo/prets.png)
+![Loans](../images/bomiqo/prets.png)
 *Loans: terminals lent outside the rental workflow, with due dates and overdue items.*
 
-![Sales](/projects/bomiqo/vente.png)
+![Sales](../images/bomiqo/vente.png)
 *Sales: terminals intended for sale, with license expiration tracking.*

@@ -83,7 +83,7 @@ title: "Nom du projet"
 date: 2026-07-20
 tags: ["React", "Node.js"]
 description: "Courte description du projet."
-image: "/projects/nom-du-projet/thumbnail.jpg"   # optionnel
+image: "../images/nom-du-projet/thumbnail.jpg"   # optionnel, chemin relatif au .md
 url: "https://exemple.com"      # optionnel
 github: "https://github.com/..." # optionnel
 ---
@@ -97,22 +97,31 @@ avec un badge signalant qu'il n'est pas encore traduit.
 
 #### Images
 
-Convention de rangement : un sous-dossier par projet dans `public/projects/<slug>/`
-(où `<slug>` = nom du fichier `.md`, sans l'extension). La vignette utilisée sur
-l'accueil et la liste des projets va dans `image` (ex. `thumbnail.jpg`). Si le
-fichier n'existe pas encore, les initiales du projet s'affichent automatiquement
-à la place — pas besoin d'attendre d'avoir une image pour publier une fiche.
+Convention de rangement : un sous-dossier par projet dans
+`src/content/projects/images/<slug>/` (où `<slug>` = nom du fichier `.md`, sans
+l'extension). Les fiches `fr/` et `en/` partagent les mêmes images et les
+référencent **en chemin relatif** : `../images/<slug>/…`.
+
+La vignette utilisée sur l'accueil et la liste des projets va dans `image`
+(ex. `image: "../images/nom-du-projet/thumbnail.jpg"`). Pas encore d'image ?
+Retire simplement le champ `image` : les initiales du projet s'affichent à la
+place. Un chemin vers un fichier inexistant, lui, fait échouer le build — c'est
+voulu, pour ne jamais publier une image cassée.
 
 Pour des captures dans le corps de l'article (section "Visuels" par exemple),
-utilise directement la syntaxe Markdown :
+utilise la syntaxe Markdown, toujours en relatif :
 
 ```md
-![Description de la capture](/projects/nom-du-projet/capture.jpg)
+![Description de la capture](../images/nom-du-projet/capture.jpg)
 ```
 
-Ces images sont automatiquement réduites à l'affichage et s'agrandissent au clic
-(lightbox), sans configuration supplémentaire — ça vaut aussi pour les images
-dans les articles de blog.
+Pas besoin de redimensionner ni de convertir : au build, Astro génère des
+versions WebP/AVIF à plusieurs tailles et le navigateur choisit la bonne. Les
+images restent agrandies au clic (lightbox). Dépose tes originaux tels quels
+(PNG ou JPEG).
+
+Seuls `public/og-image.jpg` et `public/favicon.ico` restent dans `public/` :
+ils doivent garder une URL fixe.
 
 ### Articles de blog
 

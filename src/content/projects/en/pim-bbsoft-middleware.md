@@ -3,7 +3,7 @@ title: "BBSoft Gateway — Taking over and stabilizing a legacy product/price sy
 date: 2026-07-30
 tags: ["Delphi", "FireDAC", "PostgreSQL", "MSSQL", "FTP/CSV", "BBSoft", "Legacy"]
 description: "Delphi middleware handling two-way sync of products and prices between the BBSoft point-of-sale system and external systems, through CSV file exchange and FTP transfers."
-image: "/projects/pim-bbsoft-middleware/thumbnail.jpg"
+image: "../images/pim-bbsoft-middleware/thumbnail.jpg"
 ---
 
 This project is a Windows application (Delphi VCL) that acts as middleware for a retail store chain. It syncs product data (items, categories, images, prices) between the BBSoft point-of-sale software and external systems, through CSV file exchange and FTP transfers.

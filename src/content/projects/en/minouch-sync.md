@@ -3,7 +3,7 @@ title: "Minouche — Connecting the ERP and the e-commerce site"
 date: 2026-06-01
 tags: ["Python", "SQLAlchemy", "PostgreSQL", "Hexagonal Architecture", "BBSoft"]
 description: "A two-way sync gateway between Minouche's ERP and its e-commerce site."
-image: "/projects/minouche-sync/thumbnail.png"
+image: "../images/minouche-sync/thumbnail.png"
 ---
 
 ## The need

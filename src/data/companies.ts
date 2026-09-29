@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/utils';
 export interface Company {
   name: string;
   url: string;
+  /** Nom du fichier dans src/assets/logos/ (optimisé au build par Astro). */
   logo: string;
   /** Fond du cadre du logo, selon les couleurs du logo. */
   logoBg: 'white' | 'dark';
@@ -13,9 +14,9 @@ export interface Company {
 }
 
 const base = [
-  { name: 'Amopi', url: 'https://amopi.fr', logo: '/amopi.png', logoBg: 'white' },
-  { name: 'JurisPerform', url: 'https://www.juris-perform.fr/', logo: '/jurisperform.png', logoBg: 'white' },
-  { name: 'Surikwat', url: 'https://surikwat.com', logo: '/surikwat.png', logoBg: 'dark' },
+  { name: 'Amopi', url: 'https://amopi.fr', logo: 'amopi.png', logoBg: 'white' },
+  { name: 'JurisPerform', url: 'https://www.juris-perform.fr/', logo: 'jurisperform.png', logoBg: 'white' },
+  { name: 'Surikwat', url: 'https://surikwat.com', logo: 'surikwat.png', logoBg: 'dark' },
 ] as const;
 
 const textes: Record<Lang, { tagline: string; desc: string }[]> = {

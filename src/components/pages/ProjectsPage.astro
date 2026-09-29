@@ -5,7 +5,7 @@ import { pageLines } from '../../data/marvinLines';
 import { getLocalizedCollection } from '../../i18n/collections';
 import { t } from '../../i18n/ui';
 import { buildPath, type Lang } from '../../i18n/utils';
-import { hasImage, initials } from '../../utils/projectImage';
+import ProjectThumb from '../projects/ProjectThumb.astro';
 
 export interface Props {
   lang: Lang;
@@ -27,15 +27,7 @@ const projects = await getLocalizedCollection('projects', lang);
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {projects.map(({ entry: p, slug, isFallback, contentLang }) => (
         <a href={buildPath('projects', lang, slug)} class="card block no-underline">
-          <div class="aspect-video mb-4 flex items-center justify-center overflow-hidden" style="background: var(--accent-soft); border: 1px solid var(--border);">
-            {hasImage(p.data.image) ? (
-              <img src={p.data.image} alt={p.data.title} class="w-full h-full object-cover" />
-            ) : (
-              <span class="text-4xl font-mono" style="color: var(--ink-faint);">
-                {initials(p.data.title)}
-              </span>
-            )}
-          </div>
+          <ProjectThumb image={p.data.image} title={p.data.title} />
           {isFallback && <OnlyInBadge lang={lang} />}
           <h3 class="font-bold text-lg mb-2" style="color: var(--ink);" lang={contentLang}>{p.data.title}</h3>
           <p class="text-sm mb-3" style="color: var(--ink-soft);" lang={contentLang}>{p.data.description}</p>

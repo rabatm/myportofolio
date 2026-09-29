@@ -1,4 +1,6 @@
 ---
+import { Picture } from 'astro:assets';
+import martin from '../../assets/martin.png';
 import { t } from '../../i18n/ui';
 import type { Lang } from '../../i18n/utils';
 
@@ -14,7 +16,7 @@ const d = t(lang);
   <h2 class="section-title">{d['about.title']}</h2>
   <div class="flex flex-col md:flex-row gap-8 items-start">
     <div class="w-32 h-32 shrink-0 retro-border rounded-full overflow-hidden">
-      <img src="/martin.png" alt="Martin Rabat" class="w-full h-full object-cover" style="object-position: center 15%;" />
+      <Picture src={martin} alt="Martin Rabat" widths={[128, 256]} sizes="128px" formats={['avif']} fallbackFormat="webp" loading="lazy" decoding="async" class="w-full h-full object-cover" style="object-position: center 15%;" />
     </div>
     <div>
       <p class="mb-4 italic leading-relaxed" style="color: var(--ink);">

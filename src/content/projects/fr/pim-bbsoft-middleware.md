@@ -3,7 +3,7 @@ title: "Passerelle BBSoft — Reprise et fiabilisation d'un legacy de synchronis
 date: 2026-07-30
 tags: ["Delphi", "FireDAC", "PostgreSQL", "MSSQL", "FTP/CSV", "BBSoft", "Legacy"]
 description: "Middleware Delphi assurant la synchronisation bidirectionnelle de produits et de prix entre le système de caisse BBSoft et des systèmes externes, via échange de fichiers CSV et transferts FTP."
-image: "/projects/pim-bbsoft-middleware/thumbnail.jpg"
+image: "../images/pim-bbsoft-middleware/thumbnail.jpg"
 ---
 
 Ce projet est une application Windows (Delphi VCL) qui fait office de middleware pour une chaîne de magasins de retail. Elle synchronise les données produits (articles, catégories, images, tarifs) entre le logiciel de caisse BBSoft et des systèmes externes, via échange de fichiers CSV et transferts FTP.

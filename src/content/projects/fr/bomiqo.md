@@ -3,7 +3,7 @@ title: "BOMIQO — Backoffice de gestion de flotte, licences et infrastructure c
 date: 2026-07-30
 tags: ["Django", "DRF", "React", "TypeScript", "TailwindCSS", "PostgreSQL", "MySQL", "AMOPI", "Location de matériel", "Gestion de licences"]
 description: "Backoffice web pour un réseau de franchises multi-enseignes (AMOPI). Gère la location de terminaux d'inventaire, les licences logicielles déployées chez les clients et la synchronisation de leur infrastructure technique."
-image: "/projects/bomiqo/thumbnail.png"
+image: "../images/bomiqo/thumbnail.png"
 ---
 
 BOMIQO est un backoffice web développé pour un réseau franchisé multi-enseignes (ADBB / BB9 / BVES) géré par AMOPI. L'application centralise trois piliers : la location de terminaux d'inventaire, la gestion des licences logicielles déployées chez les clients, et la synchronisation de leur infrastructure technique.
@@ -75,20 +75,20 @@ Un espace magasin est envisagé à terme, pour permettre à chaque enseigne de c
 
 ### 📷 Visuels
 
-![Accueil BOMIQO](/projects/bomiqo/dashboard.png)
+![Accueil BOMIQO](../images/bomiqo/dashboard.png)
 *Accueil : prêts en retard, licences arrivant à expiration, stock disponible et actions rapides (réception, nouveau terminal, recherche, inventaire).*
 
-![Gestion location](/projects/bomiqo/gestion-location.png)
+![Gestion location](../images/bomiqo/gestion-location.png)
 *Gestion location : chronologie des demandes de location par magasin, avec statuts (planifiée, expédiée, en retard, terminée).*
 
-![Stock location](/projects/bomiqo/stock-location.png)
+![Stock location](../images/bomiqo/stock-location.png)
 *Stock location : grille des terminaux destinés à la location, avec statut et compte à rebours de licence par appareil.*
 
-![Réception](/projects/bomiqo/reception.png)
+![Réception](../images/bomiqo/reception.png)
 *Réception : scan d'un terminal retourné pour clôturer son prêt.*
 
-![Prêts](/projects/bomiqo/prets.png)
+![Prêts](../images/bomiqo/prets.png)
 *Prêts : terminaux prêtés hors circuit de location, avec échéances et retards.*
 
-![Vente](/projects/bomiqo/vente.png)
+![Vente](../images/bomiqo/vente.png)
 *Vente : terminaux destinés à la vente, avec suivi de l'expiration de licence.*

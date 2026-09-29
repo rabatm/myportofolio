@@ -3,7 +3,7 @@ title: "Jurisperform Professeur — Roll call and teaching follow-up from a phon
 date: 2026-06-01
 tags: ["React Native", "Expo", "TypeScript", "MobX", "EAS", "EdTech"]
 description: "Mobile app for Jurisperform's teachers: they see their sessions for the week, take roll using student photos, then assess each student who attended. The teaching report is then sent automatically."
-image: "/projects/licence-mobile/thumbnail.png"
+image: "../images/licence-mobile/thumbnail.png"
 ---
 
 Jurisperform Professeur is the mobile app for Jurisperform's teachers. It shows the week's sessions, lets teachers take roll by tapping the photos of students who are present, then walks them through assessing each student, one at a time. It runs on the API of the [Jurisperform Licence](/en/projects/jurisperform-licence) platform.
@@ -109,9 +109,9 @@ In August 2026, the app was completely redesigned: an ivory background, frosted-
 
 ### 📷 Visuals
 
-![Sessions of the week](/projects/licence-mobile/capture-1.png)
-![Photo roll call](/projects/licence-mobile/capture-2.png)
-![Assessing a student](/projects/licence-mobile/capture-3.png)
+![Sessions of the week](../images/licence-mobile/capture-1.png)
+![Photo roll call](../images/licence-mobile/capture-2.png)
+![Assessing a student](../images/licence-mobile/capture-3.png)
 
 ---
 

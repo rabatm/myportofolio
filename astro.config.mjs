@@ -13,6 +13,9 @@ const SITE_URL = 'https://martininfo.fr';
 export default defineConfig({
   site: SITE_URL,
   output: 'static',
+  // Images en largeur contrainte par défaut : srcset généré automatiquement,
+  // y compris pour les images des .md (captures des pages projet).
+  image: { layout: 'constrained' },
   adapter: node({ mode: 'standalone' }),
   integrations: [
     react(),

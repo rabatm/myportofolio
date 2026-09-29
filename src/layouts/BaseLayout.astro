@@ -1,5 +1,7 @@
 ---
 import '../styles/retro.css';
+import { Image } from 'astro:assets';
+import logoNav from '../assets/martininfologo.jpeg';
 import LangSuggest from '../components/i18n/LangSuggest.tsx';
 import MarvinDock from '../components/chatbot/MarvinDock.tsx';
 import MenuMobile from '../components/nav/MenuMobile.tsx';
@@ -92,7 +94,7 @@ const liens = [
   <body class="min-h-screen">
     <nav class="nav-barre fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);">
       <a href={buildPath('home', lang)} class="flex items-center">
-        <img src="/martininfologo.jpeg" alt="Martin Info" class="nav-logo" />
+        <Image src={logoNav} alt="Martin Info" width={140} format="webp" loading="eager" class="nav-logo" />
       </a>
 
       <div class="hidden md:flex items-center gap-6 text-sm">

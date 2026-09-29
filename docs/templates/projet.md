@@ -1,12 +1,12 @@
 ---
-# Copier ce fichier dans src/content/projects/<slug>.md
+# Copier ce fichier dans src/content/projects/fr/<slug>.md (et sa traduction dans en/<slug>.md)
 # <slug> = nom du fichier sans extension → URL /projets/<slug>
 # Les commentaires HTML (<!-- -->) ne s'affichent pas : supprime-les quand tu veux.
 title: "Nom du projet — Ce qu'il fait en une ligne"
 date: 2026-01-01                       # sans guillemets (z.date) ; sert au tri, plus récent en premier
 tags: ["Techno 1", "Techno 2", "Domaine métier"]
 description: "Une à deux phrases : pour qui, quel problème, quelle solution. Affichée sur les cartes et reprise par Marvin-42."
-image: "/projects/<slug>/thumbnail.png" # optionnel — sinon les initiales s'affichent
+image: "../images/<slug>/thumbnail.png" # optionnel — sans ce champ, les initiales s'affichent
 # url: "https://exemple.com"            # optionnel — URL complète (https://…)
 # github: "https://github.com/rabatm/…" # optionnel — uniquement si le dépôt est public
 ---
@@ -67,8 +67,8 @@ Nom du projet est … Il permet à … de … sans …
 
 ### 📷 Visuels
 
-<!-- Images dans public/projects/<slug>/ — réduites à l'affichage, agrandies au clic. -->
-![Écran principal](/projects/<slug>/capture-1.png)
+<!-- Images dans src/content/projects/images/<slug>/, en chemin relatif ; optimisées au build, agrandies au clic. -->
+![Écran principal](../images/<slug>/capture-1.png)
 
 ---
 

@@ -3,7 +3,7 @@ title: "amiqo — The all-in-one app for childcare retail stores"
 date: 2026-07-30
 tags: ['Flutter', 'Dart', 'PostgreSQL', 'SQLite', 'Android', 'Childcare retail', 'Zebra', 'TC22', 'TC27', 'Sunmi L3', 'DataWedge', 'Offline-First', 'Baby registries', 'Goods receiving', 'Price checks', 'Inventory', 'BBSoft']
 description: 'Flutter app for Zebra (TC22/TC27) and Sunmi L3 handheld terminals. Baby registries, goods receiving, price checks, and inventory in childcare retail stores. Direct integration with BBSoft through PostgreSQL (reverse engineering).'
-image: '/projects/amiqo/thumbnail.png'
+image: '../images/amiqo/thumbnail.png'
 ---
 
 amiqo is a mobile app for childcare retail stores (shops selling baby gear and nursery products).

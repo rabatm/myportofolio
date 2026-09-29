@@ -3,7 +3,7 @@ title: "Jurisperform Licence — Le système qui fait tourner le soutien en droi
 date: 2026-09-26
 tags: ["Django", "Django REST Framework", "React", "TypeScript", "PostgreSQL", "Google Apps Script", "Docker", "Architecture hexagonale", "EdTech"]
 description: "Plateforme complète pour Jurisperform, organisme de soutien en droit pour les étudiants de Licence (L1 à L3) dans plusieurs villes. Elle couvre la déclaration des TD de fac, la planification des cours, les photos pour l'appel mobile, le trombinoscope, le coaching et les comptes rendus pédagogiques."
-image: "/projects/jurisperform-licence/thumbnail.png"
+image: "../images/jurisperform-licence/thumbnail.png"
 ---
 
 Jurisperform Licence est la plateforme qui gère le soutien en droit de Jurisperform pour les étudiants de L1, L2 et L3, dans plusieurs villes. Elle réunit trois briques :
@@ -166,9 +166,9 @@ Chaque année, il faut repartir de zéro sans perdre la configuration.
 
 ### 📷 Visuels
 
-![Espace étudiant — déclaration des TD](/projects/jurisperform-licence/capture-1.png)
-![Trombinoscope professeur](/projects/jurisperform-licence/capture-2.png)
-![Tableau de bord administrateur](/projects/jurisperform-licence/capture-3.png)
+![Espace étudiant — déclaration des TD](../images/jurisperform-licence/capture-1.png)
+![Trombinoscope professeur](../images/jurisperform-licence/trombi.png)
+![Suivi de coaching d’un étudiant](../images/jurisperform-licence/coaching.png)
 
 ---
 

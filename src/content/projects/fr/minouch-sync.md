@@ -3,7 +3,7 @@ title: "Minouche — Faire communiquer l'ERP et le site e-commerce"
 date: 2026-06-01
 tags: ["Python", "SQLAlchemy", "PostgreSQL", "Architecture Hexagonale", "BBSoft"]
 description: "Une passerelle de synchronisation bidirectionnelle entre l'ERP de Minouche et son site e-commerce."
-image: "/projects/minouche-sync/thumbnail.png"
+image: "../images/minouche-sync/thumbnail.png"
 ---
 
 ## Le besoin
