@@ -9,6 +9,11 @@ export interface Props {
 
 const { lang } = Astro.props;
 const d = t(lang);
+
+// Lignes « libellé....... OK » : les points complètent jusqu'à une largeur fixe
+// pour que les OK restent alignés, quelle que soit la langue.
+const LARGEUR = 28;
+const etape = (libelle: string) => `> ${libelle} `.padEnd(LARGEUR + 3, '.') + ' OK';
 ---
 
 <BaseLayout
@@ -34,7 +39,6 @@ const d = t(lang);
         id="contact-form"
         class="space-y-6"
         data-sending={d['contact.sending']}
-        data-success={d['contact.success']}
         data-error={d['contact.error']}
       >
         <input type="hidden" name="lang" value={lang} />
@@ -57,6 +61,22 @@ const d = t(lang);
         </button>
         <p id="contact-status" class="font-mono text-sm text-center" style="display: none;"></p>
       </form>
+
+      <!-- Séquence affichée à la place du formulaire une fois le message parti. -->
+      <div id="contact-done" class="contact-done" hidden data-thanks={d['contact.done.thanks']}>
+        <p class="contact-done__line">{etape(d['contact.done.connect'])}</p>
+        <p class="contact-done__line">{etape(d['contact.done.tls'])}</p>
+        <p class="contact-done__line">
+          &gt; {d['contact.done.progress']} [<span class="contact-done__bar" data-bar></span>] <span data-pct>0%</span>
+        </p>
+        <p class="contact-done__line contact-done__sent">&gt; {d['contact.done.sent']}</p>
+        <p class="contact-done__line contact-done__thanks" data-thanks-line></p>
+        <p class="contact-done__line contact-done__signature">— Martin</p>
+        <button type="button" class="contact-done__line btn-retro w-full text-center font-mono contact-done__again">
+          {d['contact.done.again']}
+        </button>
+        <p class="sr-only" aria-live="polite" data-announce></p>
+      </div>
     </div>
 
     <p class="text-center text-xs font-mono mt-6" style="color: var(--ink-faint);">Martin Info</p>
@@ -66,11 +86,22 @@ const d = t(lang);
 <script>
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const status = document.getElementById('contact-status') as HTMLParagraphElement | null;
+  const done = document.getElementById('contact-done') as HTMLDivElement | null;
 
-  if (form && status) {
+  const PAUSE_LIGNE_MS = 350;
+  const LARGEUR_BARRE = 12;
+  const attendre = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  if (form && status && done) {
     const f = form;
     const button = f.querySelector('button[type="submit"]') as HTMLButtonElement;
     const initialLabel = button.textContent;
+    const lignes = Array.from(done.querySelectorAll<HTMLElement>('.contact-done__line'));
+    const barre = done.querySelector<HTMLElement>('[data-bar]')!;
+    const pct = done.querySelector<HTMLElement>('[data-pct]')!;
+    const merci = done.querySelector<HTMLElement>('[data-thanks-line]')!;
+    const annonce = done.querySelector<HTMLElement>('[data-announce]')!;
+    const encore = done.querySelector<HTMLButtonElement>('.contact-done__again')!;
     // Temps passé sur le formulaire, envoyé comme durée : l'API rejette
     // silencieusement les envois trop rapides pour être humains.
     const affiche = performance.now();
@@ -80,6 +111,52 @@ const d = t(lang);
       status!.style.color = color;
       status!.style.display = 'block';
     }
+
+    function remplirBarre(n: number) {
+      barre.textContent = '█'.repeat(n) + '\u00a0'.repeat(LARGEUR_BARRE - n);
+      pct.textContent = `${Math.round((n / LARGEUR_BARRE) * 100)}%`;
+    }
+
+    /** Remplace le formulaire par la séquence de transmission, ligne à ligne. */
+    async function montrerSucces(nom: string) {
+      // textContent : le nom saisi n'est jamais interprété comme du HTML.
+      merci.textContent = (done!.dataset.thanks ?? '').replace('{name}', nom);
+      remplirBarre(0);
+      const sansAnimation = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!sansAnimation) {
+        f.classList.add('contact-form--leaving');
+        await attendre(250);
+      }
+      f.hidden = true;
+      f.classList.remove('contact-form--leaving');
+      done!.hidden = false;
+
+      for (const ligne of lignes) {
+        ligne.classList.add('is-visible');
+        if (sansAnimation) continue;
+        if (ligne.contains(barre)) {
+          for (let n = 1; n <= LARGEUR_BARRE; n++) {
+            remplirBarre(n);
+            await attendre(n % 4 === 0 ? 180 : 45);
+          }
+        }
+        await attendre(PAUSE_LIGNE_MS);
+      }
+      remplirBarre(LARGEUR_BARRE);
+
+      // Une seule annonce, à la fin, plutôt qu'une par ligne.
+      annonce.textContent = `${lignes.find((l) => l.classList.contains('contact-done__sent'))?.textContent?.trim()} ${merci.textContent}`;
+      encore.focus();
+    }
+
+    encore.addEventListener('click', () => {
+      done.hidden = true;
+      lignes.forEach((l) => l.classList.remove('is-visible'));
+      annonce.textContent = '';
+      f.hidden = false;
+      f.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+    });
 
     f.addEventListener('submit', async e => {
       e.preventDefault();
@@ -92,6 +169,7 @@ const d = t(lang);
         elapsedMs: Math.round(performance.now() - affiche),
       };
 
+      let envoye = false;
       try {
         const res = await fetch('/api/contact', {
           method: 'POST',
@@ -99,13 +177,17 @@ const d = t(lang);
           body: JSON.stringify(data),
         });
         if (!res.ok) throw new Error('request failed');
-        f.reset();
-        setStatus(f.dataset.success ?? '', 'var(--accent-hover)');
+        envoye = true;
       } catch {
         setStatus(f.dataset.error ?? '', '#c0392b');
       } finally {
         button.disabled = false;
         button.textContent = initialLabel;
+      }
+
+      if (envoye) {
+        f.reset();
+        await montrerSucces(String(data.name ?? '').trim());
       }
     });
   }

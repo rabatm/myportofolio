@@ -98,7 +98,12 @@ const fr = {
   'contact.message': '$ message:',
   'contact.submit': '[ ENVOYER > ]',
   'contact.sending': '[ ENVOI... ]',
-  'contact.success': '> Message transmis. Réponse sous 24h.',
+  'contact.done.connect': 'connexion au relais SMTP',
+  'contact.done.tls': 'chiffrement TLS',
+  'contact.done.progress': 'transmission',
+  'contact.done.sent': 'MESSAGE TRANSMIS ✓',
+  'contact.done.thanks': 'Merci {name} ! Je te réponds sous 24h.',
+  'contact.done.again': '[ ENVOYER UN AUTRE MESSAGE ]',
   'contact.error': '> ERREUR : envoi impossible. Écris-moi directement à martin.rabat@gmail.com',
 
   'marvin.greeting':
@@ -237,7 +242,12 @@ const en: Record<UiKey, string> = {
   'contact.message': '$ message:',
   'contact.submit': '[ SEND > ]',
   'contact.sending': '[ SENDING... ]',
-  'contact.success': "> Message sent. I'll reply within 24 hours.",
+  'contact.done.connect': 'connecting to SMTP relay',
+  'contact.done.tls': 'TLS encryption',
+  'contact.done.progress': 'transmitting',
+  'contact.done.sent': 'MESSAGE SENT ✓',
+  'contact.done.thanks': "Thanks {name}! I'll get back to you within 24 hours.",
+  'contact.done.again': '[ SEND ANOTHER MESSAGE ]',
   'contact.error': "> ERROR: couldn't send your message. Email me directly at martin.rabat@gmail.com",
 
   'marvin.greeting':

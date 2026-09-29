@@ -685,3 +685,62 @@
   font-size: 1rem;
   line-height: 1;
 }
+
+/* Page contact : séquence de transmission affichée après l'envoi */
+.contact-form--leaving {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.contact-done {
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+.contact-done__line {
+  margin: 0 0 0.35rem;
+  white-space: pre;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.contact-done__line.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.contact-done__bar {
+  color: var(--accent);
+}
+.contact-done__sent {
+  margin-top: 0.75rem;
+  color: var(--accent-hover);
+  font-weight: bold;
+}
+.contact-done__sent.is-visible {
+  animation: contact-clignote 0.45s steps(2) 3;
+}
+.contact-done__thanks {
+  margin-top: 1rem;
+  color: var(--ink);
+  white-space: normal;
+}
+.contact-done__signature {
+  color: var(--ink-faint);
+}
+.contact-done__again {
+  margin-top: 1.25rem;
+  white-space: normal;
+}
+@keyframes contact-clignote {
+  50% {
+    opacity: 0.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-done__line {
+    transition: none;
+    transform: none;
+  }
+  .contact-done__sent.is-visible {
+    animation: none;
+  }
+}
