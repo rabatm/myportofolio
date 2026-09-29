@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { handleContactRequest, type ContactSender } from '../../lib/contactHandler';
 import { createSmtpSender, readSmtpConfig } from '../../lib/smtp';
+import { clientIp, createRateLimiter } from '../../lib/spamGuard';
 
 export const prerender = false;
 
@@ -21,4 +22,8 @@ function getSender(): ContactSender {
   return sender;
 }
 
-export const POST: APIRoute = ({ request }) => handleContactRequest(request, getSender());
+// Un seul limiteur pour la durée de vie du processus.
+const limiter = createRateLimiter();
+
+export const POST: APIRoute = ({ request, clientAddress }) =>
+  handleContactRequest(request, getSender(), { ip: clientIp(request, clientAddress), limiter });

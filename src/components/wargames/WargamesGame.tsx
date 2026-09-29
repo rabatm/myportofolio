@@ -46,6 +46,8 @@ export default function WargamesGame({ lang = 'fr' }: { lang?: Lang }) {
   const [scores, setScores] = useState({ hal: 0, visitor: 0 });
   const [winner, setWinner] = useState<string | null>(null);
   const [underRound] = useState(() => Math.floor(Math.random() * 3));
+  // Début de la visite : l'API rejette les envois trop rapides pour être humains.
+  const [arrivee] = useState(() => performance.now());
 
   const [contact, setContact] = useState<ContactForm>({ name: '', email: '', message: '' });
   const [contactSent, setContactSent] = useState(false);
@@ -170,7 +172,7 @@ export default function WargamesGame({ lang = 'fr' }: { lang?: Lang }) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...contact, lang, website }),
+        body: JSON.stringify({ ...contact, lang, website, elapsedMs: Math.round(performance.now() - arrivee) }),
       });
       if (res.ok) setContactSent(true);
       else setContactError(true);

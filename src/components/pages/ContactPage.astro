@@ -71,6 +71,9 @@ const d = t(lang);
     const f = form;
     const button = f.querySelector('button[type="submit"]') as HTMLButtonElement;
     const initialLabel = button.textContent;
+    // Temps passé sur le formulaire, envoyé comme durée : l'API rejette
+    // silencieusement les envois trop rapides pour être humains.
+    const affiche = performance.now();
 
     function setStatus(message: string, color: string) {
       status!.textContent = message;
@@ -84,7 +87,10 @@ const d = t(lang);
       button.textContent = f.dataset.sending ?? '';
       status.style.display = 'none';
 
-      const data = Object.fromEntries(new FormData(f));
+      const data = {
+        ...Object.fromEntries(new FormData(f)),
+        elapsedMs: Math.round(performance.now() - affiche),
+      };
 
       try {
         const res = await fetch('/api/contact', {
