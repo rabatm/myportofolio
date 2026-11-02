@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { LANGS } from '../i18n/utils';
+import { findForbidden } from '../lib/copyRules';
 import { companies } from './companies';
 import { pageLines, projectLines, sectionLines } from './marvinLines';
 import { parcours } from './parcours';
+import { SERVICE_IDS, methode, services } from './services';
 import { skills } from './skills';
 import { temoignages } from './temoignages';
 import { wargamesLines } from './wargamesLines';
@@ -68,5 +71,26 @@ describe('parité FR/EN des données', () => {
     expect(en.nextRound.filter((l) => l.includes('{n}'))).toHaveLength(
       fr.nextRound.filter((l) => l.includes('{n}')).length
     );
+  });
+
+  it('services : mêmes ids dans le même ordre, mêmes nombres d’exemples', () => {
+    expect(services.fr.map((s) => s.id)).toEqual([...SERVICE_IDS]);
+    expect(services.en.map((s) => s.id)).toEqual([...SERVICE_IDS]);
+    services.en.forEach((s, i) => expect(s.builds).toHaveLength(services.fr[i].builds.length));
+    expect(services.en.map((s) => !!s.proofNote)).toEqual(services.fr.map((s) => !!s.proofNote));
+  });
+
+  it('méthode : 4 étapes dans chaque langue', () => {
+    expect(methode.fr).toHaveLength(4);
+    expect(methode.en).toHaveLength(4);
+  });
+
+  it('services : CTA tous différents, aucun texte interdit', () => {
+    for (const lang of LANGS) {
+      const ctas = services[lang].map((s) => s.cta);
+      expect(new Set(ctas).size).toBe(ctas.length);
+      const tout = JSON.stringify([services[lang], methode[lang]]);
+      expect(findForbidden(tout)).toEqual([]);
+    }
   });
 });
