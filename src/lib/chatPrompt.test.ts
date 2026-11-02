@@ -76,7 +76,18 @@ describe('buildSystemPrompt', () => {
 
   it('interdit de promettre tarif, délai, audit ou consultation gratuits', () => {
     expect(buildSystemPrompt('fr', donnees('fr'))).toMatch(/audit gratuit/);
+    expect(buildSystemPrompt('fr', donnees('fr'))).toMatch(/consultation gratuite/);
     expect(buildSystemPrompt('en', donnees('en'))).toMatch(/free audit/);
+    expect(buildSystemPrompt('en', donnees('en'))).toMatch(/free consultation/);
+  });
+
+  it("annonce une quinzaine d'années d'infrastructure, comme le reste du site", () => {
+    const fr = buildSystemPrompt('fr', donnees('fr'));
+    expect(fr).toContain('quinzaine');
+    expect(fr).not.toContain('20 ans');
+    const en = buildSystemPrompt('en', donnees('en'));
+    expect(en).toContain('fifteen');
+    expect(en).not.toContain('20 years');
   });
 
   it('précise que les témoignages anglais sont traduits', () => {
