@@ -4,6 +4,7 @@ date: 2026-09-26
 tags: ["Django", "Django REST Framework", "React", "TypeScript", "PostgreSQL", "Google Apps Script", "Docker", "Architecture hexagonale", "EdTech"]
 description: "Plateforme complète pour Jurisperform, organisme de soutien en droit pour les étudiants de Licence (L1 à L3) dans plusieurs villes. Elle couvre la déclaration des TD de fac, la planification des cours, les photos pour l'appel mobile, le trombinoscope, le coaching et les comptes rendus pédagogiques."
 image: "../images/jurisperform-licence/thumbnail.png"
+services: [web]
 ---
 
 Jurisperform Licence est la plateforme qui gère le soutien en droit de Jurisperform pour les étudiants de L1, L2 et L3, dans plusieurs villes. Elle réunit trois briques :

@@ -4,6 +4,8 @@ date: 2026-06-01
 tags: ["Python", "SQLAlchemy", "PostgreSQL", "Architecture Hexagonale", "BBSoft"]
 description: "Une passerelle de synchronisation bidirectionnelle entre l'ERP de Minouche et son site e-commerce."
 image: "../images/minouche-sync/thumbnail.png"
+services: [integration]
+featured: 3
 ---
 
 ## Le besoin

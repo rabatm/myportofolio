@@ -4,6 +4,8 @@ date: 2026-06-01
 tags: ["Python", "SQLAlchemy", "PostgreSQL", "Hexagonal Architecture", "BBSoft"]
 description: "A two-way sync gateway between Minouche's ERP and its e-commerce site."
 image: "../images/minouche-sync/thumbnail.png"
+services: [integration]
+featured: 3
 ---
 
 ## The need

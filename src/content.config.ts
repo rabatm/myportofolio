@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { SERVICE_IDS } from './data/services';
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
@@ -14,6 +15,10 @@ const projects = defineCollection({
     image: image().optional(),
     url: z.string().url().optional(),
     github: z.string().url().optional(),
+    services: z.array(z.enum(SERVICE_IDS)).default([]),
+    kind: z.enum(['client', 'atelier']).default('client'),
+    // Rang sur l'accueil (1 = premier).
+    featured: z.number().int().positive().optional(),
   }),
 });
 

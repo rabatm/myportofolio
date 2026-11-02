@@ -4,6 +4,8 @@ date: 2026-07-30
 tags: ['Flutter', 'Dart', 'PostgreSQL', 'SQLite', 'Android', 'Périculture', 'Zebra', 'TC22', 'TC27', 'Sunmi L3', 'DataWedge', 'Offline-First', 'Listes de naissance', 'Réception marchandise', 'Relevé de prix', 'Inventaire', 'BBSoft']
 description: 'Application Flutter pour terminaux Zebra (TC22/TC27) et Sunmi L3. Listes de naissance, réception de marchandise, relevé de prix et inventaire en magasin de périculture. Intégration directe avec BBSoft via PostgreSQL (reverse engineering).'
 image: '../images/amiqo/thumbnail.png'
+services: [mobile]
+featured: 2
 ---
 
 amiqo est une application mobile pour les magasins de périculture.

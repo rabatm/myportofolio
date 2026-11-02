@@ -4,6 +4,7 @@ date: 2026-09-26
 tags: ["Django", "Django REST Framework", "React", "TypeScript", "PostgreSQL", "Google Apps Script", "Docker", "Hexagonal architecture", "EdTech"]
 description: "End-to-end platform for Jurisperform, a law tutoring organization serving undergraduate students (years 1 to 3 of the French Licence) in several cities. It covers declaring university section classes, scheduling tutoring sessions, photos for mobile roll call, a student photo directory, coaching, and teaching reports."
 image: "../images/jurisperform-licence/thumbnail.png"
+services: [web]
 ---
 
 Jurisperform Licence is the platform that runs Jurisperform's law tutoring for students in L1, L2, and L3 (the three years of the French *Licence*, the equivalent of a bachelor's degree), across several cities. It brings together three building blocks:

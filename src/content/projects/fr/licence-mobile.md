@@ -4,6 +4,7 @@ date: 2026-06-01
 tags: ["React Native", "Expo", "TypeScript", "MobX", "EAS", "EdTech"]
 description: "Application mobile des professeurs de Jurisperform : ils retrouvent leurs cours de la semaine, font l'appel à partir des photos des étudiants, puis évaluent chaque étudiant présent. Le compte rendu pédagogique part ensuite automatiquement."
 image: "../images/licence-mobile/thumbnail.png"
+services: [mobile]
 ---
 
 Jurisperform Professeur est l'application mobile des professeurs de Jurisperform. Elle affiche les cours de la semaine, permet de faire l'appel en touchant les photos des étudiants présents, puis guide le professeur pour évaluer chaque étudiant, un par un. Elle s'appuie sur l'API de la plateforme [Jurisperform Licence](/projets/jurisperform-licence).

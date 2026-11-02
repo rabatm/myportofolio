@@ -4,6 +4,7 @@ date: 2026-07-30
 tags: ["Django", "DRF", "React", "TypeScript", "TailwindCSS", "PostgreSQL", "MySQL", "AMOPI", "Equipment rental", "License management"]
 description: "Web back office for a multi-brand franchise network (AMOPI). It manages the rental of inventory terminals, the software licenses deployed at client sites, and the syncing of their technical infrastructure."
 image: "../images/bomiqo/thumbnail.png"
+services: [web]
 ---
 
 BOMIQO is a web back office built for a multi-brand franchise network (ADBB / BB9 / BVES) managed by AMOPI. The application brings together three pillars: renting out inventory terminals, managing the software licenses deployed at client sites, and syncing their technical infrastructure.

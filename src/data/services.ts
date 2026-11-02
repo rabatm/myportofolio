@@ -1,7 +1,7 @@
 import type { Lang } from '../i18n/utils';
 
 export type ServiceId = 'web' | 'mobile' | 'automation' | 'integration' | 'maintenance';
-export const SERVICE_IDS: readonly ServiceId[] = ['web', 'mobile', 'automation', 'integration', 'maintenance'];
+export const SERVICE_IDS = ['web', 'mobile', 'automation', 'integration', 'maintenance'] as const satisfies readonly ServiceId[];
 
 export interface Service {
   id: ServiceId;
