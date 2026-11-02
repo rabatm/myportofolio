@@ -1,15 +1,27 @@
 import { parseLang, type Lang } from '../i18n/utils';
+import { SERVICE_IDS, services } from '../data/services';
+
+export const PROJECT_TYPES = [...SERVICE_IDS, 'other'] as const;
+export type ProjectType = (typeof PROJECT_TYPES)[number];
+
+const LIBELLE_AUTRE = 'Autre / je ne sais pas encore';
+
+function libelleType(t: ProjectType): string {
+  return t === 'other' ? LIBELLE_AUTRE : (services.fr.find((s) => s.id === t)?.name ?? t);
+}
 
 export interface ContactMessage {
   name: string;
   email: string;
   message: string;
   lang: Lang;
+  company?: string;
+  projectType?: ProjectType;
 }
 
 export type ContactValidation = { ok: true; data: ContactMessage } | { ok: false; error: string };
 
-const MAX = { name: 100, email: 200, message: 5000 } as const;
+const MAX = { name: 100, company: 100, email: 200, message: 5000 } as const;
 
 // Volontairement simple : on veut écarter les fautes de frappe, pas valider la RFC 5322.
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,7 +50,29 @@ export function validateContact(body: unknown): ContactValidation {
   if (!email || !EMAIL_RE.test(email)) return { ok: false, error: 'invalid email' };
   if (!message) return { ok: false, error: 'invalid message' };
 
-  return { ok: true, data: { name, email, message, lang: parseLang(b.lang) } };
+  const data: ContactMessage = { name, email, message, lang: parseLang(b.lang) };
+
+  // Entreprise et type sont facultatifs (le formulaire WarGames ne les envoie
+  // pas) ; absents ou vides, ils sont omis. L'entreprise finit dans le sujet du
+  // mail : pas de retour à la ligne.
+  if (b.company !== undefined && b.company !== null && b.company !== '') {
+    const company = champ(b, 'company');
+    if (company === null && typeof b.company === 'string' && !b.company.trim()) {
+      // espaces seuls : traité comme vide
+    } else if (!company || /[\r\n]/.test(company)) {
+      return { ok: false, error: 'invalid company' };
+    } else {
+      data.company = company;
+    }
+  }
+  if (b.projectType !== undefined && b.projectType !== null && b.projectType !== '') {
+    if (!(PROJECT_TYPES as readonly unknown[]).includes(b.projectType)) {
+      return { ok: false, error: 'invalid project type' };
+    }
+    data.projectType = b.projectType as ProjectType;
+  }
+
+  return { ok: true, data };
 }
 
 export interface ContactMail {
@@ -51,11 +85,13 @@ export interface ContactMail {
 export function buildContactMail(m: ContactMessage): ContactMail {
   const langue = m.lang.toUpperCase();
   return {
-    subject: `[Portfolio] Message de ${m.name} (${langue})`,
+    subject: `[Martin Info] ${m.name}${m.company ? ` — ${m.company}` : ''} (${langue})`,
     replyTo: `"${m.name.replace(/(["\\])/g, '\\$1')}" <${m.email}>`,
     text: [
       `Nom : ${m.name}`,
       `Email : ${m.email}`,
+      ...(m.company ? [`Entreprise : ${m.company}`] : []),
+      ...(m.projectType ? [`Type de projet : ${libelleType(m.projectType)}`] : []),
       `Langue : ${langue}`,
       '',
       m.message,

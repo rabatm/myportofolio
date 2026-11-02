@@ -31,10 +31,29 @@ describe('handleContactRequest', () => {
     expect(await res.json()).toEqual({ ok: true });
     expect(send).toHaveBeenCalledWith(
       expect.objectContaining({
-        subject: '[Portfolio] Message de Ada (FR)',
+        subject: '[Martin Info] Ada (FR)',
         replyTo: '"Ada" <ada@example.com>',
       })
     );
+  });
+
+  it('accepte le corps du formulaire WarGames (sans entreprise ni type)', async () => {
+    const send = vi.fn<ContactSender>().mockResolvedValue(undefined);
+    const body = { name: 'Ada', email: 'ada@example.com', message: 'Bonjour', lang: 'fr', website: '', elapsedMs: 10000 };
+
+    const res = await handleContactRequest(requete(body), send, ctx());
+
+    expect(res.status).toBe(200);
+    expect(send).toHaveBeenCalledTimes(1);
+  });
+
+  it('répond 400 sans envoyer si entreprise ou type sont hostiles', async () => {
+    const send = vi.fn<ContactSender>();
+    for (const extra of [{ company: 'A\r\nBcc: x@y.z' }, { projectType: 'hack' }, { company: 'voir https://spam.example' }]) {
+      const res = await handleContactRequest(requete({ ...valide, ...extra }), send, ctx());
+      expect(res.status).toBe(400);
+    }
+    expect(send).not.toHaveBeenCalled();
   });
 
   it('répond 400 sans rien envoyer si la charge est invalide', async () => {

@@ -61,6 +61,11 @@ describe('liens', () => {
     expect(hasTooManyLinks({ name: 'Ada', message: `${trois} https://d.fr` })).toBe(true);
   });
 
+  it("refuse tout lien dans l'entreprise", () => {
+    expect(hasTooManyLinks({ name: 'Ada', company: 'https://promo.example', message: 'Bonjour' })).toBe(true);
+    expect(hasTooManyLinks({ name: 'Ada', company: 'ACME', message: 'Bonjour' })).toBe(false);
+  });
+
   it('refuse tout lien dans le nom', () => {
     expect(hasTooManyLinks({ name: 'Ada www.promo.example', message: 'Bonjour' })).toBe(true);
   });

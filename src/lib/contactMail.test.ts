@@ -57,7 +57,7 @@ describe('buildContactMail', () => {
   });
 
   it('met la langue et le nom dans le sujet', () => {
-    expect(mail.subject).toBe('[Portfolio] Message de Ada Lovelace (EN)');
+    expect(mail.subject).toBe('[Martin Info] Ada Lovelace (EN)');
   });
 
   it("permet de répondre directement au visiteur", () => {
@@ -74,5 +74,40 @@ describe('buildContactMail', () => {
   it('échappe les guillemets du nom dans le Reply-To', () => {
     const m = buildContactMail({ name: 'Ada "la" L.', email: 'ada@example.com', message: 'x', lang: 'fr' });
     expect(m.replyTo).toBe('"Ada \\"la\\" L." <ada@example.com>');
+  });
+});
+
+describe('entreprise et type de projet', () => {
+  it('accepte entreprise et type de projet', () => {
+    const r = validateContact({ ...valide, company: ' ACME ', projectType: 'automation' });
+    expect(r.ok && r.data).toMatchObject({ company: 'ACME', projectType: 'automation' });
+  });
+  it('reste valide sans entreprise ni type (formulaire WarGames)', () => {
+    const r = validateContact(valide);
+    expect(r.ok && 'company' in r.data).toBe(false);
+    expect(r.ok && 'projectType' in r.data).toBe(false);
+  });
+  it('omet les champs vides', () => {
+    const r = validateContact({ ...valide, company: '  ', projectType: '' });
+    expect(r.ok && 'company' in r.data).toBe(false);
+    expect(r.ok && 'projectType' in r.data).toBe(false);
+  });
+  it('refuse une entreprise avec retour à la ligne ou trop longue, un type inconnu', () => {
+    expect(validateContact({ ...valide, company: 'A\nBcc: x@y.z' }).ok).toBe(false);
+    expect(validateContact({ ...valide, company: 'a'.repeat(101) }).ok).toBe(false);
+    expect(validateContact({ ...valide, company: 42 }).ok).toBe(false);
+    expect(validateContact({ ...valide, projectType: 'hack' }).ok).toBe(false);
+  });
+  it('met entreprise et type dans le mail, pas dans Reply-To', () => {
+    const m = buildContactMail({ name: 'Ada', email: 'ada@example.com', message: 'x', lang: 'fr', company: 'ACME', projectType: 'integration' });
+    expect(m.subject).toBe('[Martin Info] Ada — ACME (FR)');
+    expect(m.text).toContain('Entreprise : ACME');
+    expect(m.text).toContain('Type de projet : Intégration logicielle');
+    expect(m.replyTo).not.toContain('ACME');
+  });
+  it('libellé pour « autre » et lignes absentes sans les champs', () => {
+    const m = buildContactMail({ name: 'Ada', email: 'ada@example.com', message: 'x', lang: 'fr', projectType: 'other' });
+    expect(m.text).toContain('Type de projet : Autre / je ne sais pas encore');
+    expect(m.text).not.toContain('Entreprise');
   });
 });

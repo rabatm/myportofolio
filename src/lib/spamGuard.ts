@@ -9,7 +9,7 @@
 /** Délai minimal entre l'affichage du formulaire et l'envoi. */
 export const MIN_ELAPSED_MS = 3000;
 
-/** Liens tolérés dans un message ; aucun dans le nom. */
+/** Liens tolérés dans un message ; aucun dans le nom ni l'entreprise. */
 export const MAX_LINKS = 3;
 
 /**
@@ -41,8 +41,8 @@ export function countLinks(text: string): number {
   return text.match(LIEN_RE)?.length ?? 0;
 }
 
-export function hasTooManyLinks(m: { name: string; message: string }): boolean {
-  return countLinks(m.name) > 0 || countLinks(m.message) > MAX_LINKS;
+export function hasTooManyLinks(m: { name: string; company?: string; message: string }): boolean {
+  return countLinks(m.name) > 0 || countLinks(m.company ?? '') > 0 || countLinks(m.message) > MAX_LINKS;
 }
 
 export interface RateLimits {
