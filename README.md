@@ -86,10 +86,24 @@ description: "Courte description du projet."
 image: "../images/nom-du-projet/thumbnail.jpg"   # optionnel, chemin relatif au .md
 url: "https://exemple.com"      # optionnel
 github: "https://github.com/..." # optionnel
+services: [web, integration]    # web | mobile | automation | integration | maintenance
+kind: client                    # client (défaut) | atelier (projet perso)
+featured: 1                     # optionnel : rang sur l'accueil (1 = premier)
 ---
 
-Description détaillée en Markdown…
+## Contexte
+…
 ```
+
+- `services` alimente le filtre de `/projets` (un bouton n'apparaît que si un
+  projet client au moins le porte) et les « preuves » de `/services`.
+- `kind: client` impose le plan `Contexte` / `Le besoin` / `La solution` /
+  `Fonctionnalités` / (`Résultats`, seulement si un résultat est documenté) /
+  `Côté technique` (EN : `Context`, `The need`, `The solution`, `Features`,
+  `Results`, `Under the hood`) ; `bun run test` le vérifie. Un projet
+  `kind: atelier` (projet perso) a un plan libre et apparaît dans la section
+  « Atelier » de `/projets`.
+- `featured` choisit les réalisations mises en avant sur l'accueil (3 au maximum).
 
 Les projets s'affichent du plus récent au plus ancien. Sans version anglaise
 (même nom de fichier absent de `en/`), la page EN affiche le texte français
@@ -122,6 +136,12 @@ images restent agrandies au clic (lightbox). Dépose tes originaux tels quels
 
 Seuls `public/og-image.jpg` et `public/favicon.ico` restent dans `public/` :
 ils doivent garder une URL fixe.
+
+### Services, à propos, coordonnées
+
+- Catalogue des 5 services (FR + EN) : `src/data/services.ts`.
+- Page À propos : `src/data/about.ts` (les faits viennent de `parcours.ts`).
+- Email public, ville, etc. : `src/data/site.ts` (`CONTACT_EMAIL`, une seule fois).
 
 ### Articles de blog
 

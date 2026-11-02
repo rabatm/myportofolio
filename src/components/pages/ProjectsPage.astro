@@ -5,7 +5,7 @@ import SectionHeading from '../ui/SectionHeading.astro';
 import { services } from '../../data/services';
 import { pageLines } from '../../data/marvinLines';
 import { getLocalizedCollection } from '../../i18n/collections';
-import { atelierProjects, clientProjects } from '../../lib/projectSelect';
+import { atelierProjects, clientProjects, projectsForService } from '../../lib/projectSelect';
 import { t } from '../../i18n/ui';
 import type { Lang } from '../../i18n/utils';
 
@@ -18,6 +18,8 @@ const d = t(lang);
 const all = await getLocalizedCollection('projects', lang);
 const clients = clientProjects(all);
 const atelier = atelierProjects(all);
+// Un bouton par service qui a au moins une réalisation : aucun filtre ne mène à une grille vide.
+const filtres = services[lang].filter((s) => projectsForService(all, s.id).length > 0);
 ---
 
 <BaseLayout
@@ -33,7 +35,7 @@ const atelier = atelierProjects(all);
 
     <div class="filter-bar" role="group" aria-label={d['projects.filterLabel']} data-filter-bar>
       <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">{d['projects.filterAll']}</button>
-      {services[lang].map((s) => (
+      {filtres.map((s) => (
         <button type="button" class="filter-btn" data-filter={s.id} aria-pressed="false">{s.name}</button>
       ))}
     </div>

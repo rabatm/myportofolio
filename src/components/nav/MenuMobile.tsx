@@ -9,8 +9,9 @@ interface MenuMobileProps {
   altHref?: string;
 }
 
-/** Les destinations, dans l'ordre de la nav de bureau. Contact est à part : il
- *  garde sa pilule et se place en bas de liste. */
+/** Les destinations, dans l'ordre de la nav de bureau. Le CTA « Parler de votre
+ *  projet » n'en fait pas partie : c'est un bouton plein (`btn-primary`) rendu à
+ *  part, en bas du panneau, après le lien de changement de langue. */
 function liens(lang: Lang) {
   const d = t(lang);
   return [

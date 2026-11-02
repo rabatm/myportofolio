@@ -2,7 +2,7 @@
 title: "BOMIQO — Back office for fleet, license, and client infrastructure management"
 date: 2026-07-30
 tags: ["Django", "DRF", "React", "TypeScript", "TailwindCSS", "PostgreSQL", "MySQL", "AMOPI", "Equipment rental", "License management"]
-description: "The in-house management tool of AMOPI, which runs a multi-brand franchise network: inventory terminals lent to stores, licenses for the software installed at client sites, and technical details of their servers, all tracked in one place."
+description: "The in-house management tool of AMOPI, which runs a multi-brand franchise network: inventory terminals lent to retail chains, licenses for the software installed at client sites, and technical details of their servers, all tracked in one place."
 image: "../images/bomiqo/thumbnail.png"
 services: [web]
 ---
@@ -26,7 +26,7 @@ AMOPI needed a single tool to:
 
 ## The solution
 
-I built BOMIQO, a web back office that brings these three pillars together: terminal rental, license management, and syncing clients' infrastructure.
+I built BOMIQO, a web back office that brings these needs together: terminal rental, license management, and syncing clients' infrastructure.
 
 - **Licenses are verified by BOMIQO itself**, with no separate or third-party service.
 - **Client servers' technical details update automatically** from the clients' database.
@@ -35,12 +35,8 @@ I built BOMIQO, a web back office that brings these three pillars together: term
 
 ## Features
 
-- **Home**: overdue loans, licenses about to expire, available stock, and quick actions (receiving, new terminal, search, inventory).
-- **Rental management**: timeline of rental requests by store, with their status (scheduled, shipped, overdue, completed).
-- **Rental stock**: terminals set aside for rental, with each device's status and license countdown.
-- **Receiving**: scan a returned terminal to close out its loan.
-- **Loans**: terminals lent outside the rental workflow, with due dates and overdue items.
-- **Sales**: terminals intended for sale, with license expiration tracking.
+The main screens are shown in the screenshots below. In addition:
+
 - **Licenses**: validated directly by the back office.
 - **Client infrastructure**: automatic retrieval of server IPs, logins, etc.
 - **Access rights**: fine-grained, scope-based permissions.

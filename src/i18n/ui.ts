@@ -30,13 +30,6 @@ const fr = {
 
   'content.onlyIn': '🇬🇧 En anglais uniquement',
 
-  'hero.badge': "Développeur concepteur d'applications — Web, mobile & DevOps",
-  'hero.tagline': "Je crée des applications qui s'adaptent à votre métier.",
-  'hero.sub':
-    'Applications web et mobiles sur mesure, conçues pour répondre à vos besoins réels et accompagner votre activité dans la durée.',
-  'hero.location': 'Basé à Perpignan, disponible en full remote',
-  'hero.ctaProjects': 'Voir les projets',
-  'hero.ctaContact': 'Discutons de votre besoin',
 
   'about.title': 'À propos — Développeur informatique PME à Perpignan',
   'about.description':
@@ -56,19 +49,8 @@ const fr = {
   'about.funGame': "Et quelque part sur ce site, un jeu attend qu'on le trouve. Marvin en sait peut-être plus qu'il ne le dit.",
   'about.ctaTitle': "Un besoin, un outil qui coince, une idée à concrétiser ?",
   'about.cta': 'Voir si je peux vous aider',
-  'about.quote': '« Des outils au service de votre activité. »',
-  'about.p1':
-    "Je crée des applications sur mesure pour les entreprises : simples à utiliser, fiables au quotidien et capables d'évoluer avec vous. Nouveau projet ou outil existant à améliorer et à connecter à vos autres logiciels, c'est souvent là que tout se joue.",
-  'about.p2':
-    "Avant de devenir développeur, j'ai passé près de 20 ans à maintenir des systèmes informatiques critiques et à former des équipes à leurs outils. J'en ai retenu l'essentiel : une application ne vaut que si elle est pensée pour et avec ses utilisateurs.",
-  'about.p3':
-    "Aujourd'hui en spécialisation à l'École 42 Perpignan, je développe des applications web et mobiles.",
 
-  'skills.title': 'Compétences',
-  'skills.subtitle': "« Qu'importe la stack, pourvu qu'on ait les tests. »",
 
-  'trust.title': 'Ils me font confiance',
-  'trust.subtitle': "Des entreprises qui m'ont confié leurs systèmes en production.",
 
   'testimonials.title': 'Témoignages',
   'testimonials.prev': 'Précédent',
@@ -78,12 +60,7 @@ const fr = {
   'testimonials.moreAria': 'Voir plus',
   'testimonials.translated': '',
 
-  'parcours.title': 'Parcours',
-  'parcours.subtitle': "20 ans d'infrastructure, puis le code.",
 
-  'projectsPreview.title': 'Projets récents',
-  'projectsPreview.subtitle': 'Applications métier, intégrations et reprises de legacy.',
-  'projectsPreview.all': 'Voir tous les projets',
 
   'home.title': 'Développeur indépendant à Perpignan — Martin Info',
   'home.description':
@@ -115,7 +92,7 @@ const fr = {
   'home.human1': 'Développeur indépendant depuis 2021.',
   'home.human2':
     "Avant cela, une quinzaine d'années à faire tourner des systèmes critiques pour de grandes organisations : je sais ce que coûte un outil qui tombe en panne.",
-  'home.human3': 'Basé à Perpignan, je travaille avec des entreprises des Pyrénées-Orientales et de toute la France, à distance.',
+  'home.human3': 'Basé à Perpignan, je travaille pour des entreprises des Pyrénées-Orientales, et partout en France à distance.',
   'home.human4': "Pas d'intermédiaire : vous parlez directement à celui qui conçoit et développe votre outil.",
   'home.humanAbout': 'En savoir plus sur moi',
   'home.humanCleo':
@@ -126,7 +103,7 @@ const fr = {
 
   'projects.title': 'Réalisations : applications web et mobiles — Martin Info',
   'projects.description':
-    'Des applications métier, mobiles et des intégrations livrées pour des entreprises : ERP retail, backoffice de franchises, applications terrain, synchronisation entre systèmes.',
+    'Applications métier, mobiles et intégrations livrées pour des entreprises : ERP retail, backoffice de franchises, applications terrain.',
   'projects.heading': 'Réalisations',
   'projects.filterAll': 'Tout',
   'projects.filterLabel': 'Filtrer par service',
@@ -135,6 +112,7 @@ const fr = {
   'project.back': '← Toutes les réalisations',
   'project.ctaClient': 'Un besoin qui ressemble à celui-ci ? Parlons-en.',
   'project.ctaAtelier': 'Une idée un peu folle ? Écrivez-moi.',
+  'project.ctaAtelierButton': "M'écrire",
   'project.visit': 'Voir le projet',
 
   'blog.title': 'Blog — Martin Info, développeur à Perpignan',
@@ -152,7 +130,7 @@ const fr = {
   'contact.intro': 'Décrivez votre besoin en quelques lignes, je vous réponds rapidement.',
   'services.title': 'Logiciel métier sur mesure et automatisation — Martin Info',
   'services.description':
-    'Applications web et mobiles sur mesure, automatisation, intégration logicielle : ce que Martin Info peut construire pour votre entreprise, avec des réalisations concrètes.',
+    'Applications web et mobiles sur mesure, automatisation, intégration logicielle : ce que Martin Info peut construire pour votre entreprise.',
   'services.kicker': 'Services',
   'services.heading': 'Ce que je peux construire pour vous',
   'services.intro': 'Cinq façons de travailler ensemble, chacune partant d’un problème concret.',
@@ -246,13 +224,6 @@ const en: Record<UiKey, string> = {
 
   'content.onlyIn': '🇫🇷 French only',
 
-  'hero.badge': 'Application Developer — Web, Mobile & DevOps',
-  'hero.tagline': 'I build applications that fit the way your business works.',
-  'hero.sub':
-    'Custom web and mobile applications, designed around your real needs and built to support your business for the long run.',
-  'hero.location': 'Based in Perpignan, France — available for fully remote work',
-  'hero.ctaProjects': 'See my projects',
-  'hero.ctaContact': "Let's talk about your project",
 
   'about.title': 'About — IT developer for SMEs in Perpignan, France',
   'about.description':
@@ -272,19 +243,8 @@ const en: Record<UiKey, string> = {
   'about.funGame': 'And somewhere on this site, a game is waiting to be found. Marvin may know more than he lets on.',
   'about.ctaTitle': 'A need, a tool that gets in the way, an idea to bring to life?',
   'about.cta': 'See if I can help',
-  'about.quote': '“Tools that work for your business.”',
-  'about.p1':
-    "I build custom applications for businesses: easy to use, reliable day to day, and able to grow with you. Whether it's a new project or an existing tool that needs improving and connecting to your other software, that's often where it all happens.",
-  'about.p2':
-    "Before becoming a developer, I spent nearly 20 years maintaining critical IT systems and training teams on their tools. The lesson I kept: an application is only worth something if it's designed for, and with, the people who use it.",
-  'about.p3':
-    'Currently in the specialization track at École 42 Perpignan (a peer-to-peer, project-based coding school), I build web and mobile applications.',
 
-  'skills.title': 'Skills',
-  'skills.subtitle': '“Never mind the stack, as long as there are tests.”',
 
-  'trust.title': 'Trusted by',
-  'trust.subtitle': 'Companies that have trusted me with their production systems.',
 
   'testimonials.title': 'Testimonials',
   'testimonials.prev': 'Previous',
@@ -294,12 +254,7 @@ const en: Record<UiKey, string> = {
   'testimonials.moreAria': 'Show more',
   'testimonials.translated': 'Translated from French',
 
-  'parcours.title': 'Experience',
-  'parcours.subtitle': '20 years of infrastructure, then code.',
 
-  'projectsPreview.title': 'Recent projects',
-  'projectsPreview.subtitle': 'Business applications, integrations and legacy takeovers.',
-  'projectsPreview.all': 'See all projects',
 
   'home.title': 'Independent developer in Perpignan — Martin Info',
   'home.description':
@@ -312,7 +267,7 @@ const en: Record<UiKey, string> = {
   'home.heroCta2': 'Explore my work',
   'home.heroWhere': 'Perpignan · Pyrénées-Orientales · anywhere in France, remotely',
   'home.heroTerminalLabel': "Sample exchange with Marvin, this site's assistant",
-  'home.heroTerminalUser': "my software doesn't talk to each other",
+  'home.heroTerminalUser': "my software tools don't talk to each other",
   'home.heroTerminalMarvin': 'Martin has already connected a BBSoft till system to an e-commerce site. Shall we talk?',
   'home.clientsTitle': 'They trusted me with their tools',
   'home.servicesKicker': 'Services',
@@ -331,7 +286,7 @@ const en: Record<UiKey, string> = {
   'home.human1': 'Independent developer since 2021.',
   'home.human2':
     'Before that, some fifteen years keeping critical systems running for large organizations: I know what a broken tool costs.',
-  'home.human3': 'Based in Perpignan, I work with businesses in the Pyrénées-Orientales and across France, remotely.',
+  'home.human3': 'Based in Perpignan, I work for businesses in the Pyrénées-Orientales, and anywhere in France remotely.',
   'home.human4': 'No middleman: you talk directly to the person who designs and builds your tool.',
   'home.humanAbout': 'More about me',
   'home.humanCleo':
@@ -342,7 +297,7 @@ const en: Record<UiKey, string> = {
 
   'projects.title': 'Work: web and mobile applications — Martin Info',
   'projects.description':
-    'Business web and mobile applications and integrations delivered for companies: retail ERP, franchise back offices, field apps, synchronization between systems.',
+    'Business web and mobile applications and integrations delivered for companies: retail ERP, franchise back offices, field apps.',
   'projects.heading': 'Work',
   'projects.filterAll': 'All',
   'projects.filterLabel': 'Filter by service',
@@ -351,6 +306,7 @@ const en: Record<UiKey, string> = {
   'project.back': '← All work',
   'project.ctaClient': 'A need that looks like this one? Let us talk.',
   'project.ctaAtelier': 'A slightly crazy idea? Write to me.',
+  'project.ctaAtelierButton': 'Write to me',
   'project.visit': 'View project',
 
   'blog.title': 'Blog — Martin Info, developer in Perpignan',

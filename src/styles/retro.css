@@ -68,30 +68,6 @@
   .nav-link:hover::after {
     transform: scaleX(1);
   }
-  .retro-border {
-    border: 2px solid var(--accent);
-    box-shadow:
-      inset -2px -2px 0 0 var(--accent),
-      2px 2px 0 0 var(--accent);
-  }
-  .retro-border:hover {
-    box-shadow:
-      inset 2px 2px 0 0 var(--blue),
-      -2px -2px 0 0 var(--blue),
-      0 0 12px oklch(62% 0.19 150 / 0.3);
-    border-color: var(--blue);
-  }
-  @keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-  }
-  .marquee {
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .marquee:hover .marquee-inner {
-    animation: marquee 4s linear infinite;
-  }
   .terminal-input {
     background: transparent;
     border: none;
@@ -510,9 +486,8 @@
 
 /* ---- Menu mobile ------------------------------------------------- */
 
-/* Le biseau `retro-border` du site, repris tel quel. L'état ouvert bascule au
-   bleu, comme le fait déjà `retro-border:hover` — on lit l'état directement
-   depuis l'attribut ARIA plutôt que d'ajouter une classe. */
+/* Biseau vert du burger. L'état ouvert bascule au bleu — on lit l'état
+   directement depuis l'attribut ARIA plutôt que d'ajouter une classe. */
 .menu-burger {
   width: 44px;
   height: 44px;

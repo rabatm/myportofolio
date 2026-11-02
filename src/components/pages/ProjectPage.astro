@@ -51,7 +51,7 @@ const peekLines = projectLines[lang].map((l) => l.replace('{titre}', project.dat
   <section class="py-16" style="background: var(--surface-muted);">
     <div class="container-wide max-w-3xl">
       <h2 class="text-2xl font-bold mb-6" style="color: var(--ink);">{isAtelier ? d['project.ctaAtelier'] : d['project.ctaClient']}</h2>
-      <a href={buildPath('contact', lang)} class="btn-primary">{d['nav.cta']}</a>
+      <a href={buildPath('contact', lang)} class="btn-primary">{isAtelier ? d['project.ctaAtelierButton'] : d['nav.cta']}</a>
     </div>
   </section>
 </BaseLayout>

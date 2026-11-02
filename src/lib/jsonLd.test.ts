@@ -1,9 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { professionalServiceJsonLd } from './jsonLd';
+import { jsonLdScript, professionalServiceJsonLd } from './jsonLd';
 import { CONTACT_EMAIL } from '../data/site';
 import { services } from '../data/services';
 
 const site = new URL('https://martin-info.example');
+
+describe('jsonLdScript', () => {
+  it('échappe < pour que </script> ne ferme pas la balise', () => {
+    const out = jsonLdScript({ name: '</script><script>alert(1)</script>' });
+    expect(out).not.toContain('<');
+    expect(JSON.parse(out).name).toBe('</script><script>alert(1)</script>');
+  });
+});
 
 describe('professionalServiceJsonLd', () => {
   const fr = professionalServiceJsonLd('fr', site) as any;

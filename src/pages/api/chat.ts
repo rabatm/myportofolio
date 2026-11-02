@@ -88,6 +88,7 @@ export const POST: APIRoute = async ({ request }) => {
       clearTimeout(timeout);
     }
   } catch (err: any) {
+    console.error('[chat] échec de l’appel Groq', err);
     // Le nom est ajouté à l'affichage par le composant : ne pas le répéter ici.
     if (err?.status === 429) {
       return new Response(JSON.stringify({ content: t(lang)['chat.rateLimit'] }), {

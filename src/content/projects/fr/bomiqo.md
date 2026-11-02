@@ -2,7 +2,7 @@
 title: "BOMIQO — Backoffice de gestion de flotte, licences et infrastructure client"
 date: 2026-07-30
 tags: ["Django", "DRF", "React", "TypeScript", "TailwindCSS", "PostgreSQL", "MySQL", "AMOPI", "Location de matériel", "Gestion de licences"]
-description: "L'outil de gestion interne d'AMOPI, qui anime un réseau de franchises multi-enseignes : suivi des terminaux d'inventaire prêtés aux magasins, des licences des logiciels installés chez les clients et des informations techniques de leurs serveurs, au même endroit."
+description: "L'outil de gestion interne d'AMOPI, qui anime un réseau de franchises multi-enseignes : suivi des terminaux d'inventaire prêtés aux enseignes, des licences des logiciels installés chez les clients et des informations techniques de leurs serveurs, au même endroit."
 image: "../images/bomiqo/thumbnail.png"
 services: [web]
 ---
@@ -26,7 +26,7 @@ AMOPI avait besoin d'un seul outil pour :
 
 ## La solution
 
-J'ai développé BOMIQO, un backoffice web qui réunit ces trois piliers : la location de terminaux, la gestion des licences et la synchronisation de l'infrastructure des clients.
+J'ai développé BOMIQO, un backoffice web qui réunit ces besoins : la location de terminaux, la gestion des licences et la synchronisation de l'infrastructure des clients.
 
 - **Les licences sont vérifiées par BOMIQO lui-même**, sans service séparé ni service tiers.
 - **Les informations techniques des serveurs clients se mettent à jour automatiquement** depuis la base de données des clients.
@@ -35,12 +35,8 @@ J'ai développé BOMIQO, un backoffice web qui réunit ces trois piliers : la lo
 
 ## Fonctionnalités
 
-- **Accueil** : prêts en retard, licences arrivant à expiration, stock disponible et actions rapides (réception, nouveau terminal, recherche, inventaire).
-- **Gestion location** : chronologie des demandes de location par magasin, avec leur statut (planifiée, expédiée, en retard, terminée).
-- **Stock location** : les terminaux destinés à la location, avec le statut et le compte à rebours de licence de chaque appareil.
-- **Réception** : scan d'un terminal retourné pour clôturer son prêt.
-- **Prêts** : terminaux prêtés hors circuit de location, avec échéances et retards.
-- **Vente** : terminaux destinés à la vente, avec suivi de l'expiration de licence.
+Les écrans principaux sont détaillés dans les captures ci-dessous. En complément :
+
 - **Licences** : validation directe par le backoffice.
 - **Infrastructure client** : récupération automatique des IP des serveurs, des identifiants, etc.
 - **Droits d'accès** : permissions fines par périmètre.
