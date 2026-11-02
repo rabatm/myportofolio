@@ -23,20 +23,42 @@ const { Content } = await render(post);
   description={post.data.description}
   contentLang={item.contentLang}
 >
-  <article class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
-    <a href={buildPath('blog', lang)} class="text-sm mb-8 inline-block font-mono" style="color: var(--accent-hover);">{d['post.back']}</a>
-    <p class="text-xs font-mono mb-2" style="color: var(--ink-faint);">{formatDate(post.data.date, lang)}</p>
-    {item.isFallback && <div><OnlyInBadge lang={lang} /></div>}
-    <h1 class="text-4xl font-bold mb-4" style="color: var(--ink);" lang={item.contentLang}>{post.data.title}</h1>
-    <div class="flex flex-wrap gap-2 mb-6">
-      {post.data.tags.map(tag => (
-        <span class="text-xs px-2 py-1 font-mono rounded-full" style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);">
-          #{tag}
-        </span>
-      ))}
-    </div>
-    <div class="prose max-w-none" style="color: var(--ink-soft);" lang={item.contentLang}>
-      <Content />
+  <article class="container-wide pt-32 pb-20">
+    <div class="max-w-3xl">
+      <a href={buildPath('blog', lang)} class="post-back">{d['post.back']}</a>
+      <p class="post-date">
+        <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date, lang)}</time>
+      </p>
+      {item.isFallback && <div><OnlyInBadge lang={lang} /></div>}
+      <h1 class="heading-1" lang={item.contentLang}>{post.data.title}</h1>
+      {post.data.tags.length > 0 && (
+        <p class="post-tags">{post.data.tags.map((tag) => `#${tag}`).join(' ')}</p>
+      )}
+      <div class="prose max-w-none mt-10" style="color: var(--ink-soft);" lang={item.contentLang}>
+        <Content />
+      </div>
     </div>
   </article>
 </BaseLayout>
+
+<style>
+  .post-back {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--accent-hover);
+  }
+  .post-date {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+  .post-tags {
+    margin: 1rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+</style>

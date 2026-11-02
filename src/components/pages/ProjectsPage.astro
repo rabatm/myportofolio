@@ -43,7 +43,7 @@ const filtres = services[lang].filter((s) => projectsForService(all, s.id).lengt
     <ul class="project-grid" data-project-grid>
       {clients.map((item) => (
         <li class="project-grid-item" data-services={item.entry.data.services.join(' ')}>
-          <ProjectCard item={item} lang={lang} />
+          <ProjectCard item={item} lang={lang} headingLevel={2} />
         </li>
       ))}
     </ul>

@@ -68,67 +68,6 @@
   .nav-link:hover::after {
     transform: scaleX(1);
   }
-  .terminal-input {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--accent);
-    color: var(--ink);
-    font-family: 'Space Grotesk', monospace;
-    outline: none;
-    width: 100%;
-    padding: 4px 0;
-  }
-  .terminal-input:focus {
-    border-bottom-color: var(--blue);
-  }
-  .btn-retro {
-    display: inline-block;
-    padding: 8px 24px;
-    background: var(--accent);
-    color: #fff;
-    border: 2px solid var(--accent);
-    border-radius: 999px;
-    cursor: pointer;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.15s;
-  }
-  .btn-retro:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-    box-shadow: 0 6px 16px oklch(62% 0.19 150 / 0.3);
-    transform: translateY(-2px);
-  }
-  .section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin: 0 0 2rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
-  .section-title::before {
-    content: '╔══ ';
-    color: var(--accent);
-  }
-  .section-title::after {
-    content: ' ══╗';
-    color: var(--accent);
-  }
-  .card {
-    background: var(--card-bg);
-    border: 2px solid var(--border);
-    border-radius: 20px;
-    padding: 1.5rem;
-    transition: all 0.2s;
-  }
-  .card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 12px 28px oklch(20% 0.02 280 / 0.1);
-    transform: translateY(-2px);
-  }
   .prose img {
     display: block;
     max-width: 100%;
@@ -486,27 +425,35 @@
 
 /* ---- Menu mobile ------------------------------------------------- */
 
-/* Biseau vert du burger. L'état ouvert bascule au bleu — on lit l'état
-   directement depuis l'attribut ARIA plutôt que d'ajouter une classe. */
+/* Contour encre, comme `.btn-ghost`. L'état ouvert s'inverse (fond encre) —
+   on lit l'état directement depuis l'attribut ARIA plutôt que d'ajouter une
+   classe. */
 .menu-burger {
+  box-sizing: border-box;
   width: 44px;
   height: 44px;
   display: grid;
   place-items: center;
-  background: var(--bg);
+  background: transparent;
   color: var(--ink);
-  border: 2px solid var(--accent);
-  box-shadow: inset -2px -2px 0 0 var(--accent), 2px 2px 0 0 var(--accent);
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
+.menu-burger:hover,
 .menu-burger[aria-expanded='true'] {
-  border-color: var(--blue);
-  color: var(--blue);
-  box-shadow: inset 2px 2px 0 0 var(--blue), -2px -2px 0 0 var(--blue);
+  background: var(--ink);
+  color: #fff;
+}
+
+.menu-burger:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 3px;
 }
 
 /* Hauteur réelle de la barre : son plus grand enfant visible, plus deux fois le

@@ -39,7 +39,7 @@ export default defineConfig({
           en: 'en-US',
         },
       },
-      filter: (page) => !page.includes('/api/'),
+      filter: (page) => !page.includes('/api/') && !page.includes('/wargames'),
       serialize: (item) => ({
         ...item,
         url: canonicalize(item.url),

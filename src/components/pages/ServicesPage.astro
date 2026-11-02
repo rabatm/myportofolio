@@ -75,7 +75,9 @@ const blocks = services[lang].map((s, i) => ({
               ))}
             </ul>
           )}
-          {proofs.length === 0 && s.proofNote && <p class="service-benefit">{s.proofNote}</p>}
+          {s.proofNote && (
+            <p class:list={['service-benefit', proofs.length > 0 && 'mt-4']}>{s.proofNote}</p>
+          )}
         </div>
       </div>
     </section>

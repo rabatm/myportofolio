@@ -30,7 +30,6 @@ const fr = {
 
   'content.onlyIn': '🇬🇧 En anglais uniquement',
 
-
   'about.title': 'À propos — Développeur informatique PME à Perpignan',
   'about.description':
     "Martin Rabat, développeur informatique pour PME dans les Pyrénées-Orientales : une quinzaine d'années dans les systèmes critiques, indépendant depuis 2021.",
@@ -50,8 +49,6 @@ const fr = {
   'about.ctaTitle': "Un besoin, un outil qui coince, une idée à concrétiser ?",
   'about.cta': 'Voir si je peux vous aider',
 
-
-
   'testimonials.title': 'Témoignages',
   'testimonials.prev': 'Précédent',
   'testimonials.next': 'Suivant',
@@ -59,8 +56,6 @@ const fr = {
   'testimonials.less': 'Voir moins',
   'testimonials.moreAria': 'Voir plus',
   'testimonials.translated': '',
-
-
 
   'home.title': 'Développeur indépendant à Perpignan — Martin Info',
   'home.description':
@@ -171,7 +166,7 @@ const fr = {
 
   'chat.rateLimit':
     'Le service est momentanément indisponible en raison d’un nombre élevé de demandes. Merci de réessayer dans quelques instants.',
-  'chat.error': 'ERREUR: connexion au serveur perdue. Réessaie plus tard.',
+  'chat.error': 'ERREUR: connexion au serveur perdue. Réessayez plus tard.',
 
   'wargames.intro': 'BIENVENUE AU JEU.\n\nTROIS ROUNDS.\n\nQUE LE MEILLEUR GAGNE.',
   'wargames.start': 'COMMENCER',
@@ -224,7 +219,6 @@ const en: Record<UiKey, string> = {
 
   'content.onlyIn': '🇫🇷 French only',
 
-
   'about.title': 'About — IT developer for SMEs in Perpignan, France',
   'about.description':
     'Martin Rabat, IT developer for small businesses in the Pyrénées-Orientales: some fifteen years in critical systems, independent since 2021.',
@@ -244,8 +238,6 @@ const en: Record<UiKey, string> = {
   'about.ctaTitle': 'A need, a tool that gets in the way, an idea to bring to life?',
   'about.cta': 'See if I can help',
 
-
-
   'testimonials.title': 'Testimonials',
   'testimonials.prev': 'Previous',
   'testimonials.next': 'Next',
@@ -253,8 +245,6 @@ const en: Record<UiKey, string> = {
   'testimonials.less': 'Show less',
   'testimonials.moreAria': 'Show more',
   'testimonials.translated': 'Translated from French',
-
-
 
   'home.title': 'Independent developer in Perpignan — Martin Info',
   'home.description':

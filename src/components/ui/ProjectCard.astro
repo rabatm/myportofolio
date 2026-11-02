@@ -10,9 +10,12 @@ export interface Props {
   /** Langue de la page : libellés des services et lien. */
   lang: Lang;
   variant?: 'default' | 'compact';
+  /** Niveau du titre : 2 quand la carte suit directement le h1 de la page. */
+  headingLevel?: 2 | 3;
 }
 
-const { item, lang, variant = 'default' } = Astro.props;
+const { item, lang, variant = 'default', headingLevel = 3 } = Astro.props;
+const Titre = headingLevel === 2 ? 'h2' : 'h3';
 const { entry, slug, isFallback, contentLang } = item;
 const p = entry.data;
 
@@ -25,11 +28,10 @@ const libelles = p.services
 <a
   href={buildPath('projects', lang, slug)}
   class:list={['project-card', variant === 'compact' && 'project-card--compact']}
-  data-services={p.services.join(' ')}
 >
   <ProjectThumb image={p.image} title={p.title} alt="" />
   {isFallback && <OnlyInBadge lang={lang} />}
-  <h3 class="project-card__title" lang={contentLang}>{p.title}</h3>
+  <Titre class="project-card__title" lang={contentLang}>{p.title}</Titre>
   <p class="project-card__desc" lang={contentLang}>{p.description}</p>
   {libelles.length > 0 && <p class="project-card__services">{libelles.join(' · ')}</p>}
 </a>

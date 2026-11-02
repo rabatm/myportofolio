@@ -20,27 +20,40 @@ function logo(fichier: string): ImageMetadata {
   if (!trouve) throw new Error(`Logo introuvable dans src/assets/logos/ : ${fichier}`);
   return trouve;
 }
+// Un logo carré (ou presque) dans la même hauteur que les logos larges serait
+// illisible : il reçoit un cadre plus haut. Seuil : moins de 1,5 fois plus
+// large que haut.
+function estCarre(img: ImageMetadata): boolean {
+  return img.width / img.height < 1.5;
+}
 ---
 
 <section id="clients" class="home-section py-12" style="border-block: 1px solid var(--border);" aria-labelledby="clients-titre">
   <div class="container-wide clients-band">
     <h2 id="clients-titre" class="kicker clients-title">{d['home.clientsTitle']}</h2>
     <ul class="clients-row">
-      {liste.map((c) => (
-        <li>
-          <a href={c.url} target="_blank" rel="noopener noreferrer" class="client-link">
-            <Image
-              src={logo(c.logo)}
-              alt={c.name}
-              width={280}
-              format="webp"
-              loading="lazy"
-              decoding="async"
-              class:list={['client-logo', c.logoBg === 'dark' && 'client-logo--dark']}
-            />
-          </a>
-        </li>
-      ))}
+      {liste.map((c) => {
+        const img = logo(c.logo);
+        return (
+          <li>
+            <a href={c.url} target="_blank" rel="noopener noreferrer" class="client-link">
+              <Image
+                src={img}
+                alt={c.name}
+                width={280}
+                format="webp"
+                loading="lazy"
+                decoding="async"
+                class:list={[
+                  'client-logo',
+                  c.logoBg === 'dark' && 'client-logo--dark',
+                  estCarre(img) && 'client-logo--square',
+                ]}
+              />
+            </a>
+          </li>
+        );
+      })}
     </ul>
   </div>
 </section>
@@ -95,6 +108,11 @@ function logo(fichier: string): ImageMetadata {
     filter: grayscale(1);
     opacity: 0.8;
     transition: filter 0.2s ease, opacity 0.2s ease;
+  }
+  .client-logo--square {
+    width: 88px;
+    height: 88px;
+    padding: 4px;
   }
   /* Logos clairs : ils gardent leur cadre sombre pour rester lisibles. */
   .client-logo--dark {
