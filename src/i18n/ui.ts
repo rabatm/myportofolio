@@ -9,7 +9,7 @@ import type { Lang } from './utils';
  */
 const fr = {
   'layout.defaultDescription':
-    "Développeur concepteur d'applications web, mobile et DevOps. Architecture hexagonale, TDD, Django, React, Flutter. Basé à Perpignan, disponible en full remote.",
+    "Martin Info : développeur indépendant à Perpignan. Applications web et mobiles sur mesure, automatisation et intégrations pour les PME des Pyrénées-Orientales.",
   'layout.footer': '© 2026 Martin Info — Développement sur mesure · Perpignan',
   'layout.lightboxClose': 'Fermer',
 
@@ -38,9 +38,9 @@ const fr = {
   'hero.ctaProjects': 'Voir les projets',
   'hero.ctaContact': 'Discutons de votre besoin',
 
-  'about.title': 'À propos — Martin Rabat, développeur indépendant à Perpignan · Martin Info',
+  'about.title': 'À propos — Développeur informatique PME à Perpignan',
   'about.description':
-    "Martin Rabat, développeur indépendant à Perpignan : une quinzaine d'années dans les systèmes critiques, indépendant depuis 2021. Son approche, son parcours, ce qui l'anime.",
+    "Martin Rabat, développeur informatique pour PME dans les Pyrénées-Orientales : une quinzaine d'années dans les systèmes critiques, indépendant depuis 2021.",
   'about.kicker': 'À propos',
   'about.heading': 'Martin Rabat, développeur indépendant à Perpignan',
   'about.intro': 'Je conçois des applications et des automatisations qui simplifient le quotidien des entreprises.',
@@ -85,7 +85,7 @@ const fr = {
   'projectsPreview.subtitle': 'Applications métier, intégrations et reprises de legacy.',
   'projectsPreview.all': 'Voir tous les projets',
 
-  'home.title': 'Martin Info — Développeur indépendant à Perpignan · applications sur mesure',
+  'home.title': 'Développeur indépendant à Perpignan — Martin Info',
   'home.description':
     "Applications web et mobiles, automatisation et intégration logicielle sur mesure pour les entreprises. Développeur indépendant à Perpignan, Pyrénées-Orientales.",
   'home.heroKicker': 'Développeur indépendant · Perpignan',
@@ -124,7 +124,7 @@ const fr = {
   'home.contactTitle': 'Vous avez une idée, un problème à résoudre ou un outil à créer ? Parlons-en.',
   'home.contactMarvin': "Ou posez la question à Marvin : son terminal vous attend en bas de l'écran.",
 
-  'projects.title': 'Réalisations — Martin Info',
+  'projects.title': 'Réalisations : applications web et mobiles — Martin Info',
   'projects.description':
     'Des applications métier, mobiles et des intégrations livrées pour des entreprises : ERP retail, backoffice de franchises, applications terrain, synchronisation entre systèmes.',
   'projects.heading': 'Réalisations',
@@ -137,20 +137,20 @@ const fr = {
   'project.ctaAtelier': 'Une idée un peu folle ? Écrivez-moi.',
   'project.visit': 'Voir le projet',
 
-  'blog.title': 'Blog — Martin Rabat, développeur fullstack',
+  'blog.title': 'Blog — Martin Info, développeur à Perpignan',
   'blog.description':
-    "Articles et retours d'expérience de Martin Rabat sur le développement web, mobile et l'architecture logicielle.",
+    "Retours d'expérience d'un développeur indépendant : logiciel métier, automatisation et applications web et mobiles pour les PME.",
   'blog.heading': 'Blog',
-  'post.titleSuffix': '— Blog de Martin Rabat',
+  'post.titleSuffix': '— Blog Martin Info',
   'post.back': '< Retour au blog',
 
-  'contact.title': 'Contact — Martin Rabat, développeur fullstack',
+  'contact.title': 'Contact — Martin Info, développeur à Perpignan',
   'contact.description':
-    'Parlez de votre projet à Martin Rabat, développeur indépendant à Perpignan : applications web et mobiles, automatisation, intégration logicielle. Réponse rapide.',
+    'Parlez de votre projet à Martin Rabat, développeur indépendant à Perpignan : application web ou mobile, automatisation, intégration. Réponse rapide.',
   'contact.kicker': 'Contact',
   'contact.heading': 'Vous avez une idée, un problème à résoudre ou un outil à créer ? Parlons-en.',
   'contact.intro': 'Décrivez votre besoin en quelques lignes, je vous réponds rapidement.',
-  'services.title': 'Services — Applications sur mesure, automatisation et intégration · Martin Info',
+  'services.title': 'Logiciel métier sur mesure et automatisation — Martin Info',
   'services.description':
     'Applications web et mobiles sur mesure, automatisation, intégration logicielle : ce que Martin Info peut construire pour votre entreprise, avec des réalisations concrètes.',
   'services.kicker': 'Services',
@@ -225,7 +225,7 @@ export const OPTIONAL_KEYS: readonly UiKey[] = ['testimonials.translated'];
 
 const en: Record<UiKey, string> = {
   'layout.defaultDescription':
-    'Application developer for web, mobile and DevOps. Hexagonal architecture, TDD, Django, React, Flutter. Based in Perpignan, France, available for fully remote work.',
+    'Martin Info: independent developer in Perpignan, France. Custom web and mobile applications, automation and integrations for small and mid-sized businesses.',
   'layout.footer': '© 2026 Martin Info — Custom software · Perpignan, France',
   'layout.lightboxClose': 'Close',
 
@@ -254,9 +254,9 @@ const en: Record<UiKey, string> = {
   'hero.ctaProjects': 'See my projects',
   'hero.ctaContact': "Let's talk about your project",
 
-  'about.title': 'About — Martin Rabat, independent developer in Perpignan · Martin Info',
+  'about.title': 'About — IT developer for SMEs in Perpignan, France',
   'about.description':
-    'Martin Rabat, independent developer in Perpignan, France: some fifteen years in critical systems, independent since 2021. His approach, his background, what drives him.',
+    'Martin Rabat, IT developer for small businesses in the Pyrénées-Orientales: some fifteen years in critical systems, independent since 2021.',
   'about.kicker': 'About',
   'about.heading': 'Martin Rabat, independent developer in Perpignan',
   'about.intro': 'I build applications and automations that make day-to-day work simpler for businesses.',
@@ -301,9 +301,9 @@ const en: Record<UiKey, string> = {
   'projectsPreview.subtitle': 'Business applications, integrations and legacy takeovers.',
   'projectsPreview.all': 'See all projects',
 
-  'home.title': 'Martin Info — Independent developer in Perpignan · custom applications',
+  'home.title': 'Independent developer in Perpignan — Martin Info',
   'home.description':
-    'Custom web and mobile applications, automation and software integration for businesses. Independent developer in Perpignan, Pyrénées-Orientales, France.',
+    'Custom web and mobile applications, automation and software integration for businesses. Independent developer in Perpignan, France.',
   'home.heroKicker': 'Independent developer · Perpignan, France',
   'home.heroTitle': 'Your ideas deserve better than off-the-shelf software.',
   'home.heroSub':
@@ -340,7 +340,7 @@ const en: Record<UiKey, string> = {
   'home.contactTitle': "Have an idea, a problem to solve or a tool to build? Let's talk.",
   'home.contactMarvin': 'Or ask Marvin: his terminal is waiting at the bottom of the screen.',
 
-  'projects.title': 'Work — Martin Info',
+  'projects.title': 'Work: web and mobile applications — Martin Info',
   'projects.description':
     'Business web and mobile applications and integrations delivered for companies: retail ERP, franchise back offices, field apps, synchronization between systems.',
   'projects.heading': 'Work',
@@ -353,20 +353,20 @@ const en: Record<UiKey, string> = {
   'project.ctaAtelier': 'A slightly crazy idea? Write to me.',
   'project.visit': 'View project',
 
-  'blog.title': 'Blog — Martin Rabat, full-stack developer',
+  'blog.title': 'Blog — Martin Info, developer in Perpignan',
   'blog.description':
-    'Articles and lessons learned by Martin Rabat on web and mobile development and software architecture.',
+    'Lessons learned by an independent developer: custom business software, automation, and web and mobile applications for small businesses.',
   'blog.heading': 'Blog',
-  'post.titleSuffix': "— Martin Rabat's blog",
+  'post.titleSuffix': '— Martin Info blog',
   'post.back': '< Back to blog',
 
-  'contact.title': 'Contact — Martin Rabat, full-stack developer',
+  'contact.title': 'Contact — Martin Info, developer in Perpignan',
   'contact.description':
-    'Tell Martin Rabat, an independent developer based in Perpignan, France, about your project: web and mobile applications, automation, software integration. Quick reply.',
+    'Tell Martin Rabat, an independent developer in Perpignan, France, about your project: web or mobile app, automation, integration. Quick reply.',
   'contact.kicker': 'Contact',
   'contact.heading': "Have an idea, a problem to solve or a tool to build? Let's talk.",
   'contact.intro': "Describe what you need in a few lines, and I'll get back to you quickly.",
-  'services.title': 'Services — Custom applications, automation and integration · Martin Info',
+  'services.title': 'Custom business software and automation — Martin Info',
   'services.description':
     'Custom web and mobile applications, automation, software integration: what Martin Info can build for your business, backed by real projects.',
   'services.kicker': 'Services',

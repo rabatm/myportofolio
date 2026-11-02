@@ -22,7 +22,7 @@ const posts = await getLocalizedCollection('blog', lang);
   peekLines={pageLines[lang].blog}
 >
   <section class="px-4 pt-24 pb-20 max-w-3xl mx-auto">
-    <h2 class="section-title">{d['blog.heading']}</h2>
+    <h1 class="section-title">{d['blog.heading']}</h1>
     <div class="space-y-6">
       {posts.map(({ entry: p, slug, isFallback, contentLang }) => (
         <a href={buildPath('blog', lang, slug)} class="card block no-underline">

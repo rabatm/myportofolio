@@ -23,7 +23,7 @@ const peekLines = projectLines[lang].map((l) => l.replace('{titre}', project.dat
 
 <BaseLayout
   lang={lang}
-  title={`${project.data.title} — Martin Rabat`}
+  title={`${project.data.title.split(' — ')[0]} — Martin Info`}
   description={project.data.description}
   contentLang={item.contentLang}
   peekLines={peekLines}

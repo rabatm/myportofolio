@@ -6,6 +6,7 @@ import LangSuggest from '../components/i18n/LangSuggest.tsx';
 import MarvinDock from '../components/chatbot/MarvinDock.tsx';
 import MenuMobile from '../components/nav/MenuMobile.tsx';
 import { t } from '../i18n/ui';
+import { jsonLdScript, professionalServiceJsonLd } from '../lib/jsonLd';
 import {
   alternatePath,
   buildPath,
@@ -33,12 +34,17 @@ export interface Props {
 const {
   lang,
   title,
-  description = t(lang)['layout.defaultDescription'],
+  description: descriptionBrute = t(lang)['layout.defaultDescription'],
   contentLang,
   peekLines,
   sectionLines,
 } = Astro.props;
 const d = t(lang);
+// Les extraits de recherche coupent au-delà de ~160 caractères : on coupe nous-mêmes, sur un mot.
+const description =
+  descriptionBrute.length <= 160
+    ? descriptionBrute
+    : `${descriptionBrute.slice(0, 159).replace(/\s+\S*$/, '').replace(/[,;:.\s]+$/, '')}…`;
 // En repli, og:locale doit refléter la langue du contenu réellement servi,
 // et il n'y a alors pas de version dans l'autre langue à annoncer.
 const langeAffichee = contentLang && contentLang !== lang ? contentLang : lang;
@@ -49,6 +55,7 @@ const pathname = Astro.url.pathname;
 const { canonical: canonicalUrl, alternates } = seoLinks(pathname, lang, Astro.site!, contentLang);
 const ogImageUrl = new URL('/og-image.jpg', Astro.site);
 const altHref = alternatePath(pathname);
+const jsonLd = jsonLdScript(professionalServiceJsonLd(lang, Astro.site!));
 
 const liens = [
   { href: buildPath('services', lang), label: d['nav.services'] },
@@ -85,6 +92,8 @@ const liens = [
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+
+    <script type="application/ld+json" set:html={jsonLd} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
