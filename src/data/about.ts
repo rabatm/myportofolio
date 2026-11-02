@@ -37,7 +37,7 @@ export const approche: Record<Lang, Approche[]> = {
     },
     {
       title: 'De la conception à la mise en production',
-      text: 'Je ne m’arrête pas au code : mise en service, suivi du bon fonctionnement, guides utilisateurs et formation de vos équipes font partie du travail.',
+      text: 'Je ne m’arrête pas au code : mise en production, guides utilisateurs, formation de vos équipes, puis les évolutions font partie du travail.',
     },
   ],
   en: [
@@ -59,7 +59,7 @@ export const approche: Record<Lang, Approche[]> = {
     },
     {
       title: 'From design to production',
-      text: 'I do not stop at the code: deployment, monitoring, user guides and training for your teams are part of the job.',
+      text: 'I do not stop at the code: going live, user guides, training for your teams, then the updates are part of the job.',
     },
   ],
 };
