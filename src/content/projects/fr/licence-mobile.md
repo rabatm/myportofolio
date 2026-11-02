@@ -2,49 +2,74 @@
 title: "Jurisperform Professeur — L'appel et le suivi pédagogique depuis le téléphone"
 date: 2026-06-01
 tags: ["React Native", "Expo", "TypeScript", "MobX", "EAS", "EdTech"]
-description: "Application mobile des professeurs de Jurisperform : ils retrouvent leurs cours de la semaine, font l'appel à partir des photos des étudiants, puis évaluent chaque étudiant présent. Le compte rendu pédagogique part ensuite automatiquement."
+description: "L'application mobile des professeurs de Jurisperform : ils retrouvent leurs cours de la semaine, font l'appel en touchant les photos des étudiants, puis évaluent chaque étudiant présent. Le compte rendu pédagogique part ensuite automatiquement."
 image: "../images/licence-mobile/thumbnail.png"
 services: [mobile]
 ---
 
-Jurisperform Professeur est l'application mobile des professeurs de Jurisperform. Elle affiche les cours de la semaine, permet de faire l'appel en touchant les photos des étudiants présents, puis guide le professeur pour évaluer chaque étudiant, un par un. Elle s'appuie sur l'API de la plateforme [Jurisperform Licence](/projets/jurisperform-licence).
+## Contexte
 
----
+Jurisperform propose des cours de soutien en droit aux étudiants de Licence, dans plusieurs villes. Après chaque séance, l'étudiant doit recevoir un compte rendu : présence, participation et commentaire du professeur.
 
-### 🔧 Contexte
+Ces comptes rendus sont envoyés par la plateforme [Jurisperform Licence](/projets/jurisperform-licence), que j'ai aussi développée.
 
-Jurisperform propose des cours de soutien en droit aux étudiants de Licence, dans plusieurs villes. Après chaque séance, l'étudiant doit recevoir un compte rendu : présence, participation et commentaire du professeur. Pour que ce compte rendu existe, le professeur doit saisir l'appel et l'évaluation juste après le cours, souvent debout dans la salle, sur son téléphone.
+## Le besoin
 
-J'ai développé l'application seul. La première version date de septembre 2024. Elle a été mise à jour en septembre 2025 (passage à Expo 53, nouvelle liste des cours), puis entièrement redessinée en août 2026.
+Pour que le compte rendu existe, le professeur doit saisir l'appel et l'évaluation juste après le cours, souvent debout dans la salle, sur son téléphone. Il lui fallait donc une application :
 
----
+- **simple à utiliser debout**, pour faire l'appel et évaluer les étudiants en quelques gestes ;
+- **qui ne perd rien** si le professeur est interrompu en plein appel : un appel téléphonique, un changement d'application ou une fermeture forcée ne doivent pas l'obliger à tout recommencer ;
+- **qui n'enregistre rien en double**, même après un double toucher ;
+- **toujours à jour chez tous les professeurs**, pour rester compatible avec la plateforme.
 
-### 🎯 Le besoin métier
+## La solution
 
-1. **Le professeur se connecte** avec son compte Jurisperform. Seuls les comptes professeurs sont acceptés.
+J'ai développé l'application seul. Elle affiche les cours de la semaine, permet de faire l'appel en touchant les photos des étudiants présents, puis guide le professeur pour évaluer chaque étudiant, un par un.
+
+Le parcours du professeur :
+
+1. **Il se connecte** avec son compte Jurisperform. Seuls les comptes professeurs sont acceptés.
 2. **Il voit ses cours de la semaine** : matière, groupe, ville, séances faites sur le total prévu, et ce qu'il reste à faire.
 3. **Il fait l'appel** en touchant les photos des étudiants présents.
 4. **Il évalue chaque étudiant présent** : participation orale, préparation écrite de la séance et commentaire.
 5. **Le compte rendu pédagogique est envoyé** à l'étudiant par la plateforme.
 
----
+La première version date de septembre 2024. L'application a été mise à jour en septembre 2025 (nouvelle liste des cours), puis entièrement redessinée en août 2026 : fond ivoire, panneaux en verre dépoli, bandeau bordeaux et boutons capsules. Le fonctionnement est resté identique : mêmes niveaux d'évaluation, même règle pour « non concerné ».
 
-### ⚙️ Fonctionnalités clés
+## Fonctionnalités
 
 - **Cours de la semaine** : les cours sont triés par niveau (L1, L2, L3), puis par groupe. Les groupes qui ont un TD passent en premier. Chaque ville a sa couleur, pour qu'un professeur qui enseigne dans plusieurs villes s'y retrouve d'un coup d'œil. Chaque cours indique « Appel à faire » ou « Séance faite ».
 - **Appel par photo** : les étudiants du groupe s'affichent en grille de trois photos. Un toucher marque l'étudiant présent, et un compteur suit le nombre de présents. Un écran récapitulatif permet de vérifier la sélection avant l'envoi.
 - **Suivi pédagogique** : après l'appel, l'application enchaîne les étudiants présents un par un, avec la photo, la matière et le nombre d'étudiants restants. Il y a deux critères :
   - la participation orale : insuffisant, passable, satisfaisant ou excellent ;
   - la préparation écrite, avec en plus l'option « non concerné ».
-  
+
   Le commentaire est facultatif. Une fenêtre de confirmation récapitule l'évaluation avant son envoi.
 - **Reprise après interruption** : un appel en cours et les évaluations qu'il reste à faire sont gardés sur le téléphone. Si l'application est fermée en plein appel, elle rouvre directement l'écran où le professeur s'était arrêté.
-- **Connexion mémorisée** : les identifiants sont stockés dans le trousseau sécurisé du téléphone, et la session est vérifiée auprès de l'API à chaque ouverture.
+- **Pas de double envoi** : chaque bouton d'envoi est bloqué le temps de l'envoi, et un double toucher sur un cours n'ouvre pas deux écrans.
+- **Connexion mémorisée** : les identifiants sont stockés dans le trousseau sécurisé du téléphone, et la session est vérifiée à chaque ouverture.
 - **Mise à jour obligatoire** : au lancement, l'application vérifie s'il existe une nouvelle version. Si c'est le cas, elle bloque l'accès et renvoie vers le store.
 
----
+![Cours de la semaine](../images/licence-mobile/capture-1.png)
+![Appel par photo](../images/licence-mobile/capture-2.png)
+![Évaluation d'un étudiant](../images/licence-mobile/capture-3.png)
 
-### 🏗️ Architecture
+## Résultats
+
+- **En production depuis septembre 2024** et publiée sur l'App Store sous le nom *Jurisperform Professeur*.
+- **L'appel et l'évaluation se font depuis le téléphone**, juste après la séance. Chaque évaluation alimente le compte rendu pédagogique que la plateforme envoie à l'étudiant.
+- **Trois générations de l'application** (2024, 2025, 2026).
+
+## Côté technique
+
+- **Front** : React Native 0.86, React 19, Expo SDK 57, Expo Router, TypeScript, MobX, expo-blur, Reanimated
+- **Back** : API Django REST de [Jurisperform Licence](/projets/jurisperform-licence), authentification JWT
+- **Données** : AsyncStorage (état local et reprise), expo-secure-store (identifiants)
+- **Infra** : EAS Build, expo-updates, tests de contrat API en Python (unittest)
+
+La mise à jour de septembre 2025 est passée à Expo 53, et les mises à jour d'Expo se sont poursuivies jusqu'au SDK 57.
+
+### Architecture
 
 **Application Expo / React Native en TypeScript**
 
@@ -58,15 +83,14 @@ J'ai développé l'application seul. La première version date de septembre 2024
 - Connexion → liste des cours du professeur → élèves de la séance → envoi des présents. L'API renvoie alors le premier étudiant à évaluer.
 - Chaque évaluation envoyée renvoie l'étudiant suivant, jusqu'au message de fin d'appel.
 - Les photos arrivent en base64 dans la réponse, ce qui évite une requête par photo.
+- La session est vérifiée auprès de l'API à chaque ouverture.
 
 **Build et distribution**
 
 - **EAS Build** avec trois profils : développement, preview et production. Le numéro de build est incrémenté automatiquement, et la version suit le format `AAAAMMJJHHmm`.
 - **Continuous Native Generation** : les dossiers natifs ne sont pas versionnés et sont régénérés au build. Un correctif (`patches/`) sur `expo-modules-jsi` permet de compiler avec Swift 6.2.
 
----
-
-### ⚠️ Défis techniques
+### Défis techniques
 
 #### 1. Ne jamais perdre un appel en cours
 
@@ -97,28 +121,3 @@ En août 2026, l'application a été entièrement redessinée : fond ivoire, pan
 - Le travail est parti d'une **spécification** et d'un **plan d'implémentation** écrits avant le code. Chaque écran de la maquette y est associé aux fichiers existants.
 - Les tokens et les composants de base ont été créés d'abord, puis les écrans ont été repris un par un.
 - La **logique métier est restée identique** : mêmes niveaux d'évaluation, même règle pour « non concerné », mêmes appels à l'API.
-
----
-
-### 📈 Résultats
-
-- **En production depuis septembre 2024** et publiée sur l'App Store sous le nom *Jurisperform Professeur*.
-- **L'appel et l'évaluation se font depuis le téléphone**, juste après la séance. Chaque évaluation alimente le compte rendu pédagogique que la plateforme envoie à l'étudiant.
-- **Trois générations de l'application** (2024, 2025, 2026), avec des mises à jour d'Expo jusqu'au SDK 57.
-
----
-
-### 📷 Visuels
-
-![Cours de la semaine](../images/licence-mobile/capture-1.png)
-![Appel par photo](../images/licence-mobile/capture-2.png)
-![Évaluation d'un étudiant](../images/licence-mobile/capture-3.png)
-
----
-
-### 🧰 Stack technique
-
-- **Front** : React Native 0.86, React 19, Expo SDK 57, Expo Router, TypeScript, MobX, expo-blur, Reanimated
-- **Back** : API Django REST de [Jurisperform Licence](/projets/jurisperform-licence), authentification JWT
-- **Données** : AsyncStorage (état local et reprise), expo-secure-store (identifiants)
-- **Infra** : EAS Build, expo-updates, tests de contrat API en Python (unittest)

@@ -2,34 +2,36 @@
 title: "Jurisperform Licence — The system that runs law tutoring, from scheduling to roll call"
 date: 2026-09-26
 tags: ["Django", "Django REST Framework", "React", "TypeScript", "PostgreSQL", "Google Apps Script", "Docker", "Hexagonal architecture", "EdTech"]
-description: "End-to-end platform for Jurisperform, a law tutoring organization serving undergraduate students (years 1 to 3 of the French Licence) in several cities. It covers declaring university section classes, scheduling tutoring sessions, photos for mobile roll call, a student photo directory, coaching, and teaching reports."
+description: "The platform that runs Jurisperform's law tutoring for undergraduate students (years 1 to 3 of the French Licence) in several cities: declaring university section classes, scheduling sessions with no time conflicts, photos for roll call, a student photo directory, coaching, and teaching reports sent after every session."
 image: "../images/jurisperform-licence/thumbnail.png"
 services: [web]
 ---
 
-Jurisperform Licence is the platform that runs Jurisperform's law tutoring for students in L1, L2, and L3 (the three years of the French *Licence*, the equivalent of a bachelor's degree), across several cities. It brings together three building blocks:
+## Context
 
-- a **Django API**;
-- a **React portal** with four areas: student, teacher, coach, and administrator;
-- a **Google Sheets / Google Calendar sync** for each city.
+Jurisperform offers law tutoring to students in L1, L2, and L3 (the three years of the French *Licence*, the equivalent of a bachelor's degree), alongside their university courses, in several cities (Aix, Montpellier, Toulouse…).
 
-Students declare their university TDs (*travaux dirigés*, the small-group section classes that accompany lectures), and Jurisperform schedules its own sessions around them with no time conflicts. Teachers take roll on their phones using student photos, and every session triggers a teaching report.
+Each city has its own Google Sheet: students, groups, subjects, lectures, and teaching staff.
 
----
+## The need
 
-### 🔧 Background
-
-Jurisperform offers law tutoring to undergraduate students, alongside their university courses, in several cities (Aix, Montpellier, Toulouse…). Each city has its own Google Sheet: students, groups, subjects, lectures, and teaching staff. This setup created three difficulties:
+This setup created three difficulties:
 
 - **Scheduling**: you need to know each student's university timetable to fit Jurisperform sessions in without overlaps.
 - **Taking roll**: teachers have to recognize dozens of students per group.
 - **Tracking progress**: students and staff need a shared history of attendance, assessments, and coaching.
 
-I designed and built the entire system on my own, from the API to deployment. The project started in August 2024 and is still in production.
+## The solution
 
----
+I designed and built the entire system on my own, end to end, all the way to deployment. It brings together three building blocks:
 
-### 🎯 The business need
+- **a web portal** with four areas: student, teacher, coach, and administrator;
+- **a central server** that handles the data, the automations, and mobile roll call;
+- **a sync with each city's Google Sheet and Google Calendar**.
+
+Students declare their university TDs (*travaux dirigés*, the small-group section classes that accompany lectures), and Jurisperform schedules its own sessions around them with no time conflicts. Teachers take roll on their phones using student photos, and every session triggers a teaching report.
+
+In practice, over the semester:
 
 1. **Students declare their university TDs** each semester: day, start and end time, or "I'm not attending."
 2. **Jurisperform schedules its sessions** based on these declarations, which feed each city's Google Sheets and Google Calendar.
@@ -39,9 +41,7 @@ I designed and built the entire system on my own, from the API to deployment. Th
 6. **Coaches write coaching reports**, which students can find in their area.
 7. **The administration manages each city**: statistics, missing declarations, photo validation, sessions, grades.
 
----
-
-### ⚙️ Key features
+## Features
 
 **Student area**
 
@@ -51,13 +51,19 @@ I designed and built the entire system on my own, from the API to deployment. Th
 - **My grades**: students declare their university grades (exams, quizzes, assignments graded by Jurisperform), which are then saved to Google Sheets.
 - **My coaching**: students can find the history of reports written by their coach.
 
+![Student area — TD declarations](../images/jurisperform-licence/capture-1.png)
+
 **Teacher area**
 
 - **Photo directory by city**, with filters by group and subject, sorting, zoom, and flagging of students without a photo.
 
+![Teacher photo directory](../images/jurisperform-licence/trombi.png)
+
 **Coach area**
 
 - **Student follow-up**: coaches view a student's profile (sessions, grades, history) and write a report alongside it. Once sent, the report can no longer be edited and is shared with the student and the staff.
+
+![Student coaching follow-up](../images/jurisperform-licence/coaching.png)
 
 **Administrator area**
 
@@ -71,12 +77,24 @@ I designed and built the entire system on my own, from the API to deployment. Th
 - **Daily summary** sent to administrators.
 - **Weekly summary**.
 - **"Session not held" alerts**.
-- **Nightly photo validation**.
-- **Annual reset**, with an audit.
+- **Nightly photo validation**: students are notified by email if their photo is rejected, and administrators receive the list of photos where no face was detected.
+- **Annual reset**, with an audit: the platform starts from scratch each year without losing its configuration.
 
----
+## Results
 
-### 🏗️ Architecture
+- **A single platform** for four user profiles (students, teachers, coaches, administrators), in several cities. The project started in August 2024 and is still in production.
+- **TD declarations feed Google Sheets and Google Calendar directly**, with no re-entry.
+- **Teaching follow-up is sent automatically** after each session (attendance, participation, comments), including to absent students.
+- **Repetitive tasks are automated**: creating the week's sessions, closing sessions, summaries, alerts, backups of grades and of the database.
+
+## Under the hood
+
+- **Front end**: React 18, TypeScript, Vite, Tailwind CSS, Radix UI / shadcn, Zustand, React Query, Recharts, Framer Motion
+- **Back end**: Python, Django 5, Django REST Framework, SimpleJWT, hexagonal architecture, pytest, mypy, pylint, face_recognition (dlib), Pillow
+- **Data**: PostgreSQL 16, Google Sheets / Drive / Calendar APIs, Google Apps Script (clasp)
+- **Infrastructure**: VPS, Docker Compose, Gunicorn, Nginx, Let's Encrypt, cron, `pg_dump` backups to Google Drive, GitHub Actions
+
+### Architecture
 
 **Django / DRF API with a hexagonal architecture (ports and adapters)**
 
@@ -107,9 +125,14 @@ I designed and built the entire system on my own, from the API to deployment. Th
 
 - TD declaration in the portal → API → Apps Script webhook → the city's Sheet and Calendar → session scheduling → mobile roll call → teaching follow-up email.
 
----
+**Code quality**
 
-### ⚠️ Technical challenges
+- 827 automated tests;
+- 80% minimum coverage required;
+- 47 documented admin commands;
+- CI/CD on the portal (lint, build, deployment on version tags).
+
+### Technical challenges
 
 #### 1. Syncing Django, Google Sheets, and Google Calendar
 
@@ -148,34 +171,3 @@ Every year, the platform needs to start from scratch without losing its configur
 
 - The migration is done one domain at a time, following automatically enforced rules (`make check`).
 - Tests rely on in-memory *fakes* rather than mocks, with a Given/When/Then structure.
-
----
-
-### 📈 Results
-
-- **A single platform** for four user profiles (students, teachers, coaches, administrators), in production since 2024 in several cities.
-- **TD declarations feed Google Sheets and Google Calendar directly**, with no re-entry.
-- **Teaching follow-up is sent automatically** after each session (attendance, participation, comments), including to absent students.
-- **Repetitive tasks are automated**: creating the week's sessions, closing sessions, summaries, alerts, backups of grades and of the database.
-- **Code quality**:
-  - 827 automated tests;
-  - 80% minimum coverage required;
-  - 47 documented admin commands;
-  - CI/CD on the portal (lint, build, deployment on version tags).
-
----
-
-### 📷 Visuals
-
-![Student area — TD declarations](../images/jurisperform-licence/capture-1.png)
-![Teacher photo directory](../images/jurisperform-licence/trombi.png)
-![Student coaching follow-up](../images/jurisperform-licence/coaching.png)
-
----
-
-### 🧰 Tech stack
-
-- **Front end**: React 18, TypeScript, Vite, Tailwind CSS, Radix UI / shadcn, Zustand, React Query, Recharts, Framer Motion
-- **Back end**: Python, Django 5, Django REST Framework, SimpleJWT, hexagonal architecture, pytest, mypy, pylint, face_recognition (dlib), Pillow
-- **Data**: PostgreSQL 16, Google Sheets / Drive / Calendar APIs, Google Apps Script (clasp)
-- **Infrastructure**: VPS, Docker Compose, Gunicorn, Nginx, Let's Encrypt, cron, `pg_dump` backups to Google Drive, GitHub Actions

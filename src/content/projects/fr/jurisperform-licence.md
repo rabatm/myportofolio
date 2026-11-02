@@ -2,34 +2,36 @@
 title: "Jurisperform Licence — Le système qui fait tourner le soutien en droit, de l'emploi du temps à l'appel"
 date: 2026-09-26
 tags: ["Django", "Django REST Framework", "React", "TypeScript", "PostgreSQL", "Google Apps Script", "Docker", "Architecture hexagonale", "EdTech"]
-description: "Plateforme complète pour Jurisperform, organisme de soutien en droit pour les étudiants de Licence (L1 à L3) dans plusieurs villes. Elle couvre la déclaration des TD de fac, la planification des cours, les photos pour l'appel mobile, le trombinoscope, le coaching et les comptes rendus pédagogiques."
+description: "La plateforme qui organise le soutien en droit de Jurisperform pour les étudiants de Licence (L1 à L3), dans plusieurs villes : déclaration des TD de fac, planification des cours sans conflit d'horaires, photos pour l'appel, trombinoscope, coaching et comptes rendus pédagogiques envoyés après chaque séance."
 image: "../images/jurisperform-licence/thumbnail.png"
 services: [web]
 ---
 
-Jurisperform Licence est la plateforme qui gère le soutien en droit de Jurisperform pour les étudiants de L1, L2 et L3, dans plusieurs villes. Elle réunit trois briques :
+## Contexte
 
-- une **API Django** ;
-- un **portail React** avec quatre espaces : étudiant, professeur, coach et administrateur ;
-- une **synchronisation Google Sheets / Google Calendar** pour chaque ville.
+Jurisperform propose des cours de soutien en droit aux étudiants de Licence (L1, L2 et L3), en complément de la fac, dans plusieurs villes (Aix, Montpellier, Toulouse…).
 
-Les étudiants déclarent leurs TD de fac, et Jurisperform planifie ses cours autour sans conflit d'horaires. Les professeurs font l'appel sur mobile à partir des photos des étudiants, et chaque séance déclenche un compte rendu pédagogique.
+Chaque ville a son propre Google Sheet : étudiants, groupes, matières, cours magistraux, équipe pédagogique.
 
----
+## Le besoin
 
-### 🔧 Contexte
-
-Jurisperform propose des cours de soutien en droit aux étudiants de Licence, en complément de la fac, dans plusieurs villes (Aix, Montpellier, Toulouse…). Chaque ville a son propre Google Sheet : étudiants, groupes, matières, cours magistraux, équipe pédagogique. Cette organisation faisait peser trois difficultés :
+Cette organisation faisait peser trois difficultés :
 
 - **Planifier** : il faut connaître l'emploi du temps de fac de chaque étudiant pour caler les séances Jurisperform sans chevauchement.
 - **Faire l'appel** : les professeurs doivent reconnaître des dizaines d'étudiants par groupe.
 - **Assurer le suivi** : les étudiants et l'équipe ont besoin d'un historique partagé des présences, des évaluations et du coaching.
 
-J'ai conçu et développé seul l'ensemble du système, de l'API au déploiement. Le projet a démarré en août 2024 et il est toujours en production.
+## La solution
 
----
+J'ai conçu et développé seul l'ensemble du système, de bout en bout jusqu'au déploiement. Il réunit trois briques :
 
-### 🎯 Le besoin métier
+- **un portail web** avec quatre espaces : étudiant, professeur, coach et administrateur ;
+- **un serveur central** qui gère les données, les automatisations et l'appel sur mobile ;
+- **une synchronisation avec le Google Sheet et le Google Calendar** de chaque ville.
+
+Les étudiants déclarent leurs TD de fac, et Jurisperform planifie ses cours autour, sans conflit d'horaires. Les professeurs font l'appel sur mobile à partir des photos des étudiants, et chaque séance déclenche un compte rendu pédagogique.
+
+Concrètement, au fil du semestre :
 
 1. **L'étudiant déclare ses TD de fac** chaque semestre : jour, heure de début et de fin, ou « je ne participe pas ».
 2. **Jurisperform planifie ses séances** à partir de ces déclarations, qui alimentent les Google Sheets et Google Calendar de chaque ville.
@@ -39,9 +41,7 @@ J'ai conçu et développé seul l'ensemble du système, de l'API au déploiement
 6. **Le coach rédige des comptes rendus de coaching**, que l'étudiant retrouve dans son espace.
 7. **L'administration pilote chaque ville** : statistiques, déclarations manquantes, validation des photos, sessions, notes.
 
----
-
-### ⚙️ Fonctionnalités clés
+## Fonctionnalités
 
 **Espace étudiant**
 
@@ -51,13 +51,19 @@ J'ai conçu et développé seul l'ensemble du système, de l'API au déploiement
 - **Mes notes** : l'étudiant déclare ses notes de fac (partiels, contrôles, devoirs corrigés par Jurisperform), qui sont ensuite sauvegardées dans Google Sheets.
 - **Mon coaching** : l'étudiant retrouve l'historique des comptes rendus rédigés par son coach.
 
+![Espace étudiant — déclaration des TD](../images/jurisperform-licence/capture-1.png)
+
 **Espace professeur**
 
 - **Trombinoscope par ville**, avec filtres par groupe et par matière, tri, zoom et repérage des étudiants sans photo.
 
+![Trombinoscope professeur](../images/jurisperform-licence/trombi.png)
+
 **Espace coach**
 
 - **Suivi des étudiants** : le coach consulte la fiche d'un étudiant (séances, notes, historique) et rédige un compte rendu à côté. Une fois envoyé, le compte rendu n'est plus modifiable et il est partagé avec l'étudiant et l'équipe.
+
+![Suivi de coaching d’un étudiant](../images/jurisperform-licence/coaching.png)
 
 **Espace administrateur**
 
@@ -71,12 +77,24 @@ J'ai conçu et développé seul l'ensemble du système, de l'API au déploiement
 - **Récapitulatif quotidien** envoyé aux administrateurs.
 - **Récapitulatif hebdomadaire**.
 - **Alertes « cours non assurés »**.
-- **Validation nocturne des photos**.
-- **Remise à zéro annuelle**, avec audit.
+- **Validation nocturne des photos** : l'étudiant est prévenu par e-mail si sa photo est refusée, et les administrateurs reçoivent la liste des photos sans visage détecté.
+- **Remise à zéro annuelle**, avec audit : on repart de zéro chaque année sans perdre la configuration.
 
----
+## Résultats
 
-### 🏗️ Architecture
+- **Une plateforme unique** pour quatre profils (étudiants, professeurs, coachs, administrateurs), dans plusieurs villes. Le projet a démarré en août 2024 et il est toujours en production.
+- **Des déclarations de TD qui alimentent directement Google Sheets et Google Calendar**, sans ressaisie.
+- **Le suivi pédagogique est envoyé automatiquement** après chaque séance (présence, participation, commentaire), y compris aux étudiants absents.
+- **Les tâches répétitives sont automatisées** : création des séances de la semaine, clôture des séances, récapitulatifs, alertes, sauvegardes des notes et de la base.
+
+## Côté technique
+
+- **Front** : React 18, TypeScript, Vite, Tailwind CSS, Radix UI / shadcn, Zustand, React Query, Recharts, Framer Motion
+- **Back** : Python, Django 5, Django REST Framework, SimpleJWT, architecture hexagonale, pytest, mypy, pylint, face_recognition (dlib), Pillow
+- **Données** : PostgreSQL 16, API Google Sheets / Drive / Calendar, Google Apps Script (clasp)
+- **Infra** : VPS, Docker Compose, Gunicorn, Nginx, Let's Encrypt, cron, sauvegardes `pg_dump` vers Google Drive, GitHub Actions
+
+### Architecture
 
 **API Django / DRF en architecture hexagonale (ports et adapters)**
 
@@ -107,9 +125,14 @@ J'ai conçu et développé seul l'ensemble du système, de l'API au déploiement
 
 - Déclaration de TD dans le portail → API → webhook Apps Script → Sheet et Calendar de la ville → planification des séances → appel sur mobile → e-mail de suivi pédagogique.
 
----
+**Qualité du code**
 
-### ⚠️ Défis techniques
+- 827 tests automatisés ;
+- 80 % de couverture minimum exigée ;
+- 47 commandes d'administration documentées ;
+- CI/CD sur le portail (lint, build, déploiement lors d'un tag de version).
+
+### Défis techniques
 
 #### 1. Synchroniser Django, Google Sheets et Google Calendar
 
@@ -148,34 +171,3 @@ Chaque année, il faut repartir de zéro sans perdre la configuration.
 
 - La migration se fait domaine par domaine, en suivant des règles vérifiées automatiquement (`make check`).
 - Les tests reposent sur des *fakes* en mémoire plutôt que sur des mocks, avec le découpage Given/When/Then.
-
----
-
-### 📈 Résultats
-
-- **Une plateforme unique** pour quatre profils (étudiants, professeurs, coachs, administrateurs), en production depuis 2024 dans plusieurs villes.
-- **Des déclarations de TD qui alimentent directement Google Sheets et Google Calendar**, sans ressaisie.
-- **Le suivi pédagogique est envoyé automatiquement** après chaque séance (présence, participation, commentaire), y compris aux étudiants absents.
-- **Les tâches répétitives sont automatisées** : création des séances de la semaine, clôture des séances, récapitulatifs, alertes, sauvegardes des notes et de la base.
-- **Qualité du code** :
-  - 827 tests automatisés ;
-  - 80 % de couverture minimum exigée ;
-  - 47 commandes d'administration documentées ;
-  - CI/CD sur le portail (lint, build, déploiement lors d'un tag de version).
-
----
-
-### 📷 Visuels
-
-![Espace étudiant — déclaration des TD](../images/jurisperform-licence/capture-1.png)
-![Trombinoscope professeur](../images/jurisperform-licence/trombi.png)
-![Suivi de coaching d’un étudiant](../images/jurisperform-licence/coaching.png)
-
----
-
-### 🧰 Stack technique
-
-- **Front** : React 18, TypeScript, Vite, Tailwind CSS, Radix UI / shadcn, Zustand, React Query, Recharts, Framer Motion
-- **Back** : Python, Django 5, Django REST Framework, SimpleJWT, architecture hexagonale, pytest, mypy, pylint, face_recognition (dlib), Pillow
-- **Données** : PostgreSQL 16, API Google Sheets / Drive / Calendar, Google Apps Script (clasp)
-- **Infra** : VPS, Docker Compose, Gunicorn, Nginx, Let's Encrypt, cron, sauvegardes `pg_dump` vers Google Drive, GitHub Actions

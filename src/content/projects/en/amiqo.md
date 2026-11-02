@@ -2,124 +2,114 @@
 title: "amiqo — The all-in-one app for childcare retail stores"
 date: 2026-07-30
 tags: ['Flutter', 'Dart', 'PostgreSQL', 'SQLite', 'Android', 'Childcare retail', 'Zebra', 'TC22', 'TC27', 'Sunmi L3', 'DataWedge', 'Offline-First', 'Baby registries', 'Goods receiving', 'Price checks', 'Inventory', 'BBSoft']
-description: 'Flutter app for Zebra (TC22/TC27) and Sunmi L3 handheld terminals. Baby registries, goods receiving, price checks, and inventory in childcare retail stores. Direct integration with BBSoft through PostgreSQL (reverse engineering).'
+description: "One app, on the store's handheld terminals, for everything a childcare retail store does day to day: parents build their baby registry by scanning products, friends and family buy from it without duplicates, and staff use it for goods receiving, price checks, and inventory."
 image: '../images/amiqo/thumbnail.png'
 services: [mobile]
 featured: 2
 ---
 
+## Context
+
 amiqo is a mobile app for childcare retail stores (shops selling baby gear and nursery products).
-Parents use it to build their baby registry right in the store by scanning products with a handheld terminal, and friends can then come in and buy gifts without any risk of duplicates.
-On the store side, the same app also serves staff for goods receiving, shelf price checks, and inventory.
 
----
+Parents use it to build their baby registry right in the store, by scanning products with a handheld terminal, and their friends can then come in and buy gifts without any risk of duplicates. Store staff use the same app for goods receiving, shelf price checks, and inventory.
 
-### 👶 The business need
+The store manages its products, registries, and stock in its management software, BBSoft.
 
-In a childcare retail store, parents:
-1. Walk around with a handheld terminal (Zebra TC22/TC27 or Sunmi L3).
-2. Scan the products they're interested in (1 item per scan).
-3. Confirm their registry → it is sent straight to the BBSoft database.
+## The need
 
-Friends:
-- Come to the store with the registry reference (e.g., "Jeanne Martin's registry").
-- Scan or search for items on the registry to buy them.
-- No duplicates: a purchased gift is marked as "reserved" in real time.
+Two problems stood in the way:
 
-The initial problem:
-- The old app was incompatible with the TC22/TC27 (recent Android) and the Sunmi L3.
-- No BBSoft API → no clean way to sync the data.
+- **The old app didn't work on the store's new terminals** (Zebra TC22/TC27 and Sunmi L3).
+- **BBSoft offers no way in for other software**: there was no clean way to sync the data.
 
-Store staff use the same terminal for two other equally critical workflows:
-- Goods receiving: scanning delivered parcels/items to update BBSoft stock without manual re-entry.
-- Price checks and inventory: scanning on the shelf to verify displayed prices or run a physical stock count, including offline.
+So the store needed an app that would let:
 
----
+1. **parents** walk around the store with a terminal, scan the products they're interested in (one item per scan), and confirm their registry, which goes straight into BBSoft;
+2. **friends** come in with the registry reference (e.g., "Jeanne Martin's registry"), find the items, and buy them without duplicates;
+3. **staff** receive goods without re-entering anything, check the prices on display, and count stock on the shelves, even without a network.
 
-### 📦 Key features
+## The solution
 
-| Actor  | Action | Technology | Details |
-|-------------|------------|-----------------|------------|
-| Parent | Scan a product | Zebra DataWedge / Sunmi API | 1 scan = 1 item added to the registry. |
-| Parent | Confirm the registry | PostgreSQL (BBSoft) | Sent directly after each scan. |
-| Store | View registries | Flutter + SQLite (local cache) | ~100 items per registry. |
-| Friends | Buy a gift from the registry | Zebra/Sunmi terminal | Real-time status update. |
-| Store | Receive goods | Zebra DataWedge / Sunmi API | Scan delivered parcels, update BBSoft stock. |
-| Store | Check a price | Flutter + PostgreSQL (BBSoft) | Scan an item on the shelf, read the current price. |
-| Store | Run an inventory | Offline mode + auto sync | Works even without a network. |
+I built amiqo: a single app for all of these uses, running on both families of terminals. At startup, it recognizes the terminal on its own and reads barcodes the same way on both.
 
----
+Since BBSoft offers no way in, amiqo reads and writes its data directly, over an encrypted connection. Every scan goes into BBSoft right away: stock and registries stay up to date with no re-entry.
 
-### ⚠️ Technical challenges
+When there's no network, for example in a warehouse without Wi-Fi, the app keeps everything on the terminal. If a sync fails, it picks up where it left off, from the last scanned item.
 
-#### 1. Integrating with BBSoft (without an API)
-- Problem: BBSoft exposes no API to read or write data.
-- Solution:
-  - Reverse engineering of the PostgreSQL schema (`produits`, `listes`, `stocks` tables).
-  - Direct connection from Dart using the `postgres` driver.
-  - Risks addressed:
-    - Schema changes → regression tests.
-    - Security → encrypted connection (SSL/TLS) + secured credentials.
+## Features
 
-#### 2. Multi-device compatibility
-- Target hardware:
-  - Zebra TC22/TC27 → DataWedge (configured through Android intents).
-  - Sunmi L3 → Sunmi's native API (through their SDK).
-- Solution:
-  - Automatic manufacturer detection at startup.
-  - Scanner abstraction: a single interface for both types of terminals.
+**For parents**
 
-#### 3. Managing baby registries
-- Constraints:
-  - ~100 items per registry.
-  - No duplicates: an item can only be added once per registry.
-  - Real-time status: "Available" / "Reserved" / "Purchased".
-- Solution:
-  - Local SQLite cache for active registries.
-  - Immediate sync with PostgreSQL after each scan.
+- **Scan a product**: one scan, one item added to the registry. An item can only appear once on a registry.
+- **Confirm the registry**: the registry is sent straight to BBSoft.
 
-#### 4. Offline mode
-- Problem: stores run inventories offline (e.g., in a warehouse without Wi-Fi).
-- Solution:
-  - Local SQLite storage (all registries + stock).
-  - Checkpoint recovery: if a sync fails, it resumes from the last scanned item.
+**For friends**
 
----
+- **Buy a gift from the registry**: items can be scanned or searched for.
+- **Real-time status**: each item is "Available," "Reserved," or "Purchased." A purchased gift is marked "reserved" immediately, which prevents duplicates.
 
-### 📈 Results
-- For parents:
-  - A registry created in < 5 min (vs. 20 min with the old solution).
-  - Zero errors: no more risk of forgetting an item.
-- For stores:
-  - 100% compatible with the TC22/TC27 and Sunmi L3.
-  - Time saved: sales staff spend 40% less time managing registries manually.
-- For store staff (receiving, price checks, inventory):
-  - One terminal, one app for all day-to-day operations, with no manual re-entry into BBSoft.
-- For friends:
-  - A smooth experience: no duplicates to deal with.
+**For the store**
 
----
+- **View registries**: around 100 items per registry.
+- **Goods receiving**: scan delivered parcels and items, and BBSoft stock is updated with no manual re-entry.
+- **Price checks**: scan an item on the shelf to read the current price and verify the displayed price.
+- **Inventory**: physical stock counts, even without a network, synced automatically afterwards.
 
-### 📷 Visuals
-> *Photo 1: A Zebra TC27 terminal with amiqo open on the product scan screen (e.g., a stroller).*
-> *Photo 2: A Sunmi L3 terminal showing a confirmed baby registry.*
-> *Caption: "amiqo in action — scanning products for a baby registry in a childcare retail store."*
+## Results
 
----
+- **For parents**: a registry created in under 5 minutes, versus 20 minutes with the old solution. Zero errors: no more risk of forgetting an item.
+- **For stores**: an app that is 100% compatible with the TC22/TC27 and the Sunmi L3, and sales staff who spend 40% less time managing registries by hand.
+- **For store staff** (receiving, price checks, inventory): one terminal, one app for all day-to-day operations, with no manual re-entry into BBSoft.
+- **For friends**: a smooth experience, with no duplicates to deal with.
 
-### 🏗️ Architecture
+## Under the hood
+
+Flutter (Dart) app for Android, on Zebra TC22/TC27 (recent Android) and Sunmi L3 terminals.
+
+| Action | Technology | Details |
+|--------|------------|---------|
+| Scan a product | Zebra DataWedge / Sunmi API | 1 scan = 1 item added to the registry. |
+| Confirm the registry | PostgreSQL (BBSoft) | Sent directly after each scan. |
+| View registries | Flutter + SQLite (local cache) | ~100 items per registry. |
+| Buy a gift | Zebra/Sunmi terminal | Real-time status update. |
+| Receive goods | Zebra DataWedge / Sunmi API | BBSoft stock update. |
+| Check a price | Flutter + PostgreSQL (BBSoft) | Reads the current price. |
+| Run an inventory | Offline mode + auto sync | Works without a network. |
+
+### Integrating with BBSoft (without an API)
+
+- BBSoft exposes no API to read or write data.
+- Reverse engineering of the PostgreSQL schema (`produits`, `listes`, `stocks` tables).
+- Direct connection from Dart using the `postgres` driver.
+- Risks addressed: schema changes → regression tests; security → encrypted connection (SSL/TLS) and secured credentials.
+
+### Multi-device compatibility
+
+- Zebra TC22/TC27 → DataWedge (configured through Android intents).
+- Sunmi L3 → Sunmi's native API (through their SDK).
+- Automatic manufacturer detection at startup, and a scanner abstraction: a single interface for both types of terminals.
+
+### Baby registries and offline mode
+
+- Local SQLite cache for active registries, immediate sync with PostgreSQL after each scan.
+- "Available" / "Reserved" / "Purchased" statuses, each item added only once per registry.
+- Local SQLite storage (all registries and stock) for offline inventories.
+- Checkpoint recovery: if a sync fails, it resumes from the last scanned item.
+
+### Architecture
+
 - Clean Architecture:
-  - `domain`: use cases (e.g., `CreateBirthList`, `ScanProduct`).
-  - `infrastructure`: PostgreSQL connection, SQLite cache, scanner abstraction.
+  - `domain`: use cases (e.g., `CreateBirthList`, `ScanProduct`);
+  - `infrastructure`: PostgreSQL connection, SQLite cache, scanner abstraction;
   - `presentation`: Flutter UI designed for narrow screens (~320 dp).
 - State management: Provider + GetIt (dependency injection).
 - Error handling: `Either<Failure, T>` for explicit logic (e.g., a `Failure` when a product isn't found).
 
----
+### Code samples
 
-### 💻 Code samples
+Scanner abstraction:
 
-// Example: scanner abstraction
 ```dart
 abstract class Scanner {
   Stream<String> scanBarcode();
@@ -134,7 +124,8 @@ class SunmiScanner implements Scanner {
 }
 ```
 
-// Example: PostgreSQL connection
+PostgreSQL connection:
+
 ```dart
 final connection = PostgreSQLConnection(
   'host', 5432, 'database',
