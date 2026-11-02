@@ -1,0 +1,44 @@
+---
+import ContactForm from '../contact/ContactForm.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { CONTACT_EMAIL } from '../../data/site';
+import { t } from '../../i18n/ui';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+// Le dock de Marvin n'expose aucun moyen d'être ouvert de l'extérieur : on
+// l'indique en texte, sans bouton.
+---
+
+<section id="contact" class="home-section surface-dark py-20 md:py-28">
+  <div class="container-wide">
+    <div class="max-w-3xl">
+      <SectionHeading kicker={d['contact.kicker']} title={d['home.contactTitle']} intro={d['contact.intro']} />
+    </div>
+    <div class="mt-12 grid gap-10 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] md:gap-16 items-start">
+      <ContactForm lang={lang} idPrefix="home" />
+      <div class="contact-side">
+        <p class="kicker">{d['contact.direct']}</p>
+        <a href={`mailto:${CONTACT_EMAIL}`} class="font-mono text-base underline underline-offset-4 break-all" style="color: var(--ink);">
+          {CONTACT_EMAIL}
+        </a>
+        <p class="contact-side__marvin">{d['home.contactMarvin']}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-side__marvin {
+    margin: 2rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+</style>

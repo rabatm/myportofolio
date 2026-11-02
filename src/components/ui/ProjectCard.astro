@@ -27,7 +27,7 @@ const libelles = p.services
   class:list={['project-card', variant === 'compact' && 'project-card--compact']}
   data-services={p.services.join(' ')}
 >
-  <ProjectThumb image={p.image} title={p.title} />
+  <ProjectThumb image={p.image} title={p.title} alt="" />
   {isFallback && <OnlyInBadge lang={lang} />}
   <h3 class="project-card__title" lang={contentLang}>{p.title}</h3>
   <p class="project-card__desc" lang={contentLang}>{p.description}</p>

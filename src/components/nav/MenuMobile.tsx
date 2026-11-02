@@ -177,7 +177,7 @@ export default function MenuMobile({ lang = 'fr', altHref = '/en/' }: MenuMobile
               {d['nav.otherLangName']}
             </a>
 
-            <a href={buildPath('contact', lang)} className="menu-contact btn-retro" onClick={fermer}>
+            <a href={buildPath('contact', lang)} className="menu-contact btn-primary" onClick={fermer}>
               {d['nav.cta']}
             </a>
           </div>,

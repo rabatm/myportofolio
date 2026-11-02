@@ -1,0 +1,113 @@
+---
+import { Picture } from 'astro:assets';
+import martin from '../../assets/martin.png';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { t } from '../../i18n/ui';
+import { buildPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+// Faits tirés de parcours.ts et de la spec : indépendant depuis 2021, ~15 ans
+// de systèmes critiques avant, Perpignan, relation directe. Rien d'autre.
+const lignes = [d['home.human1'], d['home.human2'], d['home.human3'], d['home.human4']];
+---
+
+<section id="humain" class="home-section py-20 md:py-28">
+  <div class="container-wide human-grid">
+    <div class="human-photo">
+      <Picture
+        src={martin}
+        alt="Martin Rabat"
+        widths={[240, 360, 480, 720]}
+        sizes="(min-width: 768px) 320px, 240px"
+        formats={['avif']}
+        fallbackFormat="webp"
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-cover"
+        style="object-position: center 15%;"
+      />
+    </div>
+    <div>
+      <SectionHeading kicker={d['home.humanKicker']} title={d['home.humanTitle']} />
+      <ul class="human-lines">
+        {lignes.map((l) => <li>{l}</li>)}
+      </ul>
+      <p class="mt-6">
+        <a href={buildPath('about', lang)} class="btn-ghost">{d['home.humanAbout']}</a>
+      </p>
+      <p class="human-cleo">
+        {d['home.humanCleo']}
+        {' '}
+        <a href={buildPath('projects', lang, undefined, '#atelier')}>{d['home.humanCleoLink']}</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .human-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .human-grid {
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 4rem;
+    }
+  }
+  .human-photo {
+    width: 240px;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-muted);
+  }
+  @media (min-width: 768px) {
+    .human-photo {
+      width: 320px;
+    }
+  }
+  .human-lines {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .human-lines li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .human-lines li::before {
+    content: '>';
+    content: '>' / '';
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    color: var(--accent-hover);
+  }
+  .human-cleo {
+    margin: 2rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--border);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+  .human-cleo a {
+    color: var(--accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

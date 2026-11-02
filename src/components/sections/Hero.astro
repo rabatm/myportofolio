@@ -1,6 +1,5 @@
 ---
-import { Picture } from 'astro:assets';
-import martin from '../../assets/martin.png';
+import MarvinTerminal from '../ui/MarvinTerminal.astro';
 import { t } from '../../i18n/ui';
 import { buildPath } from '../../i18n/utils';
 import type { Lang } from '../../i18n/utils';
@@ -11,38 +10,49 @@ export interface Props {
 
 const { lang } = Astro.props;
 const d = t(lang);
+
+// Échange écrit d'avance : le terminal ne fait aucun appel au modèle.
+const lignes = [
+  { who: 'user' as const, text: d['home.heroTerminalUser'] },
+  { who: 'marvin' as const, text: d['home.heroTerminalMarvin'] },
+];
 ---
 
-<section
-  class="relative min-h-screen flex flex-col items-center justify-center text-center px-4"
->
-  <p class="text-sm mb-4" style="color: var(--ink-faint);">✦ . * . ☉ . * . ✦</p>
-  <div class="w-28 h-28 mb-6 retro-border rounded-full overflow-hidden">
-    <Picture src={martin} alt="Martin Rabat" widths={[128, 256]} sizes="128px" formats={['avif']} fallbackFormat="webp" loading="eager" fetchpriority="high" class="w-full h-full object-cover" style="object-position: center 15%;" />
-  </div>
-  <span
-    class="inline-block text-xs font-bold uppercase mb-6 px-4 py-2 rounded-full"
-    style="letter-spacing: 0.06em; background: var(--accent-soft); color: var(--accent-hover);"
-  >
-    {d['hero.badge']}
-  </span>
-  <h1 class="text-5xl md:text-7xl font-bold mb-4" style="color: var(--ink);">
-    Martin Rabat
-  </h1>
-    <div class="font-mono">
-    <p class="text-lg md:text-xl mb-1" style="color: var(--accent);">
-        &gt; {d['hero.tagline']}
-    </p>
-    <p class="text-md pl-4" style="color: var(--ink-soft);">
-        {d['hero.sub']}
-    </p>
+<section id="hero" class="home-section pt-32 pb-16 md:pt-40 md:pb-24">
+  <div class="container-wide hero-grid">
+    <div>
+      <p class="kicker">{d['home.heroKicker']}</p>
+      <h1 class="heading-1 hero-title">{d['home.heroTitle']}</h1>
+      <p class="heading-intro">{d['home.heroSub']}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#contact" class="btn-primary">{d['home.heroCta']}</a>
+        <a href={buildPath('projects', lang)} class="btn-ghost">{d['home.heroCta2']}</a>
+      </div>
+      <p class="hero-where">{d['home.heroWhere']}</p>
     </div>
-  <p class="text-md mb-8 font-mono" style="color: var(--ink-soft);">
-    &gt; {d['hero.location']}
-  </p>
-  <div class="flex gap-4">
-    <a href={buildPath('projects', lang)} class="btn-retro">{d['hero.ctaProjects']}</a>
-    <a href={buildPath('contact', lang)} class="btn-retro">{d['hero.ctaContact']}</a>
+    <MarvinTerminal lines={lignes} label={d['home.heroTerminalLabel']} />
   </div>
-  <p class="mt-16 text-sm" style="color: var(--ink-faint);">─── ✦ ─── ✦ ─── ✦ ───</p>
 </section>
+
+<style>
+  .hero-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 3.5rem;
+    }
+  }
+  .hero-title {
+    margin-top: 0.25rem;
+  }
+  .hero-where {
+    margin: 1.5rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+</style>

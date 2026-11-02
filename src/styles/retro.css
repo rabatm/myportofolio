@@ -757,6 +757,7 @@
 
 @layer components {
   .container-wide {
+    box-sizing: border-box;
     width: 100%;
     max-width: 72rem;
     margin-inline: auto;
@@ -1031,8 +1032,22 @@
   }
 }
 
+/* Sections de l'accueil : une ancre (#contact…) ne finit pas sous la barre fixe. */
+.home-section {
+  scroll-margin-top: var(--nav-h);
+}
+
+/* Bouton d'appel de la barre de navigation, plus compact que la taille standard. */
+.nav-cta {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
 /* Aucune animation ni transition ajoutée ci-dessus quand le visiteur les refuse. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .btn-primary,
   .btn-ghost,
   .project-card {

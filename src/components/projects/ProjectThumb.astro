@@ -6,9 +6,11 @@ import { shortName } from '../../utils/projectImage';
 export interface Props {
   image?: ImageMetadata;
   title: string;
+  /** Texte alternatif ; vide quand le titre est déjà affiché à côté (carte). Par défaut : le titre. */
+  alt?: string;
 }
 
-const { image, title } = Astro.props;
+const { image, title, alt = title } = Astro.props;
 
 // La carte fait au plus ~480 px de large (grille 2 colonnes), plein écran sur
 // mobile. On n'agrandit jamais au-delà de l'original.
@@ -23,7 +25,7 @@ const largeurs = image ? LARGEURS.filter((w) => w < image.width).concat(image.wi
   {image ? (
     <Picture
       src={image}
-      alt={title}
+      alt={alt}
       widths={largeurs}
       sizes="(min-width: 768px) 480px, 100vw"
       formats={['avif']}

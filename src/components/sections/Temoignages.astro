@@ -1,4 +1,5 @@
 ---
+import SectionHeading from '../ui/SectionHeading.astro';
 import { temoignages } from '../../data/temoignages';
 import { t } from '../../i18n/ui';
 import type { Lang } from '../../i18n/utils';
@@ -11,44 +12,49 @@ const { lang } = Astro.props;
 const d = t(lang);
 ---
 
-<section id="temoignages" class="px-4 py-20 max-w-3xl mx-auto">
-  <div class="carousel" data-current="0">
-    <div class="carousel-header">
-      <h2 class="section-title">{d['testimonials.title']}</h2>
-      <div class="carousel-nav">
-        <button class="carousel-btn prev" aria-label={d['testimonials.prev']}>◀</button>
-        <button class="carousel-btn next" aria-label={d['testimonials.next']}>▶</button>
-      </div>
-    </div>
-    <div class="carousel-track">
-      {temoignages[lang].map((item, i) => (
-        <div class="carousel-slide" data-index={i}>
-          <div class="quote-box">
-            <div class="quote-collapse" data-expanded="false">
-              <p class="quote-text">"{item.quote}"</p>
-              <div class="quote-fade"></div>
-            </div>
-            <button class="quote-toggle" aria-label={d['testimonials.moreAria']} data-more={d['testimonials.more']} data-less={d['testimonials.less']}>{d['testimonials.more']}</button>
-          </div>
-          <p class="quote-author">— {item.name}</p>
-          <p class="quote-title">{item.title}</p>
-          <p class="quote-company">{item.company}</p>
+<section id="temoignages" class="home-section py-20 md:py-28" style="background: var(--surface-muted);">
+  <div class="container-wide">
+    <div class="carousel" data-current="0">
+      <div class="carousel-header">
+        <SectionHeading kicker={d['testimonials.title']} title={d['home.testimonialsTitle']} />
+        <div class="carousel-nav">
+          <button type="button" class="carousel-btn prev" aria-label={d['testimonials.prev']}><span aria-hidden="true">←</span></button>
+          <button type="button" class="carousel-btn next" aria-label={d['testimonials.next']}><span aria-hidden="true">→</span></button>
         </div>
-      ))}
-    </div>
+      </div>
+      <div class="carousel-track">
+        {temoignages[lang].map((item, i) => (
+          <figure class="carousel-slide" data-index={i}>
+            <div class="quote-box">
+              <blockquote class="quote-collapse" data-expanded="false">
+                <p class="quote-text">« {item.quote} »</p>
+                <div class="quote-fade"></div>
+              </blockquote>
+              <button type="button" class="quote-toggle" aria-label={d['testimonials.moreAria']} data-more={d['testimonials.more']} data-less={d['testimonials.less']}>{d['testimonials.more']}</button>
+            </div>
+            <figcaption>
+              <p class="quote-author">{item.name}</p>
+              <p class="quote-title">{item.title} · {item.company}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
 
-    <div class="carousel-dots">
-      {temoignages[lang].map((_, i) => (
-        <span class="carousel-dot" data-index={i}></span>
-      ))}
+      <div class="carousel-dots" aria-hidden="true">
+        {temoignages[lang].map((_, i) => (
+          <span class="carousel-dot" data-index={i}></span>
+        ))}
+      </div>
+      {d['testimonials.translated'] && (
+        <p class="quote-translated">{d['testimonials.translated']}</p>
+      )}
     </div>
-    {d['testimonials.translated'] && (
-      <p class="quote-translated">{d['testimonials.translated']}</p>
-    )}
   </div>
 </section>
 
 <script>
+  // Partagé avec le dépliage des citations, qui met la rotation en pause.
+  let interval: ReturnType<typeof setInterval> | undefined;
   const carousel = document.querySelector('.carousel') as HTMLElement | null;
   if (carousel) {
     const track = carousel.querySelector('.carousel-track') as HTMLElement;
@@ -57,7 +63,6 @@ const d = t(lang);
     const prev = carousel.querySelector('.prev') as HTMLElement;
     const next = carousel.querySelector('.next') as HTMLElement;
     let current = 0;
-    let interval: ReturnType<typeof setInterval>;
 
     function goTo(index: number) {
       current = index;
@@ -74,15 +79,18 @@ const d = t(lang);
     dots.forEach(d => d.addEventListener('click', () => { goTo(Number((d as HTMLElement).dataset.index)); resetAuto(); }));
 
     carousel.addEventListener('mouseenter', () => clearInterval(interval));
-    carousel.addEventListener('mouseleave', () => { interval = setInterval(nextSlide, 8000); });
+    carousel.addEventListener('mouseleave', resetAuto);
+
+    // Pas de défilement automatique quand le visiteur refuse les animations.
+    const sansAnimation = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function resetAuto() {
       clearInterval(interval);
-      interval = setInterval(nextSlide, 8000);
+      if (!sansAnimation) interval = setInterval(nextSlide, 8000);
     }
 
     goTo(0);
-    interval = setInterval(nextSlide, 8000);
+    resetAuto();
   }
 
   // Quote collapse toggle — pause auto-rotation
@@ -106,15 +114,14 @@ const d = t(lang);
   }
   .carousel-header {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  .carousel-header .section-title {
-    margin: 0;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
   }
   .carousel-nav {
     display: flex;
+    flex-shrink: 0;
     gap: 0.5rem;
   }
   .carousel-track {
@@ -124,43 +131,31 @@ const d = t(lang);
   .carousel-slide {
     min-width: 100%;
     box-sizing: border-box;
-    text-align: center;
-    padding: 1rem 0;
+    margin: 0;
+    padding: 0 0.25rem;
   }
   .quote-box {
-    border: 2px solid var(--border);
-    border-radius: 20px;
-    padding: 1.5rem 1.5rem 0.75rem;
-    margin-bottom: 1rem;
+    max-width: 48rem;
+    margin: 0 0 1.25rem;
+    padding: 1.75rem 1.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     background: var(--card-bg);
-    position: relative;
   }
   .quote-collapse {
     position: relative;
-    max-height: 7em;
+    margin: 0;
+    max-height: 7.5em;
     overflow: hidden;
-    transition: max-height 0.3s ease;
   }
   .quote-collapse[data-expanded="true"] {
     max-height: none;
   }
-  .quote-toggle {
-    background: none;
-    border: none;
-    color: var(--accent-hover);
-    font-family: monospace;
-    font-size: 0.8rem;
-    cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    margin-top: 0.25rem;
-    padding: 0;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-    display: block;
-  }
-  .quote-toggle:hover {
-    opacity: 1;
+  .quote-text {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--ink);
   }
   .quote-fade {
     position: absolute;
@@ -174,88 +169,86 @@ const d = t(lang);
   .quote-collapse[data-expanded="true"] .quote-fade {
     display: none;
   }
-  .quote-box::before {
-    content: '╔══ ';
-    color: var(--accent);
-    position: absolute;
-    top: 0.3rem;
-    left: 0.5rem;
-    font-family: monospace;
-    font-size: 0.75rem;
-  }
-  .quote-box::after {
-    content: ' ══╗';
-    color: var(--accent);
-    position: absolute;
-    bottom: 0.3rem;
-    right: 0.5rem;
-    font-family: monospace;
-    font-size: 0.75rem;
-  }
-  .quote-text {
-    font-style: italic;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    margin: 0;
-    font-size: 1rem;
+  .quote-toggle {
+    display: inline-block;
+    min-height: 44px;
+    margin-top: 0.25rem;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--accent-hover);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
   }
   .quote-author {
-    color: var(--accent-hover);
-    font-family: monospace;
-    font-size: 0.9rem;
-    margin: 0 0 0.1rem;
+    margin: 0 0 0.15rem;
+    font-weight: 700;
+    color: var(--ink);
   }
   .quote-title {
-    color: var(--ink-soft);
-    font-family: monospace;
-    font-size: 0.8rem;
-    margin: 0 0 0.1rem;
-  }
-  .quote-company {
-    color: var(--ink-faint);
-    font-family: monospace;
-    font-size: 0.8rem;
     margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
   }
   .carousel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
     background: transparent;
-    border: 1px solid var(--border);
-    color: var(--accent-hover);
-    font-size: 1rem;
-    padding: 0.25rem 0.5rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    color: var(--ink);
+    font-size: 1.125rem;
     cursor: pointer;
-    transition: all 0.2s;
-    line-height: 1;
+    transition: background-color 0.15s ease, color 0.15s ease;
   }
   .carousel-btn:hover {
-    border-color: var(--accent);
-    box-shadow: 0 2px 8px oklch(62% 0.19 150 / 0.3);
+    background: var(--ink);
+    color: #fff;
+  }
+  .carousel-btn:focus-visible,
+  .quote-toggle:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 3px;
   }
   .carousel-dots {
     display: flex;
-    justify-content: center;
     gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  .quote-translated {
-    text-align: center;
-    font-family: monospace;
-    font-size: 0.75rem;
-    font-style: italic;
-    color: var(--ink-faint);
-    margin-top: 0.75rem;
+    margin-top: 1.25rem;
   }
   .carousel-dot {
     width: 8px;
     height: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
+    border-radius: 50%;
+    background: var(--border);
     cursor: pointer;
-    transition: all 0.2s;
   }
   .carousel-dot.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    box-shadow: 0 0 6px oklch(62% 0.19 150 / 0.5);
+    background: var(--ink);
+  }
+  .quote-translated {
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--ink-faint);
+  }
+  @media (max-width: 639px) {
+    .carousel-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-track,
+    .carousel-btn {
+      transition: none;
+    }
   }
 </style>

@@ -1,0 +1,49 @@
+---
+import ProjectCard from '../ui/ProjectCard.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import type { LocalizedProject } from '../../i18n/collections';
+import { featuredProjects } from '../../lib/projectSelect';
+import { t } from '../../i18n/ui';
+import { buildPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+  items: LocalizedProject[];
+}
+
+const { lang, items } = Astro.props;
+const d = t(lang);
+const une = featuredProjects(items);
+---
+
+<section id="realisations" class="home-section py-20 md:py-28" style="background: var(--surface-muted);">
+  <div class="container-wide">
+    <SectionHeading kicker={d['home.workKicker']} title={d['home.workTitle']} intro={d['home.workIntro']} />
+    <ul class="work-grid">
+      {une.map((item) => (
+        <li>
+          <ProjectCard item={item} lang={lang} />
+        </li>
+      ))}
+    </ul>
+    <p class="mt-8">
+      <a href={buildPath('projects', lang)} class="btn-ghost">{d['home.workAll']}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .work-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 768px) {
+    .work-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

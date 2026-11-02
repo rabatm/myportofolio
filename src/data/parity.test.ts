@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ui } from '../i18n/ui';
 import { LANGS } from '../i18n/utils';
 import { findForbidden } from '../lib/copyRules';
 import { companies } from './companies';
@@ -92,5 +93,10 @@ describe('parité FR/EN des données', () => {
       const tout = JSON.stringify([services[lang], methode[lang]]);
       expect(findForbidden(tout)).toEqual([]);
     }
+  });
+
+  it('chaînes d’interface : aucun texte interdit', () => {
+    expect(findForbidden(JSON.stringify(ui.fr))).toEqual([]);
+    expect(findForbidden(JSON.stringify(ui.en))).toEqual([]);
   });
 });
