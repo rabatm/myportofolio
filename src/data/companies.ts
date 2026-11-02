@@ -17,6 +17,7 @@ const base = [
   { name: 'Amopi', url: 'https://amopi.fr', logo: 'amopi.png', logoBg: 'white' },
   { name: 'JurisPerform', url: 'https://www.juris-perform.fr/', logo: 'jurisperform.png', logoBg: 'white' },
   { name: 'Surikwat', url: 'https://surikwat.com', logo: 'surikwat.png', logoBg: 'dark' },
+  { name: 'CKM66', url: 'https://ckm66.vercel.app', logo: 'ckm66.png', logoBg: 'dark' },
 ] as const;
 
 const textes: Record<Lang, { tagline: string; desc: string }[]> = {
@@ -33,6 +34,10 @@ const textes: Record<Lang, { tagline: string; desc: string }[]> = {
       tagline: 'Studio créatif web & print',
       desc: 'Studio créatif de communication (web et print) basé dans les Pyrénées-Orientales, spécialisé dans la création de sites internet sur mesure, le design graphique et la production de contenus audiovisuels.',
     },
+    {
+      tagline: 'Club de Krav Maga · Perpignan',
+      desc: 'Commando Krav Maga Perpignan (CKM66), club de Krav Maga installé au centre Les 5 Éléments, à Perpignan. Instructeur : Jérôme Luque, Level 4.',
+    },
   ],
   en: [
     {
@@ -46,6 +51,10 @@ const textes: Record<Lang, { tagline: string; desc: string }[]> = {
     {
       tagline: 'Creative web & print studio',
       desc: 'Creative communication studio (web and print) based in the Pyrénées-Orientales, France, specializing in custom websites, graphic design and audiovisual content production.',
+    },
+    {
+      tagline: 'Krav Maga club · Perpignan',
+      desc: 'Commando Krav Maga Perpignan (CKM66), a Krav Maga club based at the Les 5 Éléments centre in Perpignan, France. Instructor: Jérôme Luque, Level 4.',
     },
   ],
 };
