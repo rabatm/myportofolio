@@ -10,15 +10,14 @@ import type { Lang } from './utils';
 const fr = {
   'layout.defaultDescription':
     "Développeur concepteur d'applications web, mobile et DevOps. Architecture hexagonale, TDD, Django, React, Flutter. Basé à Perpignan, disponible en full remote.",
-  'layout.footer': '© 2026 Martin Info — Portfolio rétro 90s',
+  'layout.footer': '© 2026 Martin Info — Développement sur mesure · Perpignan',
   'layout.lightboxClose': 'Fermer',
 
-  'nav.home': 'Accueil',
-  'nav.projects': 'Projets',
-  'nav.parcours': 'Parcours',
-  'nav.partners': 'Partenaires',
+  'nav.services': 'Services',
+  'nav.projects': 'Réalisations',
+  'nav.about': 'À propos',
   'nav.blog': 'Blog',
-  'nav.contact': 'Contact',
+  'nav.cta': 'Parler de votre projet',
   'nav.switchAria': 'Lire cette page en anglais',
   'nav.otherLangName': 'English',
   'nav.menuOpen': 'Ouvrir le menu',
@@ -154,15 +153,14 @@ export const OPTIONAL_KEYS: readonly UiKey[] = ['testimonials.translated'];
 const en: Record<UiKey, string> = {
   'layout.defaultDescription':
     'Application developer for web, mobile and DevOps. Hexagonal architecture, TDD, Django, React, Flutter. Based in Perpignan, France, available for fully remote work.',
-  'layout.footer': '© 2026 Martin Info — 90s retro portfolio',
+  'layout.footer': '© 2026 Martin Info — Custom software · Perpignan, France',
   'layout.lightboxClose': 'Close',
 
-  'nav.home': 'Home',
-  'nav.projects': 'Projects',
-  'nav.parcours': 'Experience',
-  'nav.partners': 'Clients',
+  'nav.services': 'Services',
+  'nav.projects': 'Work',
+  'nav.about': 'About',
   'nav.blog': 'Blog',
-  'nav.contact': 'Contact',
+  'nav.cta': "Let's talk about your project",
   'nav.switchAria': 'Read this page in French',
   'nav.otherLangName': 'Français',
   'nav.menuOpen': 'Open menu',

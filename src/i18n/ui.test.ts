@@ -20,7 +20,7 @@ describe('dictionnaire UI', () => {
   });
 
   it('renvoie le dictionnaire de la langue demandée', () => {
-    expect(t('fr')['nav.projects']).toBe('Projets');
-    expect(t('en')['nav.projects']).toBe('Projects');
+    expect(t('fr')['nav.projects']).toBe('Réalisations');
+    expect(t('en')['nav.projects']).toBe('Work');
   });
 });

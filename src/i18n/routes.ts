@@ -1,6 +1,6 @@
 import type { Lang } from './utils';
 
-export type RouteId = 'home' | 'projects' | 'blog' | 'contact' | 'wargames';
+export type RouteId = 'home' | 'services' | 'projects' | 'about' | 'blog' | 'contact' | 'wargames';
 
 /**
  * Table des routes : une ligne par page, un chemin par langue.
@@ -9,7 +9,9 @@ export type RouteId = 'home' | 'projects' | 'blog' | 'contact' | 'wargames';
  */
 export const ROUTES: Record<RouteId, Record<Lang, string>> = {
   home: { fr: '/', en: '/en/' },
+  services: { fr: '/services', en: '/en/services' },
   projects: { fr: '/projets', en: '/en/projects' },
+  about: { fr: '/a-propos', en: '/en/about' },
   blog: { fr: '/blog', en: '/en/blog' },
   contact: { fr: '/contact', en: '/en/contact' },
   wargames: { fr: '/wargames', en: '/en/wargames' },

@@ -14,10 +14,9 @@ interface MenuMobileProps {
 function liens(lang: Lang) {
   const d = t(lang);
   return [
-    { href: buildPath('home', lang), libelle: d['nav.home'] },
+    { href: buildPath('services', lang), libelle: d['nav.services'] },
     { href: buildPath('projects', lang), libelle: d['nav.projects'] },
-    { href: buildPath('home', lang, undefined, '#parcours'), libelle: d['nav.parcours'] },
-    { href: buildPath('home', lang, undefined, '#confiance'), libelle: d['nav.partners'] },
+    { href: buildPath('about', lang), libelle: d['nav.about'] },
     { href: buildPath('blog', lang), libelle: d['nav.blog'] },
   ];
 }
@@ -179,7 +178,7 @@ export default function MenuMobile({ lang = 'fr', altHref = '/en/' }: MenuMobile
             </a>
 
             <a href={buildPath('contact', lang)} className="menu-contact btn-retro" onClick={fermer}>
-              {d['nav.contact']}
+              {d['nav.cta']}
             </a>
           </div>,
           document.body

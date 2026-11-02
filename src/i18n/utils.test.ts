@@ -16,6 +16,17 @@ import {
   switchHref,
 } from './utils';
 
+describe('nouvelles routes', () => {
+  it('connaît les nouvelles routes services et à-propos', () => {
+    expect(buildPath('services', 'fr')).toBe('/services');
+    expect(buildPath('services', 'en')).toBe('/en/services');
+    expect(buildPath('about', 'fr')).toBe('/a-propos');
+    expect(buildPath('about', 'en')).toBe('/en/about');
+    expect(alternatePath('/a-propos')).toBe('/en/about');
+    expect(alternatePath('/en/services')).toBe('/services');
+  });
+});
+
 describe('langues', () => {
   it('reconnaît les langues gérées', () => {
     expect(isLang('fr')).toBe(true);

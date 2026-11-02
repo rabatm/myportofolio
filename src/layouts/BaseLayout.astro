@@ -51,10 +51,9 @@ const ogImageUrl = new URL('/og-image.jpg', Astro.site);
 const altHref = alternatePath(pathname);
 
 const liens = [
-  { href: buildPath('home', lang), label: d['nav.home'] },
+  { href: buildPath('services', lang), label: d['nav.services'] },
   { href: buildPath('projects', lang), label: d['nav.projects'] },
-  { href: buildPath('home', lang, undefined, '#parcours'), label: d['nav.parcours'] },
-  { href: buildPath('home', lang, undefined, '#confiance'), label: d['nav.partners'] },
+  { href: buildPath('about', lang), label: d['nav.about'] },
   { href: buildPath('blog', lang), label: d['nav.blog'] },
 ];
 ---
@@ -72,7 +71,7 @@ const liens = [
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Martin Rabat — Martin Info" />
+    <meta property="og:site_name" content="Martin Info" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
@@ -111,7 +110,7 @@ const liens = [
           )}
         </span>
         <span style="color: var(--border);">│</span>
-        <a href={buildPath('contact', lang)} class="btn-retro" style="padding: 8px 20px; font-size: 0.875rem;">{d['nav.contact']}</a>
+        <a href={buildPath('contact', lang)} class="btn-retro" style="padding: 8px 20px; font-size: 0.875rem;">{d['nav.cta']}</a>
       </div>
 
       <div class="md:hidden">
