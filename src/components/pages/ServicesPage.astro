@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../ui/ProjectCard.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { services } from '../../data/services';
+import { pageLines } from '../../data/marvinLines';
+import { getLocalizedCollection } from '../../i18n/collections';
+import { projectsForService } from '../../lib/projectSelect';
+import { t } from '../../i18n/ui';
+import { buildPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/utils';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const projects = await getLocalizedCollection('projects', lang);
+const blocks = services[lang].map((s, i) => ({
+  service: s,
+  proofs: projectsForService(projects, s.id),
+  flip: i % 2 === 1,
+}));
+---
+
+<BaseLayout
+  lang={lang}
+  title={d['services.title']}
+  description={d['services.description']}
+  peekLines={(pageLines[lang] as Record<string, string[]>).services}
+>
+  <section class="container-wide pt-32 pb-12">
+    <div class="max-w-3xl">
+      <SectionHeading
+        level={1}
+        kicker={d['services.kicker']}
+        title={d['services.heading']}
+        intro={d['services.intro']}
+      />
+    </div>
+  </section>
+
+  {blocks.map(({ service: s, proofs, flip }, i) => (
+    <section
+      id={s.id}
+      class="service-block py-16 md:py-20"
+      style={i % 2 === 1 ? 'background: var(--surface-muted);' : undefined}
+    >
+      <div class:list={['container-wide service-grid', flip && 'service-grid--flip']}>
+        <div class="service-intro">
+          <p class="kicker">{s.hook}</p>
+          <h2 class="service-name">{s.name}</h2>
+          <p class="service-need">{s.need}</p>
+          <p class="mt-6">
+            <a href={buildPath('contact', lang)} class="btn-primary">{s.cta}</a>
+          </p>
+        </div>
+        <div class="service-detail">
+          <h3 class="kicker">{d['services.builds']}</h3>
+          <ul class="service-builds">
+            {s.builds.map((b) => <li>{b}</li>)}
+          </ul>
+          <h3 class="kicker mt-8">{d['services.benefit']}</h3>
+          <p class="service-benefit">{s.benefit}</p>
+          {(proofs.length > 0 || s.proofNote) && (
+            <h3 class="kicker mt-8">{d['services.proofs']}</h3>
+          )}
+          {proofs.length > 0 && (
+            <ul class="service-proofs">
+              {proofs.map((item) => (
+                <li>
+                  <ProjectCard item={item} lang={lang} variant="compact" />
+                </li>
+              ))}
+            </ul>
+          )}
+          {proofs.length === 0 && s.proofNote && <p class="service-benefit">{s.proofNote}</p>}
+        </div>
+      </div>
+    </section>
+  ))}
+</BaseLayout>
+
+<style>
+  .service-block {
+    scroll-margin-top: var(--nav-h);
+  }
+  .service-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 900px) {
+    .service-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 4rem;
+      align-items: start;
+    }
+    .service-grid--flip {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+    .service-grid--flip .service-intro {
+      order: 2;
+    }
+  }
+  .service-name {
+    margin: 0.5rem 0 1rem;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .service-need,
+  .service-benefit {
+    margin: 0.5rem 0 0;
+    line-height: 1.6;
+  }
+  .service-builds {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .service-builds li::before {
+    content: '> ';
+    font-family: var(--font-mono);
+    color: var(--accent-hover);
+  }
+  .service-proofs {
+    display: grid;
+    gap: 1rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 640px) {
+    .service-proofs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
