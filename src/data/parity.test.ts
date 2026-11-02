@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ui } from '../i18n/ui';
 import { LANGS } from '../i18n/utils';
 import { findForbidden } from '../lib/copyRules';
+import { approche, tempsForts } from './about';
 import { companies } from './companies';
 import { pageLines, projectLines, sectionLines } from './marvinLines';
 import { parcours } from './parcours';
@@ -92,6 +93,16 @@ describe('parité FR/EN des données', () => {
       expect(new Set(ctas).size).toBe(ctas.length);
       const tout = JSON.stringify([services[lang], methode[lang]]);
       expect(findForbidden(tout)).toEqual([]);
+    }
+  });
+
+  it('à propos : 3 temps forts et autant de points d’approche dans chaque langue, aucun texte interdit', () => {
+    expect(tempsForts.fr).toHaveLength(3);
+    expect(tempsForts.en).toHaveLength(3);
+    expect(approche.fr.length).toBeGreaterThan(0);
+    expect(approche.en).toHaveLength(approche.fr.length);
+    for (const lang of LANGS) {
+      expect(findForbidden(JSON.stringify([approche[lang], tempsForts[lang]]))).toEqual([]);
     }
   });
 

@@ -38,7 +38,24 @@ const fr = {
   'hero.ctaProjects': 'Voir les projets',
   'hero.ctaContact': 'Discutons de votre besoin',
 
-  'about.title': 'À propos',
+  'about.title': 'À propos — Martin Rabat, développeur indépendant à Perpignan · Martin Info',
+  'about.description':
+    "Martin Rabat, développeur indépendant à Perpignan : une quinzaine d'années dans les systèmes critiques, indépendant depuis 2021. Son approche, son parcours, ce qui l'anime.",
+  'about.kicker': 'À propos',
+  'about.heading': 'Martin Rabat, développeur indépendant à Perpignan',
+  'about.intro': 'Je conçois des applications et des automatisations qui simplifient le quotidien des entreprises.',
+  'about.approachKicker': 'Approche',
+  'about.approachTitle': 'Ma façon de travailler',
+  'about.pathKicker': 'Parcours',
+  'about.pathTitle': 'Trois temps forts',
+  'about.funKicker': 'Côté atelier',
+  'about.fun': "Ce qui m'anime",
+  'about.funText':
+    "Construire des outils, y compris pour le plaisir. Cleo en est un : un chat qui court dans la barre de menu du Mac, d'autant plus vite que l'ordinateur travaille, et qui affiche d'un coup d'œil la mémoire et les quotas des assistants IA.",
+  'about.funCleoLink': 'Faire connaissance avec Cleo',
+  'about.funGame': "Et quelque part sur ce site, un jeu attend qu'on le trouve. Marvin en sait peut-être plus qu'il ne le dit.",
+  'about.ctaTitle': "Un besoin, un outil qui coince, une idée à concrétiser ?",
+  'about.cta': 'Voir si je peux vous aider',
   'about.quote': '« Des outils au service de votre activité. »',
   'about.p1':
     "Je crée des applications sur mesure pour les entreprises : simples à utiliser, fiables au quotidien et capables d'évoluer avec vous. Nouveau projet ou outil existant à améliorer et à connecter à vos autres logiciels, c'est souvent là que tout se joue.",
@@ -237,7 +254,24 @@ const en: Record<UiKey, string> = {
   'hero.ctaProjects': 'See my projects',
   'hero.ctaContact': "Let's talk about your project",
 
-  'about.title': 'About',
+  'about.title': 'About — Martin Rabat, independent developer in Perpignan · Martin Info',
+  'about.description':
+    'Martin Rabat, independent developer in Perpignan, France: some fifteen years in critical systems, independent since 2021. His approach, his background, what drives him.',
+  'about.kicker': 'About',
+  'about.heading': 'Martin Rabat, independent developer in Perpignan',
+  'about.intro': 'I build applications and automations that make day-to-day work simpler for businesses.',
+  'about.approachKicker': 'Approach',
+  'about.approachTitle': 'How I work',
+  'about.pathKicker': 'Background',
+  'about.pathTitle': 'Three milestones',
+  'about.funKicker': 'Workshop side',
+  'about.fun': 'What drives me',
+  'about.funText':
+    'Building tools, sometimes just for fun. Cleo is one of them: a cat that runs in the Mac menu bar, faster the harder the computer works, and shows memory and AI assistant quotas at a glance.',
+  'about.funCleoLink': 'Meet Cleo',
+  'about.funGame': 'And somewhere on this site, a game is waiting to be found. Marvin may know more than he lets on.',
+  'about.ctaTitle': 'A need, a tool that gets in the way, an idea to bring to life?',
+  'about.cta': 'See if I can help',
   'about.quote': '“Tools that work for your business.”',
   'about.p1':
     "I build custom applications for businesses: easy to use, reliable day to day, and able to grow with you. Whether it's a new project or an existing tool that needs improving and connecting to your other software, that's often where it all happens.",
