@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { companies } from '../data/companies';
 import { parcours } from '../data/parcours';
+import { methode, services } from '../data/services';
 import { skills } from '../data/skills';
 import { temoignages } from '../data/temoignages';
 import type { Lang } from '../i18n/utils';
-import { buildSystemPrompt, firstSentence } from './chatPrompt';
+import { buildSystemPrompt, firstSentence, type PromptData } from './chatPrompt';
 
 function donnees(lang: Lang) {
   return {
@@ -12,14 +13,19 @@ function donnees(lang: Lang) {
     skills: skills[lang],
     companies: companies[lang],
     temoignages: temoignages[lang],
-    projects: [{ title: 'amiqo', tags: ['Flutter', 'Dart'] }],
+    services: services[lang],
+    methode: methode[lang],
+    projects: [
+      { title: 'amiqo', description: 'Appli magasin', services: ['mobile'], kind: 'client' },
+      { title: 'Cleo', description: 'Chat', services: [], kind: 'atelier' },
+    ] as PromptData['projects'],
   };
 }
 
 describe('buildSystemPrompt', () => {
   it('écrit le prompt français en français', () => {
     const p = buildSystemPrompt('fr', donnees('fr'));
-    expect(p).toContain("Tu es Marvin-42, l'assistant du portfolio de Martin Rabat.");
+    expect(p).toContain("Tu es Marvin-42, l'assistant du site de Martin Info.");
     expect(p).toContain('Réponds en français sauf si le visiteur utilise clairement une autre langue.');
     expect(p).toContain(parcours.fr[1].titre);
     expect(p).toContain('/contact');
@@ -27,7 +33,7 @@ describe('buildSystemPrompt', () => {
 
   it('écrit le prompt anglais entièrement en anglais', () => {
     const p = buildSystemPrompt('en', donnees('en'));
-    expect(p).toContain("You are Marvin-42, the assistant on Martin Rabat's portfolio.");
+    expect(p).toContain("You are Marvin-42, the assistant on Martin Info's website.");
     expect(p).toContain('Answer in English unless the visitor clearly uses another language.');
     expect(p).toContain(parcours.en[1].titre);
     expect(p).toContain('/en/contact');
@@ -45,7 +51,32 @@ describe('buildSystemPrompt', () => {
     const p = buildSystemPrompt('en', donnees('en'));
     expect(p).toContain('- JurisPerform (https://www.juris-perform.fr/)');
     expect(p).toContain('- Design & quality: Hexagonal architecture');
-    expect(p).toContain('- amiqo (Flutter, Dart)');
+  });
+
+  it('présente les services, la méthode et les projets avec leurs services', () => {
+    const p = buildSystemPrompt('fr', donnees('fr'));
+    expect(p).toContain(services.fr[3].name);
+    expect(p).toContain(methode.fr[0].title);
+    expect(p).toContain('- amiqo [mobile]');
+    const perso = p.indexOf('Projets perso');
+    expect(perso).toBeGreaterThan(-1);
+    expect(p.indexOf('Cleo', perso)).toBeGreaterThan(perso);
+    expect(p).toContain('/contact');
+    expect(p).toContain('[LANCER_JEU]');
+  });
+
+  it('présente les services anglais dans le prompt anglais', () => {
+    const p = buildSystemPrompt('en', donnees('en'));
+    expect(p).toContain(services.en[0].name);
+    if (services.en[0].name !== services.fr[0].name) {
+      expect(p).not.toContain(services.fr[0].name);
+    }
+    expect(p).toContain('- amiqo [mobile]');
+  });
+
+  it('interdit de promettre tarif, délai, audit ou consultation gratuits', () => {
+    expect(buildSystemPrompt('fr', donnees('fr'))).toMatch(/audit gratuit/);
+    expect(buildSystemPrompt('en', donnees('en'))).toMatch(/free audit/);
   });
 
   it('précise que les témoignages anglais sont traduits', () => {

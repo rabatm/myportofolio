@@ -179,11 +179,11 @@ const fr = {
   'contact.error': 'Envoi impossible. Écrivez-moi directement à {email}',
 
   'marvin.greeting':
-    'Bonjour ! Je peux vous présenter le parcours de Martin, ses projets et ses compétences. N’hésitez pas à me poser votre question',
+    'Bonjour ! Décrivez-moi votre besoin : je peux vous dire si Martin peut vous aider, et vous montrer ce qu’il a déjà construit dans le même genre.',
   'marvin.longSession': 'SESSION LONGUE DÉTECTÉE. MÉMOIRE À COURT TERME UNIQUEMENT.',
   'marvin.connectionLost': 'connexion perdue',
   'marvin.retry': 'Réessayer',
-  'marvin.placeholder': 'Écris un message…',
+  'marvin.placeholder': 'Écrivez un message…',
   'marvin.inputAria': 'Votre message pour MARVIN-42',
   'marvin.send': 'Envoyer le message',
   'marvin.closeChat': 'Fermer la conversation',
@@ -395,7 +395,7 @@ const en: Record<UiKey, string> = {
   'contact.error': "Couldn't send your message. Email me directly at {email}",
 
   'marvin.greeting':
-    "Hello! I can walk you through Martin's background, projects and skills. Feel free to ask me anything.",
+    "Hello! Describe your need: I can tell you whether Martin can help you, and show you what he has already built along the same lines.",
   'marvin.longSession': 'LONG SESSION DETECTED. SHORT-TERM MEMORY ONLY.',
   'marvin.connectionLost': 'connection lost',
   'marvin.retry': 'Retry',

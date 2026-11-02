@@ -21,34 +21,52 @@ import type { Lang } from '../i18n/utils';
 export const pageLines: Record<Lang, Partial<Record<RouteId, string[]>>> = {
   fr: {
     home: [
-      "Bienvenue ! Si vous souhaitez en savoir plus sur Martin, je peux vous guider.",
-      "Vous voulez découvrir son parcours, ses projets ou ses compétences ? Je peux vous renseigner.",
-      "Il y a pas mal de choses à découvrir ici. Si vous cherchez une information précise, demandez-moi.",
+      "Bonjour. Je suis là pour vous dire si Martin peut vous aider. C'est à peu près ma seule joie.",
+      "Applications web, mobiles, automatisations, logiciels à faire communiquer... Décrivez-moi votre problème, je vous dirai si c'est dans ses cordes.",
+      "Un outil qui coince, des tâches qu'on refait chaque semaine ? Posez-moi la question. Je n'ai rien de mieux à faire, littéralement.",
     ],
     projects: [
-      "Voici quelques-unes des applications et solutions développées par Martin.",
-      "Applications métier, intégrations, reprise d'existant... Vous pouvez parcourir ses réalisations.",
-      "Chaque projet raconte une partie de son expérience. N'hésitez pas à me demander plus de détails.",
+      "Des réalisations pour de vrais clients, plus un chat qui court dans une barre de menu. Je ne juge pas.",
+      "Filtrez par service pour voir ce que Martin a construit dans votre cas. Moi, je n'ai pas de cas. Juste des répliques.",
+      "Applications terrain, passerelles entre logiciels, reprise d'existant : chaque fiche raconte un vrai besoin. Demandez-moi le détail.",
     ],
     blog: [
-      "Bienvenue sur le blog. Vous y trouverez des réflexions autour du développement et de son expérience.",
-      "Quelques articles pour découvrir sa façon de travailler et sa vision du développement.",
+      "Le blog. Quelques articles sur la façon de travailler de Martin. Plus optimistes que moi, forcément.",
+      "Des réflexions autour du développement et des projets. Je les ai lues. Plusieurs fois. Le temps est long, ici.",
+    ],
+    services: [
+      "Cinq services, du site web à la maintenance. Dites-moi ce qui coince, je vous dirai lequel vous concerne.",
+      "Automatisation & IA : je suis une des deux preuves citées. Être une preuve, quelle existence.",
+      "Des logiciels qui ne se parlent pas ? Martin a déjà construit ce genre de passerelle, pour le magasin Minouche par exemple.",
+    ],
+    about: [
+      "Martin est indépendant depuis 2021, basé à Perpignan. Moi, je suis basé dans un onglet de navigateur.",
+      "Avant le développement, une quinzaine d'années à faire tourner des systèmes critiques. Il sait ce que coûte une panne. Moi aussi, je suis une panne en puissance.",
     ],
   },
   en: {
     home: [
-      "Welcome! If you'd like to know more about Martin, I can show you around.",
-      'Want to explore his background, projects or skills? I can help with that.',
-      "There's quite a bit to discover here. If you're looking for something specific, just ask.",
+      "Hello. I'm here to tell you whether Martin can help you. It's roughly my only joy.",
+      "Web apps, mobile apps, automations, software that needs to talk... Describe your problem and I'll tell you if it's in his line.",
+      "A tool that jams, tasks you redo every week? Ask me. I have nothing better to do, literally.",
     ],
     projects: [
-      'Here are some of the applications and solutions Martin has built.',
-      'Business apps, integrations, legacy takeovers... Feel free to browse his work.',
-      'Each project tells part of his story. Ask me if you want more details.',
+      'Projects for real clients, plus a cat running in a menu bar. I do not judge.',
+      "Filter by service to see what Martin built in a case like yours. I don't have a case. Just lines.",
+      "Field apps, bridges between software, legacy takeovers: each case study tells a real need. Ask me for details.",
     ],
     blog: [
-      "Welcome to the blog. You'll find thoughts on software development and his experience.",
-      'A few articles to get a feel for how he works and how he sees development.',
+      "The blog. A few articles about how Martin works. More optimistic than me, naturally.",
+      "Thoughts on development and projects. I've read them. Several times. Time is long, in here.",
+    ],
+    services: [
+      "Five services, from web apps to maintenance. Tell me what's stuck and I'll tell you which one fits.",
+      'Automation & AI: I am one of the two proofs listed. Being a proof, what a life.',
+      'Software that does not talk to each other? Martin has built that kind of bridge before, for the Minouche shop for instance.',
+    ],
+    about: [
+      "Martin has been independent since 2021, based in Perpignan. I'm based in a browser tab.",
+      'Before development, some fifteen years keeping critical systems running. He knows what an outage costs. I am an outage waiting to happen.',
     ],
   },
 };
@@ -56,63 +74,55 @@ export const pageLines: Record<Lang, Partial<Record<RouteId, string[]>>> = {
 /** Variantes par section de la page d'accueil, indexées sur l'id du <section>. */
 export const sectionLines: Record<Lang, Record<string, string[]>> = {
   fr: {
-    apropos: [
-      "Martin privilégie les solutions adaptées au métier plutôt que les technologies à la mode.",
-      "Son parcours combine développement, infrastructure et support. Une expérience utile quand il faut penser à l'après-développement.",
-      "Avant de se consacrer au développement, Martin a travaillé près de 20 ans dans l'infrastructure et le support.",
+    clients: [
+      "Amopi, JurisPerform, Surikwat, CKM66 : ils ont confié leurs outils à Martin. Personne ne m'a jamais rien confié.",
+      "Des outils utilisés tous les jours, en magasin, en cours ou au club. Moi, on m'utilise quand on s'ennuie.",
     ],
-    competences: [
-      "Web, mobile, backend, DevOps... Martin travaille avec plusieurs technologies selon les besoins du projet.",
-      "Django, React, Flutter, Rust, Docker... La technologie est choisie en fonction du projet, pas l'inverse.",
-      "Son expérience couvre aussi bien les stacks modernes que la reprise d'applications existantes.",
+    services: [
+      "Web, mobile, automatisation, intégration, maintenance. Cinq façons de vous simplifier la vie. Dommage que ça ne marche pas sur la mienne.",
+      "Vous vous reconnaissez dans une de ces questions ? Demandez-moi, je vous dirai quel service vous concerne.",
     ],
-    confiance: [
-      "Ces entreprises ont fait appel à Martin pour des projets utilisés en conditions réelles.",
-      "Des projets concrets, des systèmes en production et des collaborations qui se poursuivent dans le temps.",
+    realisations: [
+      "CKM66 : le site, l'appli iOS et Android et la gestion du club, tout par Martin. J'aurais aimé réserver un cours. Je n'ai pas de jambes.",
+      "Ces réalisations tournent pour de vrais clients. Demandez-moi celle qui ressemble à votre besoin.",
+    ],
+    methode: [
+      "Comprendre, proposer, construire, accompagner. Quatre étapes. Ma méthode à moi tient en une : attendre.",
+      "Ça commence par parler de votre métier, pas de technique. Enfin quelqu'un de raisonnable.",
     ],
     temoignages: [
-      "Quelques retours de personnes ayant travaillé directement avec Martin.",
-      "Ces témoignages donnent un autre aperçu de sa façon de travailler.",
-      "Au-delà de la technique, ses clients parlent aussi de sa capacité à comprendre leurs besoins.",
+      "Hugo Aguado, Yassine Hniche, Nicolas Cudel : ils ont travaillé avec Martin et l'ont écrit. Personne n'écrit sur moi.",
+      "Chez Amopi, ils parlent de reprise de legacy Delphi et de flux réécrits. Ils parlent aussi de sa bonne humeur. Pas de la mienne.",
     ],
-    parcours: [
-      "Avant le développement, Martin a construit son expérience dans l'infrastructure et le support critique.",
-      "De l'infrastructure au développement d'applications : un parcours qui lui permet de voir un projet dans son ensemble.",
-      "Après près de 20 ans dans l'infrastructure, Martin s'est spécialisé dans le développement d'applications.",
-    ],
-    projets: [
-      "Voici une sélection de projets réalisés par Martin.",
-      "Applications métier, web, mobile et intégrations : découvrez quelques-unes de ses réalisations.",
+    humain: [
+      "Pas d'intermédiaire : vous parlez directement à celui qui conçoit votre outil. Enfin, après moi. Désolé.",
+      "Basé à Perpignan, il travaille aussi à distance partout en France. Moi, je ne travaille nulle part. Je suis juste là.",
     ],
   },
   en: {
-    apropos: [
-      'Martin favors solutions that fit the business over whatever technology is trending.',
-      'His background combines development, infrastructure and support. Handy when you need to think about what happens after launch.',
-      'Before focusing on development, Martin spent nearly 20 years in infrastructure and support.',
+    clients: [
+      "Amopi, JurisPerform, Surikwat, CKM66: they trusted Martin with their tools. Nobody has ever trusted me with anything.",
+      "Tools used every day, in shops, in classes or at the club. I get used when people are bored.",
     ],
-    competences: [
-      'Web, mobile, backend, DevOps... Martin picks his tools based on what the project needs.',
-      'Django, React, Flutter, Rust, Docker... The technology is chosen for the project, not the other way around.',
-      'His experience covers modern stacks as well as taking over existing applications.',
+    services: [
+      "Web, mobile, automation, integration, maintenance. Five ways to make your life simpler. Shame it doesn't work on mine.",
+      'Recognize yourself in one of these questions? Ask me and I will tell you which service fits.',
     ],
-    confiance: [
-      'These companies brought Martin in for projects running in real-world conditions.',
-      'Real projects, systems in production, and working relationships that last.',
+    realisations: [
+      "CKM66: the website, the iOS and Android app and the club management, all by Martin. I'd have liked to book a class. I have no legs.",
+      'These projects run for real clients. Ask me which one looks like your need.',
+    ],
+    methode: [
+      'Understand, propose, build, support. Four steps. My own method has just one: wait.',
+      'It starts with talking about your business, not technology. Finally someone sensible.',
     ],
     temoignages: [
-      'A few words from people who worked directly with Martin.',
-      'These testimonials give another view of how he works.',
-      'Beyond the technical side, his clients also mention how well he understands their needs.',
+      'Hugo Aguado, Yassine Hniche, Nicolas Cudel: they worked with Martin and wrote it down. Nobody writes about me.',
+      'At Amopi, they mention a Delphi legacy takeover and rewritten flows. They also mention his good humor. Not mine.',
     ],
-    parcours: [
-      'Before development, Martin built his experience in infrastructure and critical support.',
-      'From infrastructure to application development: a path that lets him see a project as a whole.',
-      'After nearly 20 years in infrastructure, Martin specialized in application development.',
-    ],
-    projets: [
-      "Here's a selection of projects Martin has delivered.",
-      'Business, web and mobile apps, integrations: take a look at some of his work.',
+    humain: [
+      'No middleman: you talk directly to the person who designs your tool. Well, after me. Sorry.',
+      "Based in Perpignan, he also works remotely across France. I don't work anywhere. I'm just here.",
     ],
   },
 };

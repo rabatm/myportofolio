@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import Groq from 'groq-sdk';
 import { companies } from '../../data/companies';
 import { parcours } from '../../data/parcours';
+import { methode, services } from '../../data/services';
 import { skills } from '../../data/skills';
 import { temoignages } from '../../data/temoignages';
 import { getLocalizedCollection } from '../../i18n/collections';
@@ -33,7 +34,14 @@ async function systemPrompt(lang: Lang): Promise<string> {
     skills: skills[lang],
     companies: companies[lang],
     temoignages: temoignages[lang],
-    projects: projects.map(({ entry }) => ({ title: entry.data.title, tags: entry.data.tags })),
+    services: services[lang],
+    methode: methode[lang],
+    projects: projects.map(({ entry }) => ({
+      title: entry.data.title,
+      description: entry.data.description,
+      services: entry.data.services,
+      kind: entry.data.kind,
+    })),
   });
   promptCache.set(lang, prompt);
   return prompt;

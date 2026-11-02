@@ -28,7 +28,7 @@ const blocks = services[lang].map((s, i) => ({
   lang={lang}
   title={d['services.title']}
   description={d['services.description']}
-  peekLines={(pageLines[lang] as Record<string, string[]>).services}
+  peekLines={pageLines[lang].services}
 >
   <section class="container-wide pt-32 pb-12">
     <div class="max-w-3xl">

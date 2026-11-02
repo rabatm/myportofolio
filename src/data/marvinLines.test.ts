@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { LANGS } from '../i18n/utils';
+import { findForbidden } from '../lib/copyRules';
 import * as marvinLines from './marvinLines';
-import { pageLines, projectLines } from './marvinLines';
+import { pageLines, projectLines, sectionLines } from './marvinLines';
 
 describe('marvinLines', () => {
   it("fournit au moins trois répliques d'amorce pour l'accueil, dans chaque langue", () => {
@@ -15,6 +16,30 @@ describe('marvinLines', () => {
       expect(pageLines[lang].projects!.length).toBeGreaterThan(0);
       expect(pageLines[lang].blog!.length).toBeGreaterThan(0);
     }
+  });
+
+  it('couvre les pages Services et À propos', () => {
+    for (const lang of LANGS) {
+      expect(pageLines[lang].services!.length).toBeGreaterThanOrEqual(2);
+      expect(pageLines[lang].about!.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("suit exactement les sections commentées de l'accueil", () => {
+    for (const lang of LANGS) {
+      expect(Object.keys(sectionLines[lang]).sort()).toEqual([
+        'clients',
+        'humain',
+        'methode',
+        'realisations',
+        'services',
+        'temoignages',
+      ]);
+    }
+  });
+
+  it("n'emploie aucune formule interdite", () => {
+    expect(findForbidden(JSON.stringify(marvinLines))).toEqual([]);
   });
 
   it('ne garde pas de répliques pour les pages sans bulle', () => {
