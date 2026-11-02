@@ -1,0 +1,21 @@
+---
+export interface Props {
+  /** Libellé monospace au-dessus du titre ; l'invite `>` est ajoutée en CSS. */
+  kicker?: string;
+  title: string;
+  intro?: string;
+  /** 1 pour le titre de page (un seul par page), 2 pour une section. */
+  level?: 1 | 2;
+  /** Posé sur le titre, pour `aria-labelledby` ou une ancre. */
+  id?: string;
+}
+
+const { kicker, title, intro, level = 2, id } = Astro.props;
+const Titre = level === 1 ? 'h1' : 'h2';
+---
+
+<div class="section-heading">
+  {kicker && <p class="kicker">{kicker}</p>}
+  <Titre id={id} class={level === 1 ? 'heading-1' : 'heading-2'}>{title}</Titre>
+  {intro && <p class="heading-intro">{intro}</p>}
+</div>

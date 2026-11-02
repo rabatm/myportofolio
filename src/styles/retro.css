@@ -1,16 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  --bg: oklch(98% 0.01 95);
-  --ink: oklch(20% 0.02 280);
-  --ink-soft: oklch(45% 0.02 280);
-  --ink-faint: oklch(60% 0.02 280);
+  /* Direction A : crème clair, encre sombre, vert en accent. Contrastes sur
+     --bg (#faf8f2) : --ink 15,9:1, --ink-soft 7,8:1, --ink-faint 5,0:1,
+     --accent-hover 5,0:1 (AA texte). --accent (3,1:1) reste réservé aux
+     filets, puces et barres : jamais pour du texte courant. */
+  --bg: #faf8f2;
+  --bg-dark: var(--ink); /* bloc contact sombre */
+  --surface-muted: #f0ede4;
+  --ink: #1d1b2a;
+  --ink-soft: #4f4c63;
+  --ink-faint: #6b6880;
   --accent: oklch(62% 0.19 150);
-  --accent-hover: oklch(55% 0.19 150);
+  --accent-hover: #1f7a45;
   --accent-soft: oklch(94% 0.06 150);
   --blue: oklch(62% 0.19 250);
-  --border: oklch(90% 0.01 95);
+  --border: #e6e1d4;
   --card-bg: #fff;
+  --danger: #b42318;
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
   /* Dock MARVIN-42. Valeurs du brief §5, sauf --marvin-placeholder :
      le #2A4C38 d'origine tombe à 2,0:1 sur --marvin-surface, sous le
      4,5:1 exigé par WCAG 1.4.3 pour un texte porteur d'information.
@@ -743,4 +751,302 @@
   .contact-done__sent.is-visible {
     animation: none;
   }
+}
+
+/* ==== Direction A : système commun des pages commerciales ============ */
+
+@layer components {
+  .container-wide {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+  }
+
+  /* Libellé monospace au-dessus d'un titre. L'invite `>` est décorative :
+     texte alternatif vide pour les lecteurs d'écran (la première déclaration
+     sert de repli aux navigateurs qui ignorent la syntaxe `/ ''`). */
+  .kicker {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    color: var(--accent-hover);
+  }
+  .kicker::before {
+    content: '> ';
+    content: '> ' / '';
+  }
+
+  .heading-1,
+  .heading-2 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .heading-1 {
+    font-size: clamp(2.1rem, 1.4rem + 3vw, 3.5rem);
+    line-height: 1.06;
+  }
+  .heading-2 {
+    font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.5rem);
+    line-height: 1.1;
+  }
+  .heading-intro {
+    margin: 1rem 0 0;
+    max-width: 40rem;
+    font-size: 1.125rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.7rem 1.25rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: #34304a;
+    border-color: #34304a;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+  }
+  .btn-ghost:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+  .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+  .btn-primary:focus-visible,
+  .btn-ghost:focus-visible,
+  .project-card:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 3px;
+  }
+
+  /* Bloc sombre (contact en bas de page) : on redéfinit les jetons, les
+     composants à l'intérieur suivent sans variante dédiée. */
+  .surface-dark {
+    --ink: #faf8f2;
+    --ink-soft: #cfcbdc;
+    --ink-faint: #b9b5c9;
+    --accent-hover: var(--marvin-fg);
+    --border: #4a4662;
+    --card-bg: #26233a;
+    --danger: #ff8a80;
+    background: var(--bg-dark);
+    color: var(--ink);
+  }
+  .surface-dark .btn-primary {
+    background: var(--marvin-fg);
+    border-color: var(--marvin-fg);
+    color: var(--marvin-surface);
+  }
+  .surface-dark .btn-primary:hover {
+    background: var(--marvin-pill-fg);
+    border-color: var(--marvin-pill-fg);
+  }
+  .surface-dark .btn-ghost:hover {
+    color: var(--bg-dark);
+  }
+
+  /* ---- Terminal Marvin statique ---- */
+  .marvin-terminal {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    background: var(--marvin-surface);
+    border: 1px solid var(--marvin-border);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    color: var(--marvin-fg);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+  .marvin-terminal p {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .marvin-terminal__user {
+    color: var(--marvin-user);
+  }
+  .marvin-terminal__cursor {
+    display: inline-block;
+    animation: marvin-curseur 1.1s steps(1) infinite;
+  }
+  @keyframes marvin-curseur {
+    50% { opacity: 0; }
+  }
+
+  /* ---- Carte de réalisation ---- */
+  .project-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .project-card:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
+  }
+  .project-card__title {
+    margin: 0 0 0.4rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+  .project-card__desc {
+    margin: 0 0 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .project-card__services {
+    margin: auto 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+  }
+  .project-card--compact {
+    padding: 0.75rem;
+  }
+  .project-card--compact .project-card__title {
+    font-size: 1rem;
+  }
+  .project-card--compact .project-card__desc {
+    font-size: 0.875rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Vignette sans capture : nom court du projet en monospace. */
+  .project-thumb__name {
+    padding: 0 1rem;
+    font-family: var(--font-mono);
+    font-size: clamp(1.25rem, 1rem + 1.2vw, 1.75rem);
+    font-weight: 700;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+
+  /* ---- Formulaire de contact ---- */
+  .contact-fields {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .contact-fields {
+      grid-template-columns: 1fr 1fr;
+    }
+    .contact-fields .field--full {
+      grid-column: 1 / -1;
+    }
+  }
+  .field label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .field__optional {
+    font-weight: 400;
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 0.75rem;
+    background: var(--card-bg);
+    border: 1.5px solid #8a8698;
+    border-radius: 4px;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem;
+  }
+  .surface-dark .field input,
+  .surface-dark .field select,
+  .surface-dark .field textarea {
+    border-color: #8a8698;
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 1px;
+    border-color: var(--ink);
+  }
+  .contact-status {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--danger);
+  }
+  .contact-status:empty {
+    display: none;
+  }
+}
+
+/* Aucune animation ni transition ajoutée ci-dessus quand le visiteur les refuse. */
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .btn-ghost,
+  .project-card {
+    transition: none;
+  }
+  .project-card:hover {
+    transform: none;
+  }
+  .marvin-terminal__cursor {
+    animation: none;
+  }
+}
+
+/* `display: grid` l'emporterait sur l'attribut `hidden` posé par le script. */
+.contact-fields[hidden] {
+  display: none;
 }
