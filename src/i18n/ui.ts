@@ -107,11 +107,17 @@ const fr = {
   'home.contactTitle': 'Vous avez une idée, un problème à résoudre ou un outil à créer ? Parlons-en.',
   'home.contactMarvin': "Ou posez la question à Marvin : son terminal vous attend en bas de l'écran.",
 
-  'projects.title': 'Projets — Martin Rabat, développeur fullstack',
+  'projects.title': 'Réalisations — Martin Info',
   'projects.description':
-    'Applications métier, intégrations entre systèmes et reprises de legacy : ERP retail, backoffice de franchises, applications mobiles terrain, passerelles de synchronisation et infrastructure Docker.',
-  'projects.heading': 'Projets',
-  'project.back': '< Retour aux projets',
+    'Des applications métier, mobiles et des intégrations livrées pour des entreprises : ERP retail, backoffice de franchises, applications terrain, synchronisation entre systèmes.',
+  'projects.heading': 'Réalisations',
+  'projects.filterAll': 'Tout',
+  'projects.filterLabel': 'Filtrer par service',
+  'projects.atelierTitle': 'Côté atelier',
+  'projects.atelierIntro': 'Ce que je construis pour le plaisir, et qui finit souvent par servir.',
+  'project.back': '← Toutes les réalisations',
+  'project.ctaClient': 'Un besoin qui ressemble à celui-ci ? Parlons-en.',
+  'project.ctaAtelier': 'Une idée un peu folle ? Écrivez-moi.',
   'project.visit': 'Voir le projet',
 
   'blog.title': 'Blog — Martin Rabat, développeur fullstack',
@@ -300,11 +306,17 @@ const en: Record<UiKey, string> = {
   'home.contactTitle': "Have an idea, a problem to solve or a tool to build? Let's talk.",
   'home.contactMarvin': 'Or ask Marvin: his terminal is waiting at the bottom of the screen.',
 
-  'projects.title': 'Projects — Martin Rabat, full-stack developer',
+  'projects.title': 'Work — Martin Info',
   'projects.description':
-    'Business applications, system integrations and legacy takeovers: retail ERP, franchise back offices, field mobile apps, synchronization gateways and Docker infrastructure.',
-  'projects.heading': 'Projects',
-  'project.back': '< Back to projects',
+    'Business web and mobile applications and integrations delivered for companies: retail ERP, franchise back offices, field apps, synchronization between systems.',
+  'projects.heading': 'Work',
+  'projects.filterAll': 'All',
+  'projects.filterLabel': 'Filter by service',
+  'projects.atelierTitle': 'Workshop side',
+  'projects.atelierIntro': 'What I build for fun, and which often ends up being useful.',
+  'project.back': '← All work',
+  'project.ctaClient': 'A need that looks like this one? Let us talk.',
+  'project.ctaAtelier': 'A slightly crazy idea? Write to me.',
   'project.visit': 'View project',
 
   'blog.title': 'Blog — Martin Rabat, full-stack developer',

@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import OnlyInBadge from '../i18n/OnlyInBadge.astro';
+import ProjectCard from '../ui/ProjectCard.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { services } from '../../data/services';
 import { pageLines } from '../../data/marvinLines';
 import { getLocalizedCollection } from '../../i18n/collections';
+import { atelierProjects, clientProjects } from '../../lib/projectSelect';
 import { t } from '../../i18n/ui';
-import { buildPath, type Lang } from '../../i18n/utils';
-import ProjectThumb from '../projects/ProjectThumb.astro';
+import type { Lang } from '../../i18n/utils';
 
 export interface Props {
   lang: Lang;
@@ -13,7 +15,9 @@ export interface Props {
 
 const { lang } = Astro.props;
 const d = t(lang);
-const projects = await getLocalizedCollection('projects', lang);
+const all = await getLocalizedCollection('projects', lang);
+const clients = clientProjects(all);
+const atelier = atelierProjects(all);
 ---
 
 <BaseLayout
@@ -22,24 +26,104 @@ const projects = await getLocalizedCollection('projects', lang);
   description={d['projects.description']}
   peekLines={pageLines[lang].projects}
 >
-  <section class="px-4 pt-24 pb-20 max-w-5xl mx-auto">
-    <h2 class="section-title">{d['projects.heading']}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {projects.map(({ entry: p, slug, isFallback, contentLang }) => (
-        <a href={buildPath('projects', lang, slug)} class="card block no-underline">
-          <ProjectThumb image={p.data.image} title={p.data.title} />
-          {isFallback && <OnlyInBadge lang={lang} />}
-          <h3 class="font-bold text-lg mb-2" style="color: var(--ink);" lang={contentLang}>{p.data.title}</h3>
-          <p class="text-sm mb-3" style="color: var(--ink-soft);" lang={contentLang}>{p.data.description}</p>
-          <div class="flex flex-wrap gap-2">
-            {p.data.tags.map(tag => (
-              <span class="text-xs px-2 py-1 font-mono rounded-full" style="background: var(--accent-soft); color: var(--accent-hover); border: 1px solid oklch(62% 0.19 150 / 0.3);">
-                {tag}
-              </span>
-            ))}
-          </div>
-        </a>
+  <section class="container-wide pt-32 pb-16">
+    <div class="max-w-3xl">
+      <SectionHeading level={1} title={d['projects.heading']} />
+    </div>
+
+    <div class="filter-bar" role="group" aria-label={d['projects.filterLabel']} data-filter-bar>
+      <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">{d['projects.filterAll']}</button>
+      {services[lang].map((s) => (
+        <button type="button" class="filter-btn" data-filter={s.id} aria-pressed="false">{s.name}</button>
       ))}
     </div>
+
+    <ul class="project-grid" data-project-grid>
+      {clients.map((item) => (
+        <li class="project-grid-item" data-services={item.entry.data.services.join(' ')}>
+          <ProjectCard item={item} lang={lang} />
+        </li>
+      ))}
+    </ul>
   </section>
+
+  {atelier.length > 0 && (
+    <section id="atelier" class="atelier py-16" style="background: var(--surface-muted);">
+      <div class="container-wide">
+        <div class="max-w-3xl">
+          <SectionHeading
+            level={2}
+            title={d['projects.atelierTitle']}
+            intro={d['projects.atelierIntro']}
+          />
+        </div>
+        <ul class="project-grid">
+          {atelier.map((item) => (
+            <li class="project-grid-item">
+              <ProjectCard item={item} lang={lang} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 </BaseLayout>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-filter-bar]');
+  const items = document.querySelectorAll<HTMLElement>('[data-project-grid] > [data-services]');
+  bar?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-filter]');
+    if (!btn) return;
+    const id = btn.dataset.filter;
+    bar.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    items.forEach((el) => {
+      el.hidden = id !== 'all' && !(el.dataset.services ?? '').split(' ').includes(id ?? '');
+    });
+  });
+</script>
+
+<style>
+  .atelier {
+    scroll-margin-top: var(--nav-h);
+  }
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 2rem 0;
+  }
+  .filter-btn {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .filter-btn[aria-pressed='true'] {
+    background: var(--ink);
+    color: var(--bg, #fff);
+  }
+  .filter-btn:focus-visible {
+    outline: 3px solid var(--accent-hover);
+    outline-offset: 2px;
+  }
+  .project-grid {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .project-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .project-grid-item[hidden] {
+    display: none;
+  }
+</style>
