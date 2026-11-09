@@ -2,7 +2,7 @@
  * Répliques pré-écrites de Marvin-42 pour la bulle d'amorce du dock.
  *
  * Ces répliques ne passent pas par le LLM : elles sont instantanées, gratuites,
- * et laissent tout le quota Groq au chat interactif (les vraies questions).
+ * et laissent tout le quota Mistral au chat interactif (les vraies questions).
  * Elles servent uniquement à amorcer la conversation via la bulle de la
  * pastille. Deux déclencheurs : une réplique à l'arrivée sur une page, et
  * une réplique par section de l'accueil qui entre à l'écran. Dans les deux

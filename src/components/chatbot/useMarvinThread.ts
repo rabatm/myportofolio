@@ -3,7 +3,7 @@
  *
  * Le contenu stocké est nu. Les préfixes « > » et « $ » du terminal sont
  * décoratifs et vivent dans ChatPanel : les concaténer au contenu, comme
- * le faisait l'ancien composant, revenait à les envoyer à Groq.
+ * le faisait l'ancien composant, revenait à les envoyer au modèle.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';

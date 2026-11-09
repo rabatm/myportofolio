@@ -1,5 +1,4 @@
 import type { APIRoute } from 'astro';
-import Groq from 'groq-sdk';
 import { companies } from '../../data/companies';
 import { parcours } from '../../data/parcours';
 import { methode, services } from '../../data/services';
@@ -9,17 +8,7 @@ import { getLocalizedCollection } from '../../i18n/collections';
 import { t } from '../../i18n/ui';
 import { parseLang, type Lang } from '../../i18n/utils';
 import { buildSystemPrompt } from '../../lib/chatPrompt';
-
-let groq: Groq | null = null;
-
-function getGroq(): Groq {
-  if (!groq) {
-    groq = new Groq({
-      apiKey: import.meta.env.GROQ_API_KEY,
-    });
-  }
-  return groq;
-}
+import { chatCompletion } from '../../lib/mistral';
 
 // Le prompt ne dépend que de la langue : on le construit une fois par langue.
 const promptCache = new Map<Lang, string>();
@@ -67,19 +56,11 @@ export const POST: APIRoute = async ({ request }) => {
     const timeout = setTimeout(() => controller.abort(), 5000);
 
     try {
-      const completion = await getGroq().chat.completions.create(
-        {
-          model: 'openai/gpt-oss-20b',
-          messages: [
-            { role: 'system', content: await systemPrompt(lang) },
-            ...messages,
-          ],
-          max_tokens: 250,
-        },
+      const content = await chatCompletion(
+        import.meta.env.MISTRAL_API_KEY,
+        [{ role: 'system', content: await systemPrompt(lang) }, ...messages],
         { signal: controller.signal }
       );
-
-      const content = completion.choices[0]?.message?.content || '';
 
       return new Response(JSON.stringify({ content }), {
         headers: { 'Content-Type': 'application/json' },
@@ -88,7 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
       clearTimeout(timeout);
     }
   } catch (err: any) {
-    console.error('[chat] échec de l’appel Groq', err);
+    console.error('[chat] échec de l’appel Mistral', err);
     // Le nom est ajouté à l'affichage par le composant : ne pas le répéter ici.
     if (err?.status === 429) {
       return new Response(JSON.stringify({ content: t(lang)['chat.rateLimit'] }), {

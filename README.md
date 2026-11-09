@@ -15,7 +15,7 @@ moche. Aucune obligation de me créditer, mais un petit mot fait toujours
 plaisir si tu t'en sers.
 
 Un détail qui sort du lot : le site embarque un agent conversationnel façon
-Marvin-42 (voir `src/pages/api/chat.ts`), branché sur Groq, qui répond aux
+Marvin-42 (voir `src/pages/api/chat.ts`), branché sur Mistral, qui répond aux
 questions des visiteurs à partir des vraies données du portfolio (parcours,
 compétences, témoignages) — pas d'improvisation, il ne répond que sur ce qui
 est réellement dans le repo.
