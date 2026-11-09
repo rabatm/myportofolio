@@ -1,5 +1,5 @@
 ---
-import MarvinTerminal from '../ui/MarvinTerminal.astro';
+import HeroIllustration from '../ui/HeroIllustration.astro';
 import { t } from '../../i18n/ui';
 import { buildPath } from '../../i18n/utils';
 import type { Lang } from '../../i18n/utils';
@@ -10,12 +10,6 @@ export interface Props {
 
 const { lang } = Astro.props;
 const d = t(lang);
-
-// Échange écrit d'avance : le terminal ne fait aucun appel au modèle.
-const lignes = [
-  { who: 'user' as const, text: d['home.heroTerminalUser'] },
-  { who: 'marvin' as const, text: d['home.heroTerminalMarvin'] },
-];
 ---
 
 <section id="hero" class="home-section pt-32 pb-16 md:pt-40 md:pb-24">
@@ -30,7 +24,7 @@ const lignes = [
       </div>
       <p class="hero-where">{d['home.heroWhere']}</p>
     </div>
-    <MarvinTerminal lines={lignes} label={d['home.heroTerminalLabel']} />
+    <HeroIllustration label={d['home.heroIllustrationLabel']} />
   </div>
 </section>
 

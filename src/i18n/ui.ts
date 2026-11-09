@@ -67,9 +67,8 @@ const fr = {
   'home.heroCta': 'Parler de votre projet',
   'home.heroCta2': 'Découvrir mes réalisations',
   'home.heroWhere': 'Perpignan · Pyrénées-Orientales · partout en France à distance',
-  'home.heroTerminalLabel': "Exemple d'échange avec Marvin, l'assistant du site",
-  'home.heroTerminalUser': 'mes logiciels ne se parlent pas',
-  'home.heroTerminalMarvin': 'Martin a déjà relié une caisse BBSoft à un site e-commerce. On en parle ?',
+  'home.heroIllustrationLabel':
+    'Schéma : une caisse, un site web, une application mobile et une base de données reliés entre eux par une passerelle',
   'home.clientsTitle': "Ils m'ont confié leurs outils",
   'home.servicesKicker': 'Services',
   'home.servicesTitle': 'Ce que je peux faire pour vous',
@@ -256,9 +255,8 @@ const en: Record<UiKey, string> = {
   'home.heroCta': "Let's talk about your project",
   'home.heroCta2': 'Explore my work',
   'home.heroWhere': 'Perpignan · Pyrénées-Orientales · anywhere in France, remotely',
-  'home.heroTerminalLabel': "Sample exchange with Marvin, this site's assistant",
-  'home.heroTerminalUser': "my software tools don't talk to each other",
-  'home.heroTerminalMarvin': 'Martin has already connected a BBSoft till system to an e-commerce site. Shall we talk?',
+  'home.heroIllustrationLabel':
+    'Diagram: a till system, a website, a mobile app and a database connected to each other through a bridge',
   'home.clientsTitle': 'They trusted me with their tools',
   'home.servicesKicker': 'Services',
   'home.servicesTitle': 'What I can do for you',

@@ -1,0 +1,156 @@
+---
+export interface Props {
+  /** Description lue par les lecteurs d'écran (le schéma ne contient aucun texte). */
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<!--
+  Schéma du hero : quatre outils (caisse, site, application mobile, base de
+  données) reliés par un nœud central. Couleurs reprises des variables du site.
+-->
+<svg
+  class="hero-illustration"
+  viewBox="0 0 480 420"
+  role="img"
+  aria-label={label}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Liaisons, sous les outils -->
+  <g class="flow">
+    <path d="M120 170 Q120 215 181 215" />
+    <path d="M355 170 Q355 215 249 215" />
+    <path d="M300 320 Q238 320 232 245" />
+    <path d="M110 310 Q192 310 198 245" />
+  </g>
+
+  <!-- Caisse -->
+  <rect class="shadow" x="26" y="46" width="170" height="130" rx="10" />
+  <rect class="win" x="20" y="40" width="170" height="130" rx="10" />
+  <path class="line" d="M20 64 H190" />
+  <circle class="dot" cx="34" cy="52" r="3.5" />
+  <circle class="dot" cx="46" cy="52" r="3.5" />
+  <circle class="dot" cx="58" cy="52" r="3.5" />
+  <rect class="muted" x="36" y="78" width="138" height="24" rx="4" />
+  <rect class="key" x="36" y="114" width="24" height="24" rx="4" />
+  <rect class="key" x="68" y="114" width="24" height="24" rx="4" />
+  <rect class="key" x="100" y="114" width="24" height="24" rx="4" />
+  <rect class="acc" x="132" y="114" width="24" height="24" rx="4" />
+  <rect class="key" x="36" y="142" width="24" height="20" rx="4" />
+  <rect class="key" x="68" y="142" width="24" height="20" rx="4" />
+  <rect class="key" x="100" y="142" width="24" height="20" rx="4" />
+  <rect class="acc" x="132" y="142" width="24" height="20" rx="4" />
+
+  <!-- Site web -->
+  <rect class="shadow" x="256" y="26" width="210" height="150" rx="10" />
+  <rect class="win" x="250" y="20" width="210" height="150" rx="10" />
+  <path class="line" d="M250 46 H460" />
+  <circle class="dot" cx="264" cy="33" r="3.5" />
+  <circle class="dot" cx="276" cy="33" r="3.5" />
+  <circle class="dot" cx="288" cy="33" r="3.5" />
+  <rect class="muted" x="302" y="27" width="140" height="12" rx="6" />
+  <rect class="soft" x="266" y="58" width="178" height="36" rx="4" />
+  <rect class="muted" x="266" y="104" width="52" height="48" rx="4" />
+  <rect class="muted" x="329" y="104" width="52" height="48" rx="4" />
+  <rect class="muted" x="392" y="104" width="52" height="48" rx="4" />
+
+  <!-- Base de données -->
+  <path class="win" d="M40 275 V345 A35 10 0 0 0 110 345 V275" />
+  <path class="line" d="M40 297 A35 10 0 0 0 110 297" />
+  <path class="line" d="M40 319 A35 10 0 0 0 110 319" />
+  <ellipse class="win" cx="75" cy="275" rx="35" ry="10" />
+
+  <!-- Application mobile -->
+  <rect class="shadow" x="306" y="246" width="100" height="160" rx="16" />
+  <rect class="win" x="300" y="240" width="100" height="160" rx="16" />
+  <path class="line" d="M335 254 H365" />
+  <circle class="soft-dot" cx="320" cy="287" r="7" />
+  <circle class="soft-dot" cx="320" cy="317" r="7" />
+  <circle class="soft-dot" cx="320" cy="347" r="7" />
+  <rect class="muted" x="334" y="284" width="52" height="6" rx="3" />
+  <rect class="muted" x="334" y="314" width="52" height="6" rx="3" />
+  <rect class="muted" x="334" y="344" width="52" height="6" rx="3" />
+  <rect class="acc" x="316" y="372" width="68" height="14" rx="7" />
+
+  <!-- Nœud central : la passerelle -->
+  <circle class="hub" cx="215" cy="215" r="34" />
+  <path class="arrows" d="M198 208 H232 M224 200 L232 208 L224 216 M232 224 H198 M206 216 L198 224 L206 232" />
+</svg>
+
+<style>
+  .hero-illustration {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+    margin-inline: auto;
+  }
+  .win {
+    fill: #fff;
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+  .shadow {
+    fill: var(--ink);
+  }
+  .line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+  .dot {
+    fill: var(--ink);
+  }
+  .muted {
+    fill: var(--surface-muted);
+  }
+  .soft {
+    fill: var(--accent-soft);
+  }
+  .soft-dot {
+    fill: var(--accent-soft);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+  .key {
+    fill: var(--surface-muted);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+  .acc {
+    fill: var(--accent);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+  .hub {
+    fill: var(--ink);
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  .arrows {
+    fill: none;
+    stroke: var(--marvin-fg);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .flow path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-dasharray: 6 8;
+    animation: flow 1.4s linear infinite;
+  }
+  @keyframes flow {
+    to {
+      stroke-dashoffset: -28;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow path {
+      animation: none;
+    }
+  }
+</style>
