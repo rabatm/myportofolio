@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { companies } from '../data/companies';
+import { formation } from '../data/formation';
 import { parcours } from '../data/parcours';
 import { methode, services } from '../data/services';
 import { skills } from '../data/skills';
@@ -15,12 +16,22 @@ function donnees(lang: Lang) {
     temoignages: temoignages[lang],
     services: services[lang],
     methode: methode[lang],
+    formation: formation[lang],
     projects: [
       { title: 'amiqo', description: 'Appli magasin', services: ['mobile'], kind: 'client' },
       { title: 'Cleo', description: 'Chat', services: [], kind: 'atelier' },
     ] as PromptData['projects'],
   };
 }
+
+describe('buildSystemPrompt — formation', () => {
+  it('présente les deux volets de formation dans chaque langue', () => {
+    for (const lang of ['fr', 'en'] as const) {
+      const p = buildSystemPrompt(lang, donnees(lang));
+      for (const m of formation[lang].modules) expect(p).toContain(m.title);
+    }
+  });
+});
 
 describe('buildSystemPrompt', () => {
   it('écrit le prompt français en français', () => {

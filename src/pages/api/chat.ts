@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { companies } from '../../data/companies';
+import { formation } from '../../data/formation';
 import { parcours } from '../../data/parcours';
 import { methode, services } from '../../data/services';
 import { skills } from '../../data/skills';
@@ -25,6 +26,7 @@ async function systemPrompt(lang: Lang): Promise<string> {
     temoignages: temoignages[lang],
     services: services[lang],
     methode: methode[lang],
+    formation: formation[lang],
     projects: projects.map(({ entry }) => ({
       title: entry.data.title,
       description: entry.data.description,

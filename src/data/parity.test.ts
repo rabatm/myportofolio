@@ -4,6 +4,7 @@ import { LANGS } from '../i18n/utils';
 import { findForbidden } from '../lib/copyRules';
 import { approche, tempsForts } from './about';
 import { companies } from './companies';
+import { formation } from './formation';
 import { pageLines, projectLines, sectionLines } from './marvinLines';
 import { parcours } from './parcours';
 import { SERVICE_IDS, methode, services } from './services';
@@ -93,6 +94,18 @@ describe('parité FR/EN des données', () => {
       expect(new Set(ctas).size).toBe(ctas.length);
       const tout = JSON.stringify([services[lang], methode[lang]]);
       expect(findForbidden(tout)).toEqual([]);
+    }
+  });
+
+  it('formation : même structure dans les deux langues, CTA propre, aucun texte interdit', () => {
+    expect(formation.en.modules).toHaveLength(formation.fr.modules.length);
+    expect(formation.fr.modules).toHaveLength(2);
+    for (const lang of LANGS) {
+      const f = formation[lang];
+      expect([f.name, f.hook, f.need, f.benefit, f.proof, f.cta].every(Boolean)).toBe(true);
+      expect(f.modules.every((m) => m.title && m.text)).toBe(true);
+      expect(services[lang].map((s) => s.cta)).not.toContain(f.cta);
+      expect(findForbidden(JSON.stringify(f))).toEqual([]);
     }
   });
 

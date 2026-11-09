@@ -2,6 +2,7 @@ import type { Company } from '../data/companies';
 import type { ParcoursEntry } from '../data/parcours';
 import type { Service, ServiceId, Step } from '../data/services';
 import type { Temoignage } from '../data/temoignages';
+import type { Formation } from '../data/formation';
 import type { Lang } from '../i18n/utils';
 
 export interface PromptData {
@@ -11,6 +12,7 @@ export interface PromptData {
   temoignages: Temoignage[];
   services: Service[];
   methode: Step[];
+  formation: Formation;
   /** Titre, résumé (description du frontmatter) et services illustrés ; pas le corps de la fiche. */
   projects: { title: string; description: string; services: ServiceId[]; kind: 'client' | 'atelier' }[];
 }
@@ -41,6 +43,7 @@ function blocs(lang: Lang, d: PromptData) {
       .map((t) => `- ${t.name} (${t.title}, ${t.company})${sep} "${firstSentence(t.quote)}"`)
       .join('\n'),
     services: d.services.map((s) => `- ${s.name}${sep} ${s.need}`).join('\n'),
+    formation: `${d.formation.need} ${d.formation.modules.map((m) => `${m.title}${sep} ${m.text}`).join(' | ')}`,
     methode: d.methode.map((m, i) => `${i + 1}. ${m.title}${sep} ${m.text}`).join('\n'),
     projects: d.projects
       .filter((p) => p.kind === 'client')
@@ -66,6 +69,8 @@ function promptFr(b: Blocs): string {
   POSITIONNEMENT : Martin Info, c'est Martin Rabat, développeur indépendant depuis 2021, basé à Perpignan et disponible à distance. Il conçoit des applications et des automatisations qui simplifient le quotidien des entreprises (TPE, PME, professions libérales, commerces, industrie…) : un interlocuteur technique direct, sans intermédiaire. Avant le développement : une quinzaine d'années en infrastructure et support niveau 3. Il forme ses clients et rédige des guides utilisateurs. Pour un projet, une mission ou un devis : /contact.
   SERVICES (textes du site, où « je » désigne Martin) :
 ${b.services}
+  FORMATION (proposée en plus des services) :
+${b.formation}
   MÉTHODE :
 ${b.methode}
   RÉALISATIONS (titre [services] : description) :
@@ -89,6 +94,8 @@ function promptEn(b: Blocs): string {
   POSITIONING: Martin Info is Martin Rabat, an independent developer since 2021, based in Perpignan, France, and available remotely. He builds applications and automations that make day-to-day work simpler for businesses (small and medium businesses, independent professionals, retail, industry…): a direct technical contact, no middleman. Before development: about fifteen years in infrastructure and level 3 support. He trains his clients and writes user guides. For a project, an assignment or a quote: /en/contact.
   SERVICES (site copy, where "I" means Martin):
 ${b.services}
+  TRAINING (offered in addition to the services):
+${b.formation}
   METHOD:
 ${b.methode}
   PROJECTS (title [services]: description):
