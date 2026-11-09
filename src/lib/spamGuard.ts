@@ -9,8 +9,12 @@
 /** Délai minimal entre l'affichage du formulaire et l'envoi. */
 export const MIN_ELAPSED_MS = 3000;
 
-/** Liens tolérés dans un message ; aucun dans le nom ni l'entreprise. */
-export const MAX_LINKS = 3;
+/**
+ * Liens tolérés : aucun, nulle part. Le spam reçu par le formulaire vise à
+ * placer un lien (référencement) ; un vrai prospect peut écrire son site sans
+ * « https:// ». Le message d'erreur du formulaire renvoie vers l'email direct.
+ */
+export const MAX_LINKS = 0;
 
 /**
  * IP du visiteur. Derrière Apache/Passenger, Node ne voit que le proxy : la
@@ -35,7 +39,8 @@ export function isTooFast(elapsedMs: unknown): boolean {
   return elapsedMs === undefined || elapsedMs === null || !Number.isFinite(ms) || ms < MIN_ELAPSED_MS;
 }
 
-const LIEN_RE = /\bhttps?:\/\/|\bwww\./gi;
+// http(s)://, www., ou « domaine.tld/chemin » (un domaine seul reste toléré).
+const LIEN_RE = /\bhttps?:\/\/|\bwww\.|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}\/\S/gi;
 
 export function countLinks(text: string): number {
   return text.match(LIEN_RE)?.length ?? 0;

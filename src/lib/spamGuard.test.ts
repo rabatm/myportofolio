@@ -55,10 +55,16 @@ describe('liens', () => {
     expect(countLinks('aucun lien ici')).toBe(0);
   });
 
-  it('tolère quelques liens dans le message, pas davantage', () => {
-    const trois = 'https://a.fr https://b.fr https://c.fr';
-    expect(hasTooManyLinks({ name: 'Ada', message: trois })).toBe(false);
-    expect(hasTooManyLinks({ name: 'Ada', message: `${trois} https://d.fr` })).toBe(true);
+  it('reconnaît une adresse web sans https:// dès qu’elle a un chemin', () => {
+    expect(countLinks('voyez jepartage.online/fr/it/martininfo')).toBe(1);
+    expect(countLinks('mon site : exemple.fr')).toBe(0);
+    expect(countLinks('note de 3.5/5, et/ou par téléphone')).toBe(0);
+  });
+
+  it('refuse tout lien dans le message (le but du spam est de placer un lien)', () => {
+    expect(hasTooManyLinks({ name: 'Ada', message: 'Voyez https://jepartage.online/fr/it/martininfo' })).toBe(true);
+    expect(hasTooManyLinks({ name: 'Ada', message: 'Voyez www.exemple.fr' })).toBe(true);
+    expect(hasTooManyLinks({ name: 'Ada', message: 'Bonjour, mon site est exemple.fr' })).toBe(false);
   });
 
   it("refuse tout lien dans l'entreprise", () => {

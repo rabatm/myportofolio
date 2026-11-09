@@ -111,3 +111,16 @@ describe('entreprise et type de projet', () => {
     expect(m.text).not.toContain('Entreprise');
   });
 });
+
+describe('buildContactMail — message suspect', () => {
+  const m = { name: 'Ada', email: 'ada@example.com', message: 'x', lang: 'fr' as const };
+
+  it('préfixe l’objet pour permettre un filtre dans la boîte mail', () => {
+    expect(buildContactMail(m, { suspect: true }).subject).toBe('[Spam probable] [Martin Info] Ada (FR)');
+  });
+
+  it('laisse l’objet inchangé sinon', () => {
+    expect(buildContactMail(m).subject).toBe('[Martin Info] Ada (FR)');
+    expect(buildContactMail(m, { suspect: false }).subject).toBe('[Martin Info] Ada (FR)');
+  });
+});

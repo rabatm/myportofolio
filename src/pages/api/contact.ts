@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
-import { handleContactRequest, type ContactSender } from '../../lib/contactHandler';
+import { handleContactRequest, type ContactSender, type SpamJudge } from '../../lib/contactHandler';
 import { createSmtpSender, readSmtpConfig } from '../../lib/smtp';
+import { judgeSpam } from '../../lib/spamJudge';
 import { clientIp, createRateLimiter } from '../../lib/spamGuard';
 
 export const prerender = false;
@@ -22,8 +23,12 @@ function getSender(): ContactSender {
   return sender;
 }
 
+// Même lecture que pour le SMTP : .env en dev, process.env en production.
+const judge: SpamJudge = (message) =>
+  judgeSpam({ ...import.meta.env, ...process.env }.MISTRAL_API_KEY, message);
+
 // Un seul limiteur pour la durée de vie du processus.
 const limiter = createRateLimiter();
 
 export const POST: APIRoute = ({ request, clientAddress }) =>
-  handleContactRequest(request, getSender(), { ip: clientIp(request, clientAddress), limiter });
+  handleContactRequest(request, getSender(), { ip: clientIp(request, clientAddress), limiter, judge });

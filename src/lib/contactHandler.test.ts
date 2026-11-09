@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { handleContactRequest, type ContactSender } from './contactHandler';
+import { handleContactRequest, type ContactSender, type SpamJudge } from './contactHandler';
 import { createRateLimiter, type RateLimiter } from './spamGuard';
 
 function requete(body: unknown): Request {
@@ -13,8 +13,8 @@ function requete(body: unknown): Request {
 const valide = { name: 'Ada', email: 'ada@example.com', message: 'Bonjour', lang: 'fr', elapsedMs: 8000 };
 
 /** Contexte nominal : une IP, un limiteur neuf. */
-function ctx(limiter: RateLimiter = createRateLimiter(), ip = '203.0.113.9') {
-  return { ip, limiter };
+function ctx(limiter: RateLimiter = createRateLimiter(), ip = '203.0.113.9', judge?: SpamJudge) {
+  return { ip, limiter, judge };
 }
 
 afterEach(() => {
@@ -115,9 +115,10 @@ describe('handleContactRequest', () => {
     expect(send).not.toHaveBeenCalled();
   });
 
-  it('refuse un message bourré de liens', async () => {
+  it('refuse un message contenant un lien, même un seul (spam réel reçu)', async () => {
     const send = vi.fn<ContactSender>();
-    const message = 'https://a.fr https://b.fr https://c.fr https://d.fr';
+    const message =
+      'Un devis pour une application de réservation, avec délais de mise en ligne et formation incluse ? https://jepartage.online/fr/it/martininfo';
 
     const res = await handleContactRequest(requete({ ...valide, message }), send, ctx());
 
@@ -160,5 +161,50 @@ describe('handleContactRequest', () => {
 
     expect(res.status).toBe(200);
     expect(send).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('handleContactRequest — juge anti-spam', () => {
+  it('envoie quand même un message jugé suspect, avec l’objet marqué', async () => {
+    const send = vi.fn<ContactSender>().mockResolvedValue(undefined);
+    const judge = vi.fn<SpamJudge>().mockResolvedValue(true);
+
+    const res = await handleContactRequest(requete(valide), send, ctx(createRateLimiter(), '203.0.113.9', judge));
+
+    expect(res.status).toBe(200);
+    expect(judge).toHaveBeenCalledWith(expect.objectContaining({ name: 'Ada', message: 'Bonjour' }));
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ subject: '[Spam probable] [Martin Info] Ada (FR)' }));
+  });
+
+  it('n’altère pas l’objet d’un message jugé sain', async () => {
+    const send = vi.fn<ContactSender>().mockResolvedValue(undefined);
+    const judge = vi.fn<SpamJudge>().mockResolvedValue(false);
+
+    await handleContactRequest(requete(valide), send, ctx(createRateLimiter(), '203.0.113.9', judge));
+
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ subject: '[Martin Info] Ada (FR)' }));
+  });
+
+  it('ne consulte le juge que pour les messages qui partiraient vraiment', async () => {
+    const send = vi.fn<ContactSender>();
+    const judge = vi.fn<SpamJudge>().mockResolvedValue(false);
+    const c = () => ctx(createRateLimiter(), '203.0.113.9', judge);
+
+    await handleContactRequest(requete({ ...valide, website: 'http://spam' }), send, c()); // piège
+    await handleContactRequest(requete({ ...valide, elapsedMs: 100 }), send, c()); // trop rapide
+    await handleContactRequest(requete({ ...valide, email: 'pas un email' }), send, c()); // invalide
+    await handleContactRequest(requete({ ...valide, message: 'voir https://spam.example' }), send, c()); // lien
+
+    const limiteAtteinte = createRateLimiter({ perIp: 0, perIpWindowMs: 1000, global: 10, globalWindowMs: 1000 });
+    await handleContactRequest(requete(valide), send, ctx(limiteAtteinte, '203.0.113.9', judge)); // 429
+
+    expect(judge).not.toHaveBeenCalled();
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it('fonctionne sans juge (clé Mistral absente)', async () => {
+    const send = vi.fn<ContactSender>().mockResolvedValue(undefined);
+    const res = await handleContactRequest(requete(valide), send, ctx());
+    expect(res.status).toBe(200);
   });
 });

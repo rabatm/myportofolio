@@ -82,10 +82,10 @@ export interface ContactMail {
 }
 
 /** Mail reçu par Martin : « Répondre » dans sa boîte écrit directement au visiteur. */
-export function buildContactMail(m: ContactMessage): ContactMail {
+export function buildContactMail(m: ContactMessage, { suspect = false }: { suspect?: boolean } = {}): ContactMail {
   const langue = m.lang.toUpperCase();
   return {
-    subject: `[Martin Info] ${m.name}${m.company ? ` — ${m.company}` : ''} (${langue})`,
+    subject: `${suspect ? '[Spam probable] ' : ''}[Martin Info] ${m.name}${m.company ? ` — ${m.company}` : ''} (${langue})`,
     replyTo: `"${m.name.replace(/(["\\])/g, '\\$1')}" <${m.email}>`,
     text: [
       `Nom : ${m.name}`,

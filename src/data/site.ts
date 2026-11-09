@@ -1,5 +1,5 @@
 /** Coordonnées publiques, définies une seule fois. */
-export const CONTACT_EMAIL = 'martin.rabat@gmail.com';
+export const CONTACT_EMAIL = 'martin@martininfo.fr';
 
 export const BUSINESS = {
   name: 'Martin Info',

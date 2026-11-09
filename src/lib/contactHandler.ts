@@ -1,13 +1,21 @@
-import { buildContactMail, validateContact, type ContactMail } from './contactMail';
+import { buildContactMail, validateContact, type ContactMail, type ContactMessage } from './contactMail';
 import { hasTooManyLinks, isTooFast, type RateLimiter } from './spamGuard';
 
 /** Envoie un mail à Martin. Injectée pour pouvoir tester sans SMTP. */
 export type ContactSender = (mail: ContactMail) => Promise<void>;
 
+/**
+ * Dit si un message ressemble à du spam. Ne doit jamais lever : en cas de
+ * doute ou de panne, répondre false (le message part alors normalement).
+ */
+export type SpamJudge = (message: ContactMessage) => Promise<boolean>;
+
 export interface ContactContext {
   /** IP du visiteur, voir clientIp(). */
   ip: string;
   limiter: RateLimiter;
+  /** Avis d'un modèle sur le texte ; absent = pas de contrôle. */
+  judge?: SpamJudge;
 }
 
 function json(status: number, body: unknown): Response {
@@ -24,7 +32,7 @@ function json(status: number, body: unknown): Response {
 export async function handleContactRequest(
   request: Request,
   send: ContactSender,
-  { ip, limiter }: ContactContext
+  { ip, limiter, judge }: ContactContext
 ): Promise<Response> {
   let body: unknown;
   try {
@@ -50,7 +58,10 @@ export async function handleContactRequest(
   }
 
   try {
-    await send(buildContactMail(verdict.data));
+    // Un message suspect n'est jamais refusé (un vrai prospect perdu coûte plus
+    // cher qu'un spam reçu) : son objet est marqué, pour un filtre de la boîte mail.
+    const suspect = judge ? await judge(verdict.data) : false;
+    await send(buildContactMail(verdict.data, { suspect }));
   } catch (err) {
     console.error('[contact] échec de l’envoi du mail', err);
     return json(502, { ok: false, error: 'send failed' });
